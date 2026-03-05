@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36518.9 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RessourceRelationnelle.API", "RessourceRelationnelle.API\RessourceRelationnelle.API.csproj", "{9DED1070-7875-4799-8685-0B416F720B70}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RessourceRelationnelle.DATA", "RessourceRelationnelle.DATA\RessourceRelationnelle.DATA.csproj", "{239AA51F-409A-49D8-8D58-16CCC42D0386}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9DED1070-7875-4799-8685-0B416F720B70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DED1070-7875-4799-8685-0B416F720B70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DED1070-7875-4799-8685-0B416F720B70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DED1070-7875-4799-8685-0B416F720B70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{239AA51F-409A-49D8-8D58-16CCC42D0386}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{239AA51F-409A-49D8-8D58-16CCC42D0386}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{239AA51F-409A-49D8-8D58-16CCC42D0386}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{239AA51F-409A-49D8-8D58-16CCC42D0386}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B6AC291C-9534-48F0-8E61-D020AF155709}
+	EndGlobalSection
+EndGlobal
