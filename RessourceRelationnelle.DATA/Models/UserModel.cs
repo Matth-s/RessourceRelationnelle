@@ -10,7 +10,7 @@ namespace RessourceRelationnelle.DATA.Models
         public DateTime CreatedAt = DateTime.UtcNow;
         public DateTime? LastLogin = null;
 
-        public string DemographicZoneId { get; set; } = string.Empty;
-        public DemographicZoneModel DemographicZone { get; set; } = null!;
+        public string? DemographicZoneId { get; set; }
+        public DemographicZoneModel? DemographicZone { get; set; }
     }
 }
