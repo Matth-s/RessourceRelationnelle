@@ -58,6 +58,7 @@ namespace RessourceRelationnelle.API
             builder.Services.AddScoped<IEventRepository, SQLEventRepository>();
             builder.Services.AddScoped<ICategoryRepository, SQLCategoryRepository>();
             builder.Services.AddScoped<IRelationTypeRepository, SQLRelationTypeRepository>();
+            builder.Services.AddScoped<ITypeResourceRepository, SQLTypeResourceRepository>();
 
             builder.Services.AddIdentity<UserModel, IdentityRole>()
                 .AddEntityFrameworkStores<DataContext>()
