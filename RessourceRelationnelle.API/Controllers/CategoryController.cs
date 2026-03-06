@@ -24,6 +24,7 @@ namespace RessourceRelationnelle.API.Controllers
         [Authorize(Roles = "Admin")]
         public Task<ActionResult> Create([FromBody] CreateNewCategoryModel model)
         {
+
             return Task.FromResult<ActionResult>(Ok());
         }
 
