@@ -56,6 +56,9 @@ namespace RessourceRelationnelle.API
 
             builder.Services.AddScoped<IResourceRepository, SqlResourceRepository>();
             builder.Services.AddScoped<IEventRepository, SQLEventRepository>();
+            builder.Services.AddScoped<ICategoryRepository, SQLCategoryRepository>();
+            builder.Services.AddScoped<IRelationTypeRepository, SQLRelationTypeRepository>();
+
             builder.Services.AddIdentity<UserModel, IdentityRole>()
                 .AddEntityFrameworkStores<DataContext>()
                 .AddDefaultTokenProviders();
@@ -73,15 +76,15 @@ namespace RessourceRelationnelle.API
             .AddJwtBearer(options =>
             {
                 // Configuration de la validation du token
-                options.SaveToken = true; // permet d'automatiser la vérification de l'expiration
+                options.SaveToken = true; // permet d'automatiser la vÃ©rification de l'expiration
                 options.RequireHttpsMetadata = false; // token pas dans url
                 options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
                 {
-                    // Ce qu'on vérifie quand on reçoit un token
-                    ValidateIssuer = false, // Vérif emetteur du token
-                    ValidateLifetime = true, // Vérif exipration token
-                    ValidateAudience = false, // Vérif client
-                    ValidateIssuerSigningKey = true, // Vérif signature
+                    // Ce qu'on vÃ©rifie quand on reÃ§oit un token
+                    ValidateIssuer = false, // VÃ©rif emetteur du token
+                    ValidateLifetime = true, // VÃ©rif exipration token
+                    ValidateAudience = false, // VÃ©rif client
+                    ValidateIssuerSigningKey = true, // VÃ©rif signature
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
                 };
             });
