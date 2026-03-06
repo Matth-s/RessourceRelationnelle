@@ -1,7 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using RessourceRelationnelle.DATA.Models;
-using RessourceRelationnelle.DATA.Repositories;
 
 namespace RessourceRelationnelle.DATA.Repositories.Sql
 {
