@@ -45,7 +45,7 @@ namespace RessourceRelationnelle.API.Controllers
                     if (!result.Succeeded)
                         return StatusCode(StatusCodes.Status500InternalServerError);
 
-                    await userManager.AddToRoleAsync(user, model.Role);
+                    await userManager.AddToRoleAsync(user, model.Role.ToUpper());
 
                     return Ok();
                 }
