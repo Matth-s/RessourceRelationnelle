@@ -25,7 +25,7 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
             return await context.Resources.Where(x => x.UserId == userId).ToListAsync();
         }
 
-        public async Task<ResourceModel?> GetOne(int id)
+        public async Task<ResourceModel?> GetOne(string id)
         {
             return await context.Resources
                 .AsNoTracking()
