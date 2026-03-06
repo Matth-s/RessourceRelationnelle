@@ -55,7 +55,7 @@ namespace RessourceRelationnelle.API.Controllers
 
         /****************************** SUPPRIMER ******************************/
         [HttpDelete("{id}")]
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Delete(string id)
         {
             try
@@ -72,7 +72,7 @@ namespace RessourceRelationnelle.API.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Update([FromBody] TypeRelationModel model)
         {
             try
@@ -89,7 +89,7 @@ namespace RessourceRelationnelle.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Create([FromBody] CreateNewTypeRelationModel model)
         {
             try
