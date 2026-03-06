@@ -80,6 +80,8 @@ namespace RessourceRelationnelle.API.Controllers
         }
 
         /****************************** UPDATE ******************************/
+        [HttpPut]
+        [Authorize(Roles = "ADMIN")]
         public async Task<ActionResult> Update(string id, [FromBody] CreateNewCategoryModel model)
         {
             try
