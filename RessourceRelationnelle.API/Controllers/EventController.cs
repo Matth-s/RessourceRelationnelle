@@ -105,7 +105,7 @@ namespace RessourceRelationnelle.API.Controllers
         }
 
         /****************************** GET ALL ******************************/
-        [HttpGet]
+        [HttpGet("/api/getAll")]
         [Authorize(Roles = "User")]
         public async Task<ActionResult> GetAll()
         {
@@ -114,7 +114,7 @@ namespace RessourceRelationnelle.API.Controllers
         }
 
         /****************************** GET EVENT FROM RESOURCE ******************************/
-        [HttpGet]
+        [HttpGet("/api/getForResource")]
         [Authorize(Roles = "User")]
         public async Task<ActionResult> GetForResource(string id)
         {
