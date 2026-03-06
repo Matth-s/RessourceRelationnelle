@@ -24,12 +24,34 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
         {
             return await context.Resources.Where(x => x.UserId == userId).ToListAsync();
         }
-
         public async Task<ResourceModel?> GetOne(string id)
         {
             return await context.Resources
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
+        }
+        public async Task Delete(string id)
+        {
+            ResourceModel? category = await context.Resources.FirstOrDefaultAsync(x => x.Id == id);
+            if (category == null)
+                throw new Exception("Resource not found");
+
+            context.Resources.Remove(category);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task<ResourceModel> Update(ResourceModel model)
+        {
+            var resource = await context.Resources.FirstOrDefaultAsync(x => x.Id == model.Id);
+            if (resource == null)
+                throw new Exception("Resource not found");
+            resource.Title = model.Title;
+            resource.Resume = model.Resume;
+            resource.Url = model.Url;
+            resource.CategoryId = model.CategoryId;
+            resource.UpdatedAt = DateTime.UtcNow;
+            await context.SaveChangesAsync();
+            return resource;
         }
     }
 }
