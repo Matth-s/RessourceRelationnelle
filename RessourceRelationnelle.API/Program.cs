@@ -8,6 +8,7 @@ using RessourceRelationnelle.Data.Repositories.Sql;
 using RessourceRelationnelle.DATA;
 using RessourceRelationnelle.DATA.Models;
 using RessourceRelationnelle.DATA.Repositories;
+using RessourceRelationnelle.DATA.Repositories.Sql;
 using System.Text;
 
 namespace RessourceRelationnelle.API
@@ -54,6 +55,7 @@ namespace RessourceRelationnelle.API
                     b => b.MigrationsAssembly("RessourceRelationnelle.API")));
 
             builder.Services.AddScoped<IResourceRepository, SqlResourceRepository>();
+            builder.Services.AddScoped<ICategoryRepository, SQLCategoryRepository>();
 
             builder.Services.AddIdentity<UserModel, IdentityRole>()
                 .AddEntityFrameworkStores<DataContext>()
