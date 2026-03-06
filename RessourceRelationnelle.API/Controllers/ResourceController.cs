@@ -55,8 +55,6 @@ namespace RessourceRelationnelle.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
-
-
         public class CreateResourceModel { 
             public string Title { get; set; } = string.Empty;
             public string Resume { get; set; } = string.Empty;
