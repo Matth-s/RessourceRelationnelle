@@ -4,6 +4,7 @@ namespace RessourceRelationnelle.DATA.Models
     public class EventModel
     {
         public string Id { get; set; } = string.Empty;
+        public string Type {  get; set; } = string.Empty;
         public DateTime StartAt { get; set; }
 
         // clés étrangeres
