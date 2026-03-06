@@ -11,8 +11,8 @@ using RessourceRelationnelle.DATA;
 namespace RessourceRelationnelle.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20260305142232_UserUpdated")]
-    partial class UserUpdated
+    [Migration("20260306154958_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -156,8 +156,8 @@ namespace RessourceRelationnelle.API.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("ResourceId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("ResourceId")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("RessourceId")
                         .IsRequired()
@@ -178,7 +178,7 @@ namespace RessourceRelationnelle.API.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("CategoryNale")
+                    b.Property<string>("CategoryName")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -203,8 +203,9 @@ namespace RessourceRelationnelle.API.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("ResourceId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("ResourceId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -242,10 +243,15 @@ namespace RessourceRelationnelle.API.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("ResourceId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("ResourceId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("StartAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserId")
@@ -293,8 +299,8 @@ namespace RessourceRelationnelle.API.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("ResourceId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("ResourceId")
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("BookMarked")
                         .HasColumnType("INTEGER");
@@ -314,9 +320,8 @@ namespace RessourceRelationnelle.API.Migrations
 
             modelBuilder.Entity("RessourceRelationnelle.DATA.Models.ResourceModel", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("CategoryId")
                         .IsRequired()
@@ -339,14 +344,6 @@ namespace RessourceRelationnelle.API.Migrations
                     b.Property<DateTime>("PublishedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("RelationTypeId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("RessourceTypeId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Resume")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -356,9 +353,11 @@ namespace RessourceRelationnelle.API.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("TypeRelationId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("TypeRessourceId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -390,8 +389,8 @@ namespace RessourceRelationnelle.API.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("ResourceId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("ResourceId")
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("SharedAt")
                         .HasColumnType("TEXT");
@@ -561,9 +560,7 @@ namespace RessourceRelationnelle.API.Migrations
                 {
                     b.HasOne("RessourceRelationnelle.DATA.Models.ResourceModel", "Resource")
                         .WithMany()
-                        .HasForeignKey("ResourceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ResourceId");
 
                     b.Navigation("Resource");
                 });
@@ -662,11 +659,15 @@ namespace RessourceRelationnelle.API.Migrations
 
                     b.HasOne("RessourceRelationnelle.DATA.Models.TypeRelationModel", "TypeRelation")
                         .WithMany("Ressources")
-                        .HasForeignKey("TypeRelationId");
+                        .HasForeignKey("TypeRelationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("RessourceRelationnelle.DATA.Models.TypeResourceModel", "TypeRessource")
                         .WithMany("Ressources")
-                        .HasForeignKey("TypeRessourceId");
+                        .HasForeignKey("TypeRessourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("RessourceRelationnelle.DATA.Models.UserModel", "User")
                         .WithMany()

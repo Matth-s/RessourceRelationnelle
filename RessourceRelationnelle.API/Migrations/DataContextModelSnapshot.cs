@@ -247,6 +247,10 @@ namespace RessourceRelationnelle.API.Migrations
                     b.Property<DateTime>("StartAt")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -337,14 +341,6 @@ namespace RessourceRelationnelle.API.Migrations
                     b.Property<DateTime>("PublishedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("RelationTypeId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("RessourceTypeId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Resume")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -354,9 +350,11 @@ namespace RessourceRelationnelle.API.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("TypeRelationId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("TypeRessourceId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -658,11 +656,15 @@ namespace RessourceRelationnelle.API.Migrations
 
                     b.HasOne("RessourceRelationnelle.DATA.Models.TypeRelationModel", "TypeRelation")
                         .WithMany("Ressources")
-                        .HasForeignKey("TypeRelationId");
+                        .HasForeignKey("TypeRelationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("RessourceRelationnelle.DATA.Models.TypeResourceModel", "TypeRessource")
                         .WithMany("Ressources")
-                        .HasForeignKey("TypeRessourceId");
+                        .HasForeignKey("TypeRessourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("RessourceRelationnelle.DATA.Models.UserModel", "User")
                         .WithMany()

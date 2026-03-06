@@ -45,13 +45,13 @@ namespace RessourceRelationnelle.API.Controllers
                     if (!result.Succeeded)
                         return StatusCode(StatusCodes.Status500InternalServerError);
 
-                    await userManager.AddToRoleAsync(user, model.Role.ToUpper());
+                    await userManager.AddToRoleAsync(user, model.Role);
 
                     return Ok();
                 }
-                catch
+                catch (Exception ex)
                 {
-                    return StatusCode(StatusCodes.Status500InternalServerError);
+                    return StatusCode(500, ex.Message);
                 }
 
             }
@@ -64,7 +64,6 @@ namespace RessourceRelationnelle.API.Controllers
             public string Password { get; set; } = "";
             public string ConfirmPassword { get; set; } = "";
             public string Role { get; set; } = "";
-
         }
     }
 }

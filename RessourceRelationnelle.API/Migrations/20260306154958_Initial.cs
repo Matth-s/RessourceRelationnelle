@@ -30,7 +30,7 @@ namespace RessourceRelationnelle.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "TEXT", nullable: false),
-                    CategoryNale = table.Column<string>(type: "TEXT", nullable: false)
+                    CategoryName = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -101,7 +101,7 @@ namespace RessourceRelationnelle.API.Migrations
                     Id = table.Column<string>(type: "TEXT", nullable: false),
                     IsActive = table.Column<bool>(type: "INTEGER", nullable: false),
                     SocialStatus = table.Column<string>(type: "TEXT", nullable: true),
-                    DemographicZoneId = table.Column<string>(type: "TEXT", nullable: false),
+                    DemographicZoneId = table.Column<string>(type: "TEXT", nullable: true),
                     UserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
@@ -124,8 +124,7 @@ namespace RessourceRelationnelle.API.Migrations
                         name: "FK_AspNetUsers_DemographicsZone_DemographicZoneId",
                         column: x => x.DemographicZoneId,
                         principalTable: "DemographicsZone",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -217,8 +216,7 @@ namespace RessourceRelationnelle.API.Migrations
                 name: "Resources",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<string>(type: "TEXT", nullable: false),
                     Title = table.Column<string>(type: "TEXT", nullable: false),
                     Resume = table.Column<string>(type: "TEXT", nullable: false),
                     Content = table.Column<string>(type: "TEXT", nullable: false),
@@ -230,10 +228,8 @@ namespace RessourceRelationnelle.API.Migrations
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UserId = table.Column<string>(type: "TEXT", nullable: false),
                     CategoryId = table.Column<string>(type: "TEXT", nullable: false),
-                    RessourceTypeId = table.Column<string>(type: "TEXT", nullable: false),
-                    TypeRessourceId = table.Column<string>(type: "TEXT", nullable: true),
-                    RelationTypeId = table.Column<string>(type: "TEXT", nullable: false),
-                    TypeRelationId = table.Column<string>(type: "TEXT", nullable: true)
+                    TypeRessourceId = table.Column<string>(type: "TEXT", nullable: false),
+                    TypeRelationId = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -254,12 +250,14 @@ namespace RessourceRelationnelle.API.Migrations
                         name: "FK_Resources_TypeRelations_TypeRelationId",
                         column: x => x.TypeRelationId,
                         principalTable: "TypeRelations",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Resources_TypeResources_TypeRessourceId",
                         column: x => x.TypeRessourceId,
                         principalTable: "TypeResources",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -270,7 +268,7 @@ namespace RessourceRelationnelle.API.Migrations
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Status = table.Column<bool>(type: "INTEGER", nullable: false),
                     RessourceId = table.Column<string>(type: "TEXT", nullable: false),
-                    ResourceId = table.Column<int>(type: "INTEGER", nullable: false)
+                    ResourceId = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -279,8 +277,7 @@ namespace RessourceRelationnelle.API.Migrations
                         name: "FK_ActiveSessions_Resources_ResourceId",
                         column: x => x.ResourceId,
                         principalTable: "Resources",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -292,7 +289,7 @@ namespace RessourceRelationnelle.API.Migrations
                     Content = table.Column<string>(type: "TEXT", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UserId = table.Column<string>(type: "TEXT", nullable: false),
-                    ResourceId = table.Column<int>(type: "INTEGER", nullable: false)
+                    ResourceId = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -316,9 +313,10 @@ namespace RessourceRelationnelle.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "TEXT", nullable: false),
+                    Type = table.Column<string>(type: "TEXT", nullable: false),
                     StartAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UserId = table.Column<string>(type: "TEXT", nullable: false),
-                    ResourceId = table.Column<int>(type: "INTEGER", nullable: false),
+                    ResourceId = table.Column<string>(type: "TEXT", nullable: false),
                     DemographicZoneId = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
@@ -349,7 +347,7 @@ namespace RessourceRelationnelle.API.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "TEXT", nullable: false),
-                    ResourceId = table.Column<int>(type: "INTEGER", nullable: false),
+                    ResourceId = table.Column<string>(type: "TEXT", nullable: false),
                     IsFavorite = table.Column<bool>(type: "INTEGER", nullable: false),
                     BookMarked = table.Column<bool>(type: "INTEGER", nullable: false),
                     updatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
@@ -376,7 +374,7 @@ namespace RessourceRelationnelle.API.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "TEXT", nullable: false),
-                    ResourceId = table.Column<int>(type: "INTEGER", nullable: false),
+                    ResourceId = table.Column<string>(type: "TEXT", nullable: false),
                     SharedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>

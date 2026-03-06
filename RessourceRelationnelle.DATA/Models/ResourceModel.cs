@@ -21,9 +21,9 @@ namespace RessourceRelationnelle.DATA.Models
         public UserModel User { get; set; } = null!;
         public string CategoryId { get; set; } = string.Empty;
         public CategoryModel Category { get; set; } = null!;
-        public string RessourceTypeId { get; set; } = string.Empty;
+        public string TypeRessourceId { get; set; } = string.Empty;
         public TypeResourceModel TypeRessource { get; set; } = null!;
-        public string RelationTypeId { get; set; } = string.Empty;
+        public string TypeRelationId { get; set; } = string.Empty;
         public TypeRelationModel TypeRelation { get; set; } = null!;         
     }
 }

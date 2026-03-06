@@ -15,6 +15,7 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
 
         public async Task<ResourceModel> Create(ResourceModel model)
         {
+            model.Id = Guid.NewGuid().ToString();
             context.Resources.Add(model);
             await context.SaveChangesAsync();
             return model;

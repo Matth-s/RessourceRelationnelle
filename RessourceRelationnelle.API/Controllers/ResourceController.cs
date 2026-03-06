@@ -19,6 +19,23 @@ namespace RessourceRelationnelle.API.Controllers
             this.userManager = userManager;
         }
 
+        [HttpGet("{id}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<ResourceModel>> GetOne(string id)
+        {
+            try
+            {
+                ResourceModel? resource = await repository.GetOne(id);
+                if (resource == null)
+                    return NotFound();
+                return Ok(resource);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
         [HttpPost]
         [Authorize(Roles = "User")]
         public async Task<ActionResult> Create([FromBody] CreateResourceModel model)
@@ -44,15 +61,18 @@ namespace RessourceRelationnelle.API.Controllers
                     IsVisible = false,
                     CreatedAt = DateTime.UtcNow,
                     UserId = userId,
+                    CategoryId = model.CategoryId,
+                    TypeRessourceId = model.RessourceTypeId,
+                    TypeRelationId = model.RelationTypeId
                 };
 
                 await repository.Create(resource);
 
                 return Ok(resource);
             }
-            catch
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(500, ex.Message);
             }
         }
         public class CreateResourceModel { 
@@ -61,6 +81,9 @@ namespace RessourceRelationnelle.API.Controllers
             public string Content { get; set; } = string.Empty;
             public string Url { get; set; } = string.Empty;  
             public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+            public string CategoryId { get; set; } = string.Empty;
+            public string RessourceTypeId { get; set; } = string.Empty;
+            public string RelationTypeId { get; set; } = string.Empty;
         }
 
     } 
