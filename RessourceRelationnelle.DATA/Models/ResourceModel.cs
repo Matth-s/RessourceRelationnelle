@@ -3,7 +3,7 @@ namespace RessourceRelationnelle.DATA.Models
 {
     public class ResourceModel
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public string Resume { get; set; } = string.Empty;
         public string Content { get; set; } = string.Empty;
@@ -21,12 +21,9 @@ namespace RessourceRelationnelle.DATA.Models
         public UserModel User { get; set; } = null!;
         public string CategoryId { get; set; } = string.Empty;
         public CategoryModel Category { get; set; } = null!;
-
         public string RessourceTypeId { get; set; } = string.Empty;
         public TypeResourceModel TypeRessource { get; set; } = null!;
         public string RelationTypeId { get; set; } = string.Empty;
-        public TypeRelationModel TypeRelation { get; set; } = null!;
-
-        // TODO   Type
+        public TypeRelationModel TypeRelation { get; set; } = null!;         
     }
 }

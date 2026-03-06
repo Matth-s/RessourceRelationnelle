@@ -10,7 +10,7 @@
         public string UserId { get; set; } = string.Empty;
         public UserModel User { get; set; } = null!;
         // Foreign key to Resource
-        public int ResourceId { get; set; }
+        public string ResourceId { get; set; } = string.Empty;
         public ResourceModel Resource { get; set; } = null!;
     }
 }

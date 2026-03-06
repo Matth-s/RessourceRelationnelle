@@ -12,7 +12,6 @@ namespace RessourceRelationnelle.API.Controllers
     {
         private readonly IResourceRepository repository;
         private readonly UserManager<UserModel> userManager;
-        private readonly RoleManager<UserModel> roleManager;
 
         public ResourceController(IResourceRepository configuration, UserManager<UserModel> userManager)
         {
@@ -21,8 +20,8 @@ namespace RessourceRelationnelle.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin,User")]
-        public async Task<ActionResult> Create([FromBody] string model)
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult> Create([FromBody] CreateResourceModel model)
         {
             string? userId = userManager.GetUserId(User);
 
@@ -33,21 +32,38 @@ namespace RessourceRelationnelle.API.Controllers
 
             if (user == null)
                 return Unauthorized();
-
-            var roles = await userManager.GetRolesAsync(user);
-
             try
             {
-                return Ok(new
+                ResourceModel resource = new()
                 {
+                    Title = model.Title,
+                    Resume = model.Resume,
+                    Content = model.Content,
+                    Url = model.Url,
+                    PublicationStatus = "Pending",
+                    IsVisible = false,
+                    CreatedAt = DateTime.UtcNow,
                     UserId = userId,
-                    Roles = roles
-                });
+                };
+
+                await repository.Create(resource);
+
+                return Ok(resource);
             }
             catch
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+
+
+        public class CreateResourceModel { 
+            public string Title { get; set; } = string.Empty;
+            public string Resume { get; set; } = string.Empty;
+            public string Content { get; set; } = string.Empty;
+            public string Url { get; set; } = string.Empty;  
+            public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        }
+
     } 
 }

@@ -9,7 +9,7 @@ namespace RessourceRelationnelle.DATA.Models
         // clés étrangeres
         public string UserId { get; set; } = string.Empty;
         public UserModel User { get; set; } = null!;
-        public int ResourceId { get; set; }
+        public string ResourceId { get; set; } = string.Empty;
         public ResourceModel Resource { get; set; } = null!;
         public string DemographicZoneId { get; set; } = string.Empty;
         public DemographicZoneModel DemographicZone { get; set; } = null!;
