@@ -1,5 +1,6 @@
 ﻿# RessourceRelationnelle
 
- Pour initialiser la base de donnée :
+ Pour initialiser la base de données :
    dotnet ef database update
+
 
