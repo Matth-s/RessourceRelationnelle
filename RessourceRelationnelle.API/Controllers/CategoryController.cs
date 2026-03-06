@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization; 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RessourceRelationnelle.DATA.Models;
@@ -38,7 +37,7 @@ namespace RessourceRelationnelle.API.Controllers
 
         /****************************** DELETE ******************************/
         [HttpDelete("{id}")]
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "Admin")]
         public async Task <ActionResult> Delete(string id)
         {
             try
@@ -56,7 +55,7 @@ namespace RessourceRelationnelle.API.Controllers
 
         /****************************** CREER ******************************/
         [HttpPost]
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Create([FromBody] CreateNewCategoryModel model)
         {
             try
@@ -81,15 +80,15 @@ namespace RessourceRelationnelle.API.Controllers
 
         /****************************** UPDATE ******************************/
         [HttpPut]
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Update(string id, [FromBody] CreateNewCategoryModel model)
         {
             try
             {
-                CategoryModel? existingCategory = repository.GetOne(id).Result;
+                CategoryModel? existingCategory = await repository.GetOne(id);
                 if (existingCategory == null) return NotFound(new { message = "Category not found" });
                 existingCategory.CategoryName = model.CategoryName.ToUpper();
-                repository.Update(existingCategory).Wait();
+                await repository.Update(existingCategory);
                 return Ok(existingCategory);
 
             } catch (Exception ex)
