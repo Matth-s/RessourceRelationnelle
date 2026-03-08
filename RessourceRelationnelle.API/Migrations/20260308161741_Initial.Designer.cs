@@ -11,7 +11,7 @@ using RessourceRelationnelle.DATA;
 namespace RessourceRelationnelle.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20260306154958_Initial")]
+    [Migration("20260308161741_Initial")]
     partial class Initial
     {
         /// <inheritdoc />

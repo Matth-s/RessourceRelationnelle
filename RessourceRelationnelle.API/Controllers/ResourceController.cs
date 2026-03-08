@@ -62,13 +62,13 @@ namespace RessourceRelationnelle.API.Controllers
                     CreatedAt = DateTime.UtcNow,
                     UserId = userId,
                     CategoryId = model.CategoryId,
-                    TypeRessourceId = model.RessourceTypeId,
+                    TypeRessourceId = model.ResourceTypeId,
                     TypeRelationId = model.RelationTypeId
                 };
 
-                await repository.Create(resource);
+                var created = await repository.Create(resource);
 
-                return Ok(resource);
+                return Ok(created);
             }
             catch (Exception ex)
             {
@@ -82,7 +82,7 @@ namespace RessourceRelationnelle.API.Controllers
             public string Url { get; set; } = string.Empty;  
             public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
             public string CategoryId { get; set; } = string.Empty;
-            public string RessourceTypeId { get; set; } = string.Empty;
+            public string ResourceTypeId { get; set; } = string.Empty;
             public string RelationTypeId { get; set; } = string.Empty;
         }
 
