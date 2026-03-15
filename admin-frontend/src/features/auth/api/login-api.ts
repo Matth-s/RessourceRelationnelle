@@ -1,24 +1,19 @@
+import {
+  loginResponseSchema,
+  type ILoginResponse,
+} from '../schemas/auth-api-response-schema';
 import type { loginType } from '../schemas/login-schema';
+import { api } from '@/lib/axios-client';
 
-export const loginApi = async (credentials: loginType) => {
-  // eslint-disable-next-line no-useless-catch
-  try {
-    const res = await fetch(
-      `${import.meta.env.VITE_PUBLIC_API_ROUTE}/authentication/login`,
-      {
-        method: 'POST',
-        body: JSON.stringify(credentials),
-      },
-    );
+export const loginApi = async (
+  credentials: loginType,
+): Promise<ILoginResponse> => {
+  const { data } = await api.post(
+    '/authentication/login',
+    credentials,
+  );
 
-    if (!res.ok) {
-      throw new Error(res.statusText);
-    }
+  const validatedData = loginResponseSchema.parse(data);
 
-    const data = await res.json();
-
-    return data;
-  } catch (err) {
-    throw err;
-  }
+  return validatedData;
 };

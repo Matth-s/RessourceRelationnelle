@@ -17,11 +17,15 @@ import { Input } from '@/components/ui/input';
 import SubmitButton from '@/components/SubmitButton';
 import { loginSchema, type loginType } from '../schemas/login-schema';
 import { useState } from 'react';
+import { loginApi } from '../api/login-api';
+import { useMutation } from '@tanstack/react-query';
+import { useAppDispatch } from '@/store/hook';
+import { login } from '../auth.slice';
 import ShowFormPassword from './ShowFormPassword';
 import FormErrorMessage from '@/components/FormErrorMessage';
-import { loginApi } from '../api/login-api';
 
 const LoginForm = () => {
+  const dispatch = useAppDispatch();
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const form = useForm<loginType>({
@@ -36,33 +40,38 @@ const LoginForm = () => {
   const {
     setError,
     formState: {
-      isSubmitting,
       errors: { root },
     },
   } = form;
 
-  const handleFormSubmit = async (credentials: loginType) => {
-    try {
-      const res = await loginApi(credentials);
+  const loginMutation = useMutation({
+    mutationFn: loginApi,
 
-      console.log(res);
-    } catch (err) {
+    onSuccess: (data) => {
+      dispatch(login(data));
+    },
+
+    onError: (err) => {
       let message = 'Une erreur est survenue';
 
       if (err instanceof Error) {
         message = err.message;
       }
 
-      setError('root', {
-        message,
-      });
-    }
+      setError('root', { message });
+    },
+  });
+
+  const handleFormSubmit = (credentials: loginType) => {
+    loginMutation.mutate(credentials);
   };
 
   return (
     <Card className="w-md">
       <CardHeader>
-        <CardTitle>Connexion</CardTitle>
+        <CardTitle className="text-2xl text-center">
+          Connexion
+        </CardTitle>
         <CardDescription
           aria-describedby={undefined}
         ></CardDescription>
@@ -107,7 +116,7 @@ const LoginForm = () => {
           </FieldGroup>
 
           <ShowFormPassword
-            text="Afficher les mots de passe"
+            text="Afficher le mot de passe"
             showPassword={showPassword}
             onClick={() => setShowPassword((prev) => !prev)}
           />
@@ -116,8 +125,8 @@ const LoginForm = () => {
 
           <SubmitButton
             text="Se connecter"
-            isDisabled={isSubmitting}
-            className="w-full"
+            isDisabled={loginMutation.isPending}
+            className={`w-full h-10`}
           />
         </form>
       </CardContent>
