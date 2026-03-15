@@ -75,3 +75,13 @@ _[Ss]cripts
 *.ncrunchsolution
 *.dot[Cc]over
 *.db3*
+
+
+node_modules/
+dist/
+build/
+.vite/
+coverage/
+.env
+.env.*
+.env.local
