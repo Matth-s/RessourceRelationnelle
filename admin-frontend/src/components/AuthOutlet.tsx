@@ -1,6 +1,6 @@
-import { useAppSelector } from '@/store/hook';
-import type { IUserRole } from '@/types/user-role-type';
-import { Navigate, Outlet } from 'react-router';
+import { useAppSelector } from "@/store/hook";
+import type { IUserRole } from "@/types/user-role-type";
+import { Navigate, Outlet } from "react-router";
 
 export const AuthOutlet = ({ roles }: { roles: IUserRole[] }) => {
   const user = useAppSelector((state) => state.auth.user);

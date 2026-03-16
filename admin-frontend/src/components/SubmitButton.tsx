@@ -1,4 +1,4 @@
-import { Button } from './ui/button';
+import { Button } from "./ui/button";
 
 type SubmitButtonProps = {
   isDisabled: boolean;
@@ -6,11 +6,7 @@ type SubmitButtonProps = {
   className?: string;
 };
 
-const SubmitButton = ({
-  isDisabled,
-  text,
-  className,
-}: SubmitButtonProps) => {
+const SubmitButton = ({ isDisabled, text, className }: SubmitButtonProps) => {
   return (
     <Button className={className} disabled={isDisabled}>
       {text}

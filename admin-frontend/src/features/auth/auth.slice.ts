@@ -1,19 +1,24 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { ILoginResponse } from './schemas/auth-api-response-schema';
+import type { ICurrentUserResponse } from '../user/schemas/current-user-schema';
+import { USER_ROLE } from '@/types/user-role-type';
 
 interface IInitialState {
-  user: ILoginResponse | null;
+  user: ICurrentUserResponse | null;
 }
 
 const initialState: IInitialState = {
-  user: null,
+  user: {
+    username: 'Matths',
+    role: USER_ROLE.ADMIN,
+    token: '',
+  },
 };
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    login(state, action: PayloadAction<ILoginResponse>) {
+    login(state, action: PayloadAction<ICurrentUserResponse>) {
       state.user = action.payload;
     },
     logout(state) {

@@ -1,12 +1,40 @@
-import { Route, Routes } from 'react-router';
+import { Route, Routes, useNavigate } from 'react-router';
 import { AuthOutlet } from './components/AuthOutlet';
 import { USER_ROLE } from './types/user-role-type';
+import { useAppDispatch } from './store/hook';
+import { getCurrentUserApi } from './features/user/api/get-current-user-api';
+import { useMutation } from '@tanstack/react-query';
+import { login } from './features/auth/auth.slice';
+import { useEffect } from 'react';
 
 import LoginPage from './pages/(auth)/LoginPage';
 import AuthLayout from './pages/(auth)/AuthLayout';
-import TestAdminPage from './pages/(main)/TestAdminPage';
+import DashboardPage from './pages/(main)/DashboardPage';
+import ResourcePage from './pages/(main)/ResourcePage';
+import CategoryPage from './pages/(main)/CategoryPage';
+import UserPage from './pages/(main)/UserPage';
+import StatsPage from './pages/(main)/StatsPage';
 
 const App = () => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const getCurrentUser = useMutation({
+    mutationFn: getCurrentUserApi,
+
+    onSuccess: (data) => {
+      dispatch(login(data));
+    },
+
+    onError: () => {
+      // navigate('/authentification/connexion');
+    },
+  });
+
+  useEffect(() => {
+    getCurrentUser.mutate();
+  }, []);
+
   return (
     <Routes>
       {/* Authentification */}
@@ -17,9 +45,13 @@ const App = () => {
         />
       </Route>
 
-      <Route element={<AuthOutlet roles={[USER_ROLE.ADMIN]} />}>
-        <Route path="/admin/dashboard" element={<TestAdminPage />} />
-      </Route>
+      {/* <Route element={<AuthOutlet roles={[USER_ROLE.ADMIN]} />}> */}
+      <Route path="/" element={<DashboardPage />} />
+      <Route path="/ressources" element={<ResourcePage />} />
+      <Route path="/categories" element={<CategoryPage />} />
+      <Route path="/utilisateurs" element={<UserPage />} />
+      <Route path="/statistiques" element={<StatsPage />} />
+      {/* </Route> */}
     </Routes>
   );
 };

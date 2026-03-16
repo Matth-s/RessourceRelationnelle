@@ -4,25 +4,25 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Controller, useForm } from 'react-hook-form';
+} from "@/components/ui/card";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, useForm } from "react-hook-form";
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
-} from '@/components/ui/field';
-import { Input } from '@/components/ui/input';
-import SubmitButton from '@/components/SubmitButton';
-import { loginSchema, type loginType } from '../schemas/login-schema';
-import { useState } from 'react';
-import { loginApi } from '../api/login-api';
-import { useMutation } from '@tanstack/react-query';
-import { useAppDispatch } from '@/store/hook';
-import { login } from '../auth.slice';
-import ShowFormPassword from './ShowFormPassword';
-import FormErrorMessage from '@/components/FormErrorMessage';
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import SubmitButton from "@/components/SubmitButton";
+import { loginSchema, type loginType } from "../schemas/login-schema";
+import { useState } from "react";
+import { loginApi } from "../api/login-api";
+import { useMutation } from "@tanstack/react-query";
+import { useAppDispatch } from "@/store/hook";
+import { login } from "../auth.slice";
+import ShowFormPassword from "./ShowFormPassword";
+import FormErrorMessage from "@/components/FormErrorMessage";
 
 const LoginForm = () => {
   const dispatch = useAppDispatch();
@@ -30,8 +30,8 @@ const LoginForm = () => {
 
   const form = useForm<loginType>({
     defaultValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
 
     resolver: zodResolver(loginSchema),
@@ -52,13 +52,13 @@ const LoginForm = () => {
     },
 
     onError: (err) => {
-      let message = 'Une erreur est survenue';
+      let message = "Une erreur est survenue";
 
       if (err instanceof Error) {
         message = err.message;
       }
 
-      setError('root', { message });
+      setError("root", { message });
     },
   });
 
@@ -69,12 +69,8 @@ const LoginForm = () => {
   return (
     <Card className="w-md">
       <CardHeader>
-        <CardTitle className="text-2xl text-center">
-          Connexion
-        </CardTitle>
-        <CardDescription
-          aria-describedby={undefined}
-        ></CardDescription>
+        <CardTitle className="text-center text-2xl">Connexion</CardTitle>
+        <CardDescription aria-describedby={undefined}></CardDescription>
       </CardHeader>
 
       <CardContent>
@@ -103,10 +99,7 @@ const LoginForm = () => {
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel>Mot de passe</FieldLabel>
-                  <Input
-                    {...field}
-                    type={showPassword ? 'text' : 'password'}
-                  />
+                  <Input {...field} type={showPassword ? "text" : "password"} />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
@@ -126,7 +119,7 @@ const LoginForm = () => {
           <SubmitButton
             text="Se connecter"
             isDisabled={loginMutation.isPending}
-            className={`w-full h-10`}
+            className={`h-10 w-full`}
           />
         </form>
       </CardContent>
