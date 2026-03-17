@@ -8,10 +8,12 @@ import {
 } from "@/components/ui/dialog";
 
 type CategoryModalProps = {
-  dialogButton: React.ReactElement;
+  dialogButton: React.ReactElement | null;
   dialogTitle: string;
   dialogDescription: string;
   form: React.ReactElement;
+  setIsOpen: () => void;
+  isOpen: boolean;
 };
 
 const CategoryModal = ({
@@ -19,9 +21,11 @@ const CategoryModal = ({
   dialogDescription,
   dialogTitle,
   form,
+  setIsOpen,
+  isOpen,
 }: CategoryModalProps) => {
   return (
-    <Dialog>
+    <Dialog onOpenChange={() => setIsOpen()} open={isOpen}>
       <DialogTrigger asChild>{dialogButton}</DialogTrigger>
       <DialogContent>
         <DialogHeader>

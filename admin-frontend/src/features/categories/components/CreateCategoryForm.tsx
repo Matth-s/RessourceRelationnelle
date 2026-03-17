@@ -17,7 +17,11 @@ import { createCategoryApi } from "../api/create-category-api";
 import FormErrorMessage from "@/components/FormErrorMessage";
 import { FETCH_KEYS } from "@/types/fetch-key-type";
 
-export const CreateCategoryForm = () => {
+type CreateCategoryFormProps = {
+  closeModal: () => void;
+};
+
+export const CreateCategoryForm = ({ closeModal }: CreateCategoryFormProps) => {
   const queryClient = useQueryClient();
 
   const form = useForm<createCategoryType>({
@@ -39,6 +43,7 @@ export const CreateCategoryForm = () => {
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [FETCH_KEYS.CATEGORY] });
+      closeModal();
     },
 
     onError: (err) => {
@@ -78,7 +83,7 @@ export const CreateCategoryForm = () => {
       <FormErrorMessage message={root?.message} />
 
       <SubmitButton
-        text="Se connecter"
+        text="Ajouter"
         isDisabled={categoryMutation.isPending}
         className={`h-10 w-full`}
       />

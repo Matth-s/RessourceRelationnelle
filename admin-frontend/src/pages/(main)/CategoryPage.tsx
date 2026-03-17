@@ -8,8 +8,11 @@ import { FETCH_KEYS } from "@/types/fetch-key-type";
 import CreateCategoryForm from "@/features/categories/components/CreateCategoryForm";
 import CategoriesList from "@/features/categories/components/CategoriesList";
 import CategoryModal from "@/features/categories/components/CategoryModal";
+import { useState } from "react";
 
 const CategoryPage = () => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
   const { isLoading, error, data } = useQuery({
     queryKey: [FETCH_KEYS.CATEGORY],
     queryFn: getCategoriesApi,
@@ -24,13 +27,15 @@ const CategoryPage = () => {
           <div className="flex items-center justify-between">
             <h1>Catégories</h1>
             <CategoryModal
+              setIsOpen={() => setIsOpen((prev) => !prev)}
+              isOpen={isOpen}
               dialogButton={
                 <Button>
                   <PlusIcon />
                   Ajouter une catégorie
                 </Button>
               }
-              form={<CreateCategoryForm />}
+              form={<CreateCategoryForm closeModal={() => setIsOpen(false)} />}
               dialogTitle="Nouvelle catégorie"
               dialogDescription="Ajouter une nouvelle catégorie de ressource"
             />

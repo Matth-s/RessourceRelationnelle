@@ -5,7 +5,7 @@ import {
   updateCategorySchema,
   type updateCategoryType,
 } from "../schemas/update-category-schema";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateCategoryApi } from "../api/update-category-api";
 import {
   Field,
@@ -16,12 +16,19 @@ import {
 import { Input } from "@/components/ui/input";
 import FormErrorMessage from "@/components/FormErrorMessage";
 import SubmitButton from "@/components/SubmitButton";
+import { FETCH_KEYS } from "@/types/fetch-key-type";
 
 type UpdateCategoryFormProps = {
   category: Pick<categorySchemaType, "id" | "categoryName">;
+  closeModal: () => void;
 };
 
-const UpdateCategoryForm = ({ category }: UpdateCategoryFormProps) => {
+const UpdateCategoryForm = ({
+  category,
+  closeModal,
+}: UpdateCategoryFormProps) => {
+  const queryClient = useQueryClient();
+
   const form = useForm<updateCategoryType>({
     defaultValues: category,
     resolver: zodResolver(updateCategorySchema),
@@ -37,8 +44,9 @@ const UpdateCategoryForm = ({ category }: UpdateCategoryFormProps) => {
   const categoryMutation = useMutation({
     mutationFn: updateCategoryApi,
 
-    onSuccess: (data) => {
-      console.log(data);
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [FETCH_KEYS.CATEGORY] });
+      closeModal();
     },
 
     onError: (err) => {

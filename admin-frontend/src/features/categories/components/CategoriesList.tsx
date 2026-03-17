@@ -4,15 +4,11 @@ import {
   TableBody,
   TableHead,
   TableRow,
-  TableCell,
 } from "@/components/ui/table";
-
 import type { categoriesArrayType } from "../schemas/categories-schema";
 import { CATEGORIES_HEADER_TABLE } from "../constants/categories-constant";
-import CategoryModal from "./CategoryModal";
-import { Button } from "@/components/ui/button";
-import { Pen, Trash } from "lucide-react";
-import UpdateCategoryForm from "./UpdateCategoryForm";
+
+import CategoryCard from "./CategoryCard";
 
 type CategoriesListProps = {
   categories: categoriesArrayType;
@@ -46,48 +42,7 @@ const CategoriesList = ({ categories, isLoading }: CategoriesListProps) => {
 
         <TableBody>
           {categories.map((category) => (
-            <TableRow
-              key={category.id}
-              className="hover:bg-muted/50 text-center transition-colors"
-            >
-              <TableCell className="font-medium">
-                {category.categoryName}
-              </TableCell>
-
-              <TableCell className="text-muted-foreground">
-                Je suis de la description
-              </TableCell>
-
-              <TableCell>50</TableCell>
-
-              <TableCell className="text-muted-foreground">
-                {new Date().toLocaleDateString()}
-              </TableCell>
-
-              <TableCell className="flex items-center gap-x-3">
-                <CategoryModal
-                  dialogTitle="Modifier"
-                  dialogDescription="Modifier le nom de la catégorie"
-                  dialogButton={
-                    <Button className="w-fit">
-                      <Pen />
-                    </Button>
-                  }
-                  form={
-                    <UpdateCategoryForm
-                      category={{
-                        id: category.id,
-                        categoryName: category.categoryName,
-                      }}
-                    />
-                  }
-                />
-
-                <Button className="w-fit">
-                  <Trash />
-                </Button>
-              </TableCell>
-            </TableRow>
+            <CategoryCard key={category.id} category={category} />
           ))}
         </TableBody>
       </Table>
