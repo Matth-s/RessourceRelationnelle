@@ -1,16 +1,17 @@
 import { AuthenticatedLayout } from "@/components/AuthenticatedLayout";
 import { useQuery } from "@tanstack/react-query";
 import { getCategoriesApi } from "@/features/categories/api/get-categories-api";
+import { Button } from "@/components/ui/button";
+import { PlusIcon } from "lucide-react";
+import { FETCH_KEYS } from "@/types/fetch-key-type";
 
+import CreateCategoryForm from "@/features/categories/components/CreateCategoryForm";
 import CategoriesList from "@/features/categories/components/CategoriesList";
 import CategoryModal from "@/features/categories/components/CategoryModal";
-import { Button } from "@/components/ui/button";
-import CreateCategoryForm from "@/features/categories/components/CreateCategoryForm";
-import { PlusIcon } from "lucide-react";
 
 const CategoryPage = () => {
   const { isLoading, error, data } = useQuery({
-    queryKey: [],
+    queryKey: [FETCH_KEYS.CATEGORY],
     queryFn: getCategoriesApi,
   });
 
