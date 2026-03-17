@@ -9,7 +9,7 @@ export const AuthOutlet = ({ roles }: { roles: IUserRole[] }) => {
     return <Navigate to="/authentification/connexion" replace />;
   }
 
-  if (!roles.includes(user.role)) {
+  if (!user.role.some((r) => roles.includes(r))) {
     return <Navigate to="/" replace />;
   }
 

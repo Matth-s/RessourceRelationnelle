@@ -1,7 +1,6 @@
-import axios from 'axios';
-
+import { api } from "@/lib/axios-client";
 export const getCommentsToVerify = async () => {
-  const { data } = await axios.get('/comments/moderate');
+  const { data } = await api.get("/comments/moderate");
 
   return data;
 };

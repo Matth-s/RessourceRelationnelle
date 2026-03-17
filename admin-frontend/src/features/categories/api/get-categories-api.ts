@@ -1,7 +1,13 @@
-import axios from "axios";
+import { api } from "@/lib/axios-client";
+import {
+  categoriesArraySchema,
+  type categoriesArrayType,
+} from "../schemas/categories-schema";
 
-export const getCategoriesApi = async () => {
-  const { data } = await axios.get("/categories");
+export const getCategoriesApi = async (): Promise<categoriesArrayType> => {
+  const { data } = await api.get("/category");
 
-  return data;
+  const validatedData = categoriesArraySchema.parse(data);
+
+  return validatedData;
 };
