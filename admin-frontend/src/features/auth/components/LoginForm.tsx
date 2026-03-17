@@ -23,11 +23,12 @@ import { useAppDispatch } from "@/store/hook";
 import { login } from "../auth.slice";
 import ShowFormPassword from "./ShowFormPassword";
 import FormErrorMessage from "@/components/FormErrorMessage";
+import { useNavigate } from "react-router";
 
 const LoginForm = () => {
   const dispatch = useAppDispatch();
   const [showPassword, setShowPassword] = useState<boolean>(false);
-
+  const navigate = useNavigate();
   const form = useForm<loginType>({
     defaultValues: {
       email: "",
@@ -49,6 +50,7 @@ const LoginForm = () => {
 
     onSuccess: (data) => {
       dispatch(login(data));
+      navigate("/");
     },
 
     onError: (err) => {

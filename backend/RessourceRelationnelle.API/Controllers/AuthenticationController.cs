@@ -29,34 +29,44 @@ namespace RessourceRelationnelle.API.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginModel model) 
         {
-            var user = await userManager.FindByEmailAsync(model.Email);
-
-            if (user == null || !await userManager.CheckPasswordAsync(user, model.Password))
-                return Unauthorized();
-             
-            var authClaims = new List<Claim>()
+            try
             {
-                 
+                var user = await userManager.FindByEmailAsync(model.Email);
+
+                if (user == null || !await userManager.CheckPasswordAsync(user, model.Password))
+                    return Unauthorized(new { message = "Email ou mot de passe incorrect" });
+
+                var authClaims = new List<Claim>()
+                {
+
                 new (ClaimTypes.NameIdentifier, user.Id),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            };
-             
-            var roles = await userManager.GetRolesAsync(user);
-            foreach (var item in roles)
-                authClaims.Add(new Claim(ClaimTypes.Role, item));
+                };
 
-            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]));
+                var roles = await userManager.GetRolesAsync(user);
+                foreach (var item in roles)
+                    authClaims.Add(new Claim(ClaimTypes.Role, item));
 
-            var token = new JwtSecurityToken(
-                expires: DateTime.UtcNow.AddHours(1),  
-                claims: authClaims,
-                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
+                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]));
 
-            return Ok(new  
+                var token = new JwtSecurityToken(
+                    expires: DateTime.UtcNow.AddHours(1),
+                    claims: authClaims,
+                    signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
+
+                return Ok(new
+                {
+                    token = new JwtSecurityTokenHandler().WriteToken(token),
+                    expiration = token.ValidTo,
+                    username = user.UserName,
+                    role = roles
+                });
+            }
+            catch
             {
-                token = new JwtSecurityTokenHandler().WriteToken(token),
-                expiration = token.ValidTo
-            });
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
         }
 
         [HttpPost]

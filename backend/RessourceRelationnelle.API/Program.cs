@@ -53,6 +53,19 @@ namespace RessourceRelationnelle.API
                  });
             });
 
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(name: "cors",
+                    policy =>
+                    {
+                        policy.WithOrigins("http://localhost:5173")
+                              .AllowAnyHeader()
+                              .AllowAnyMethod();
+                    });
+            });
+
+
             builder.Services.AddDbContext<DataContext>(options =>
             options.UseSqlite(builder.Configuration.GetConnectionString("Default"),
                     b => b.MigrationsAssembly("RessourceRelationnelle.API")));
@@ -110,6 +123,8 @@ namespace RessourceRelationnelle.API
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors("cors");
 
             app.UseAuthorization();
 
