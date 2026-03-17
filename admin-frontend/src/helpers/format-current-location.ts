@@ -1,26 +1,24 @@
 export const formatCurrentLocation = (path: string): string => {
-  let formatted = '';
-
-  console.log(path);
+  let formatted = "";
 
   switch (path.toLowerCase()) {
-    case '/':
-      formatted = 'Dashboard';
+    case "/":
+      formatted = "Dashboard";
       break;
-    case '/ressources':
-      formatted = 'Ressources';
+    case "/ressources":
+      formatted = "Ressources";
       break;
-    case '/categories':
-      formatted = 'Catégories';
+    case "/categories":
+      formatted = "Catégories";
       break;
-    case '/utilisateurs':
-      formatted = 'Utilisateurs';
+    case "/utilisateurs":
+      formatted = "Utilisateurs";
       break;
-    case '/statistiques':
-      formatted = 'Statistiques';
+    case "/statistiques":
+      formatted = "Statistiques";
       break;
     default:
-      formatted = '';
+      formatted = "";
   }
 
   return formatted;
