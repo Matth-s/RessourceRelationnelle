@@ -12,11 +12,14 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import SubmitButton from "@/components/SubmitButton";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createCategoryApi } from "../api/create-category-api";
 import FormErrorMessage from "@/components/FormErrorMessage";
+import { FETCH_KEYS } from "@/types/fetch-key-type";
 
 export const CreateCategoryForm = () => {
+  const queryClient = useQueryClient();
+
   const form = useForm<createCategoryType>({
     defaultValues: {
       categoryName: "",
@@ -34,8 +37,8 @@ export const CreateCategoryForm = () => {
   const categoryMutation = useMutation({
     mutationFn: createCategoryApi,
 
-    onSuccess: (data) => {
-      console.log(data);
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [FETCH_KEYS.CATEGORY] });
     },
 
     onError: (err) => {
