@@ -11,7 +11,7 @@ type CategoryModalProps = {
   dialogButton: React.ReactElement | null;
   dialogTitle: string;
   dialogDescription: string;
-  form: React.ReactElement;
+  form: React.ReactElement | null;
   setIsOpen: () => void;
   isOpen: boolean;
 };

@@ -14,6 +14,7 @@ import ResourcePage from "./pages/(main)/ResourcePage";
 import CategoryPage from "./pages/(main)/CategoryPage";
 import UserPage from "./pages/(main)/UserPage";
 import StatsPage from "./pages/(main)/StatsPage";
+import { Toaster } from "./components/ui/sonner";
 
 const App = () => {
   const dispatch = useAppDispatch();

@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { deleteCategoryApi } from "../api/delete-category-api";
 import { FETCH_KEYS } from "@/types/fetch-key-type";
 import { useState } from "react";
+import { toast } from "sonner";
+
 import FormErrorMessage from "@/components/FormErrorMessage";
 
 type DeleteCategoryFormProps = {
@@ -22,6 +24,7 @@ const DeleteCategoryForm = ({
     mutationFn: deleteCategoryApi,
 
     onSuccess() {
+      toast.success(`La catégorie ${category.categoryName} a été supprimé`);
       queryClient.invalidateQueries({ queryKey: [FETCH_KEYS.CATEGORY] });
       closeModal();
     },
