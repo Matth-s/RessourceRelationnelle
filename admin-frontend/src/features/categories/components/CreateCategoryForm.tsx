@@ -16,6 +16,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createCategoryApi } from "../api/create-category-api";
 import FormErrorMessage from "@/components/FormErrorMessage";
 import { FETCH_KEYS } from "@/types/fetch-key-type";
+import { toast } from "sonner";
 
 type CreateCategoryFormProps = {
   closeModal: () => void;
@@ -42,6 +43,7 @@ export const CreateCategoryForm = ({ closeModal }: CreateCategoryFormProps) => {
     mutationFn: createCategoryApi,
 
     onSuccess: () => {
+      toast.success(`Vous venez de créer une nouvelle catégorie`);
       queryClient.invalidateQueries({ queryKey: [FETCH_KEYS.CATEGORY] });
       closeModal();
     },

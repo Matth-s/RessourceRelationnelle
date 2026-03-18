@@ -18,6 +18,24 @@ const CategoryCard = ({ category }: CategoryCardProps) => {
 
   const closeModal = () => setModalType(null);
 
+  let formContent = null;
+
+  if (modalType === "edit") {
+    formContent = (
+      <UpdateCategoryForm
+        closeModal={closeModal}
+        category={{ id, categoryName }}
+      />
+    );
+  } else if (modalType === "delete") {
+    formContent = (
+      <DeleteCategoryForm
+        closeModal={closeModal}
+        category={{ id, categoryName }}
+      />
+    );
+  }
+
   return (
     <>
       <TableRow className="hover:bg-muted/50 text-center transition-colors">
@@ -60,19 +78,7 @@ const CategoryCard = ({ category }: CategoryCardProps) => {
         dialogDescription={
           modalType === "edit" ? "Modifier le nom de la catégorie" : ""
         }
-        form={
-          modalType === "edit" ? (
-            <UpdateCategoryForm
-              closeModal={closeModal}
-              category={{ id, categoryName }}
-            />
-          ) : (
-            <DeleteCategoryForm
-              closeModal={closeModal}
-              category={{ id, categoryName }}
-            />
-          )
-        }
+        form={formContent}
       />
     </>
   );

@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import FormErrorMessage from "@/components/FormErrorMessage";
 import SubmitButton from "@/components/SubmitButton";
 import { FETCH_KEYS } from "@/types/fetch-key-type";
+import { toast } from "sonner";
 
 type UpdateCategoryFormProps = {
   category: Pick<categorySchemaType, "id" | "categoryName">;
@@ -45,6 +46,7 @@ const UpdateCategoryForm = ({
     mutationFn: updateCategoryApi,
 
     onSuccess: () => {
+      toast("La catégorie a été mis a jour");
       queryClient.invalidateQueries({ queryKey: [FETCH_KEYS.CATEGORY] });
       closeModal();
     },
