@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, type JSX } from "react";
 import type { categorySchemaType } from "../schemas/categories-schema";
 import { Button } from "@/components/ui/button";
 import { Pen, Trash } from "lucide-react";
 import { TableCell, TableRow } from "@/components/ui/table";
+
 import CategoryModal from "./CategoryModal";
 import UpdateCategoryForm from "./UpdateCategoryForm";
 import DeleteCategoryForm from "./DeleteCategoryForm";
@@ -18,22 +19,29 @@ const CategoryCard = ({ category }: CategoryCardProps) => {
 
   const closeModal = () => setModalType(null);
 
-  let formContent = null;
+  let formContent: JSX.Element | null = null;
 
-  if (modalType === "edit") {
-    formContent = (
-      <UpdateCategoryForm
-        closeModal={closeModal}
-        category={{ id, categoryName }}
-      />
-    );
-  } else if (modalType === "delete") {
-    formContent = (
-      <DeleteCategoryForm
-        closeModal={closeModal}
-        category={{ id, categoryName }}
-      />
-    );
+  switch (modalType) {
+    case "delete":
+      formContent = (
+        <DeleteCategoryForm
+          closeModal={closeModal}
+          category={{ id, categoryName }}
+        />
+      );
+      break;
+
+    case "edit":
+      formContent = (
+        <UpdateCategoryForm
+          closeModal={closeModal}
+          category={{ id, categoryName }}
+        />
+      );
+      break;
+
+    default:
+      formContent = null;
   }
 
   return (
