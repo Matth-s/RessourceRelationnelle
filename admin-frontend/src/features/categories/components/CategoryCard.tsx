@@ -49,10 +49,6 @@ const CategoryCard = ({ category }: CategoryCardProps) => {
       <TableRow className="hover:bg-muted/50 text-center transition-colors">
         <TableCell className="font-medium">{categoryName}</TableCell>
 
-        <TableCell className="text-muted-foreground">
-          Je suis de la description
-        </TableCell>
-
         <TableCell>50</TableCell>
 
         <TableCell className="text-muted-foreground">
