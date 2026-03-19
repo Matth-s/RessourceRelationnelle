@@ -64,5 +64,10 @@ namespace RessourceRelationnelle.DATA.Repositories.Sql
             await context.SaveChangesAsync();
             return existingCategory;
         }
+
+        public async Task<CategoryModel?> GetByName(string name)
+        {
+            return await context.Categories.AsNoTracking().FirstOrDefaultAsync(x => x.CategoryName == name);
+        }
     }
 }

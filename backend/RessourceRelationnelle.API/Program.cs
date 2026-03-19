@@ -56,13 +56,13 @@ namespace RessourceRelationnelle.API
 
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy(name: "cors",
-                    policy =>
-                    {
-                        policy.WithOrigins("http://localhost:5173")
-                              .AllowAnyHeader()
-                              .AllowAnyMethod();
-                    });
+                options.AddPolicy("AllowFront", policy =>
+                {
+                    policy
+                        .AllowAnyOrigin()   // ou .WithOrigins("http://192.168.65.XX:5173")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader();
+                });
             });
 
 
@@ -75,10 +75,11 @@ namespace RessourceRelationnelle.API
             builder.Services.AddScoped<ICategoryRepository, SQLCategoryRepository>();
             builder.Services.AddScoped<IRelationTypeRepository, SQLRelationTypeRepository>();
             builder.Services.AddScoped<ITypeResourceRepository, SQLTypeResourceRepository>();
-
-            builder.Services.AddIdentity<UserModel, IdentityRole>()
+            builder.Services.AddIdentity<UserModel, IdentityRole>()  // ← doit être AVANT
                 .AddEntityFrameworkStores<DataContext>()
                 .AddDefaultTokenProviders();
+            builder.Services.AddScoped<IUserRepository, SqlUserRepository>(); // ← APRÈS Identity
+
 
 
             builder.Services.AddOpenApi();
@@ -113,8 +114,6 @@ namespace RessourceRelationnelle.API
                 DataServices.Initialize(scope.ServiceProvider);
             }
 
-
-
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -122,14 +121,12 @@ namespace RessourceRelationnelle.API
                 app.MapOpenApi();
             }
 
-            app.UseHttpsRedirection();
-
-            app.UseCors("cors");
-
-            app.UseAuthorization();
+            app.UseCors("AllowFront");       // 1. CORS en premier
+            app.UseHttpsRedirection();       // 2. HTTPS
+            app.UseAuthentication();         // 3. Qui es-tu ?
+            app.UseAuthorization();          // 4. As-tu le droit ?
 
             app.MapControllers();
-
             app.Run();
         }
     }

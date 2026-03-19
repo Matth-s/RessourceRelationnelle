@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization; 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using RessourceRelationnelle.DATA;
 using RessourceRelationnelle.DATA.Models;
 using RessourceRelationnelle.DATA.Repositories;
 
@@ -87,6 +89,10 @@ namespace RessourceRelationnelle.API.Controllers
             {
                 CategoryModel? existingCategory = await repository.GetOne(id);
                 if (existingCategory == null) return NotFound(new { message = "Category not found" });
+
+                CategoryModel? alreadyExistingCategory = await repository.GetByName(model.CategoryName);
+                if(alreadyExistingCategory != null)
+                    return Conflict(new { message = "Category already exists" });
                 existingCategory.CategoryName = model.CategoryName.ToUpper();
                 await repository.Update(existingCategory);
                 return Ok(existingCategory);
