@@ -114,19 +114,30 @@ namespace RessourceRelationnelle.API
                 DataServices.Initialize(scope.ServiceProvider);
             }
 
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-                app.MapOpenApi();
-            }
+            app.UseSwagger();
+            app.UseSwaggerUI();
+            app.MapOpenApi();
 
             app.UseCors("AllowFront");       // 1. CORS en premier
-            app.UseHttpsRedirection();       // 2. HTTPS
+            //app.UseHttpsRedirection();       // 2. HTTPS
             app.UseAuthentication();         // 3. Qui es-tu ?
             app.UseAuthorization();          // 4. As-tu le droit ?
 
             app.MapControllers();
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    var context = services.GetRequiredService<DataContext>();
+                    context.Database.Migrate();
+                }
+                catch (Exception ex)
+                {
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "Une erreur est survenue lors de la migration de la base de données.");
+                }
+            }
             app.Run();
         }
     }
