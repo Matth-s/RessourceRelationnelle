@@ -34,7 +34,7 @@ namespace RessourceRelationnelle.API.Controllers
                 var user = await userManager.FindByEmailAsync(model.Email);
 
                 if (user == null || !await userManager.CheckPasswordAsync(user, model.Password))
-                    return Unauthorized(new { message = "Email ou mot de passe incorrect" });
+                    return Unauthorized(new { message = "Email ou mot de passe incorrect ee" });
 
                 var authClaims = new List<Claim>()
                 {
