@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RessourceRelationnelle.DATA.Models;
-using RessourceRelationnelle.DATA.Repositories;
-using static SqlUserRepository;
 
 namespace RessourceRelationnelle.API.Controllers
 {
@@ -14,13 +12,11 @@ namespace RessourceRelationnelle.API.Controllers
     { 
         private readonly UserManager<UserModel> userManager;
         private readonly RoleManager<IdentityRole> roleManager;
-        private readonly IUserRepository userRepository;
 
-        public SuperAdminController( UserManager<UserModel> userManager, RoleManager<IdentityRole> roleManager, IUserRepository userRepository)
+        public SuperAdminController( UserManager<UserModel> userManager, RoleManager<IdentityRole> roleManager)
         { 
             this.userManager = userManager;
             this.roleManager = roleManager;
-            this.userRepository = userRepository;
         }
 
         [HttpPost]
@@ -49,8 +45,7 @@ namespace RessourceRelationnelle.API.Controllers
                     if (!result.Succeeded)
                         return StatusCode(StatusCodes.Status500InternalServerError);
 
-                    foreach (var role in model.Roles)
-                        await userManager.AddToRoleAsync(user, role.ToUpper());
+                    await userManager.AddToRoleAsync(user, model.Role.ToUpper());
 
                     return Ok();
                 }
@@ -62,70 +57,13 @@ namespace RessourceRelationnelle.API.Controllers
             }
         }
 
-        [HttpGet("users")]
-        [Authorize]
-        public async Task<ActionResult> GetAllUsers()
-        {
-            UserReturnAdmin[] users = await userRepository.GetAll();
-
-            if (users.Length == 0)
-                return NotFound(new { message = "Aucun utilisateur trouvé" });
-            
-            return Ok(users);
-        }
-
-        [HttpDelete("users/{id}")]
-        [Authorize]
-        public async Task<ActionResult> DeleteUser(string id)
-        {
-            string deleted = await userRepository.Delete(id);
-
-            if(deleted == null)
-                return NotFound(new {message = "Utilisateur non trouvé"});
-            return Ok(new {message = "Utilisateur supprimé" });
-
-            //TODO : vérifier qu'un admin peut pas supp un superadmin
-        }
-
-        [HttpPut("users/{id}")]
-        [Authorize]
-        public async Task<ActionResult> UpdateUser(string id, [FromBody] UserUpdateDto dto)
-        {
-            if(id == null)
-                return BadRequest(new {message = "L'id ne peut pas être vide"});
-
-            UserUpdateIdDto userModel = new()
-            {
-                Id = id,
-                Email = dto.Email,
-                UserName = dto.Username,
-                IsActive = dto.IsActive,
-                Roles = dto.Roles
-            };
-
-            var userUpdated = await userRepository.Update(userModel);
-
-            if (userUpdated == null)
-                return NotFound(new { message = "Utilisateur non trouvé" });
-
-            return Ok(new {message = "Utilisateur modifié"});
-        }
-
         public class UserBody
         {
             public string Email { get; set; } = "";
             public string Username { get; set; } = "";
             public string Password { get; set; } = "";
             public string ConfirmPassword { get; set; } = "";
-            public List<string> Roles { get; set; } = [];
-        }
-
-        public class UserUpdateDto
-        {
-            public string Email { get; set; } = "";
-            public string Username { get; set; } = "";
-            public bool IsActive { get; set; }
-            public List<string> Roles { get; set; } = [];
+            public string Role { get; set; } = "";
         }
     }
 }

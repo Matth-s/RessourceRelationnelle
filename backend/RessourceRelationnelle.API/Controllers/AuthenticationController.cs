@@ -36,13 +36,11 @@ namespace RessourceRelationnelle.API.Controllers
                 if (user == null || !await userManager.CheckPasswordAsync(user, model.Password))
                     return Unauthorized(new { message = "Email ou mot de passe incorrect" });
 
-                if (!user.IsActive)
-                    return Unauthorized(new { message = "Compte désactivé" });
-                
                 var authClaims = new List<Claim>()
                 {
-                    new (ClaimTypes.NameIdentifier, user.Id),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+
+                new (ClaimTypes.NameIdentifier, user.Id),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
 
                 var roles = await userManager.GetRolesAsync(user);

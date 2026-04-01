@@ -9,23 +9,13 @@ import type { categoriesArrayType } from "../schemas/categories-schema";
 import { CATEGORIES_HEADER_TABLE } from "../constants/categories-constant";
 
 import CategoryCard from "./CategoryCard";
-import CardFetchError from "@/components/CardFetchError";
 
 type CategoriesListProps = {
   categories: categoriesArrayType;
   isLoading: boolean;
-  error: Error | null;
-  refretch: () => void;
 };
 
-const CategoriesList = ({
-  categories,
-  isLoading,
-  error,
-  refretch,
-}: CategoriesListProps) => {
-  if (error) return <CardFetchError onRetry={refretch} />;
-
+const CategoriesList = ({ categories, isLoading }: CategoriesListProps) => {
   if (isLoading) {
     return <p>Chargement...</p>;
   }

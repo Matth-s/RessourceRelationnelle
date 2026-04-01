@@ -4,16 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static SqlUserRepository;
 
 namespace RessourceRelationnelle.DATA.Repositories
 {
     public interface IUserRepository
     {
-        Task<UserReturnAdmin?> GetById(string id);
-        Task<UserReturnAdmin[]?> GetAll();
-        Task<string> Delete(string id);
-        Task<UserModel> Update(UserUpdateIdDto model);
+        Task<UserModel?> GetById(string id);
 
     }
 }
