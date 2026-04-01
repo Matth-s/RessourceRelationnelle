@@ -1,6 +1,6 @@
 import { Route, Routes, useLocation, useNavigate } from "react-router";
 import { AuthOutlet } from "./components/AuthOutlet";
-import { USER_ROLE } from "./types/user-role-type";
+import { USER_ROLE } from "./types/user-type";
 import { useAppDispatch, useAppSelector } from "./store/hook";
 import { getCurrentUserApi } from "./features/user/api/get-current-user-api";
 import { useQuery } from "@tanstack/react-query";

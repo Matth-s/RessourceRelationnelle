@@ -1,5 +1,5 @@
 export interface IUserRoleConstant {
-  name: string;
+  label: string;
   value: IUserRole;
 }
 
@@ -7,7 +7,9 @@ export const USER_ROLE = {
   USER: "User",
   ADMIN: "Admin",
   MODERATOR: "Moderator",
-  SUPERADMIN: "Superadmin",
+  SUPERADMIN: "SuperAdmin",
 } as const;
 
 export type IUserRole = (typeof USER_ROLE)[keyof typeof USER_ROLE];
+
+export type IStatusParams = "active" | "inactive";

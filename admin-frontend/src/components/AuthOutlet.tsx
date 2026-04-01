@@ -1,5 +1,5 @@
 import { useAppSelector } from "@/store/hook";
-import type { IUserRole } from "@/types/user-role-type";
+import type { IUserRole } from "@/types/user-type";
 import { Navigate, Outlet } from "react-router";
 
 export const AuthOutlet = ({ roles }: { roles: IUserRole[] }) => {
