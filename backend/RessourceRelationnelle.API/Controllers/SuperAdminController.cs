@@ -73,6 +73,17 @@ namespace RessourceRelationnelle.API.Controllers
             return Ok(users);
         }
 
+        [HttpDelete("users/{id}")]
+        [Authorize]
+        public async Task<ActionResult> DeleteUser(string id)
+        {
+            string deleted = await userRepository.Delete(id);
+
+            if(deleted == null)
+                return NotFound(new {message = "Utilisateur non trouvé"});
+            return Ok("Utilisateur supprimé");
+        }
+
         public class UserBody
         {
             public string Email { get; set; } = "";

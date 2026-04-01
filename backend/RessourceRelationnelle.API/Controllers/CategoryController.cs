@@ -64,7 +64,7 @@ namespace RessourceRelationnelle.API.Controllers
             {
                 CategoryModel? existingCategory = await repository.GetOneByName(model.CategoryName.ToUpper());
 
-                if (existingCategory != null) return Conflict(new { message = "La caétgorie existe déjà" });
+                if (existingCategory != null) return Conflict(new { message = "La catégorie existe déjà" });
 
                 CategoryModel category = new()
                 {

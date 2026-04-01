@@ -15,6 +15,17 @@ public class SqlUserRepository : IUserRepository
         this.userManager = userManager;
     }
 
+    public async Task<string> Delete(string id)
+    {
+        UserModel? user = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
+        if (user == null)
+            return null;
+
+        context.Users.Remove(user);
+        await context.SaveChangesAsync();
+        return "ok";
+    }
+
     public async Task<UserReturnAdmin[]?> GetAll()
     {
         var users = await userManager.Users.ToListAsync();
@@ -31,7 +42,7 @@ public class SqlUserRepository : IUserRepository
                 CreatedAt = user.CreatedAt,
                 IsActive = user.IsActive,
                 Email = user.Email,
-                UserName = user.UserName,
+                Username = user.UserName,
                 EmailVerified = user.EmailConfirmed,
                 Role = roles.ToArray()
             });
@@ -58,7 +69,7 @@ public class SqlUserRepository : IUserRepository
         public DateTime CreatedAt { get; set; }
         public string Email { get; set; } = "";
 
-        public string UserName { get; set; } = "";
+        public string Username { get; set; } = "";
         public bool EmailVerified { get; set; }
 
         public string[] Role { get; set; } = [];
