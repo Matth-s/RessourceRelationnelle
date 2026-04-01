@@ -25,9 +25,9 @@ namespace RessourceRelationnelle.API.Controllers
         }
 
         [HttpPost]
-        [Route("login")]  
+        [Route("login")]
         [AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody] LoginModel model) 
+        public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
             try
             {
@@ -36,11 +36,13 @@ namespace RessourceRelationnelle.API.Controllers
                 if (user == null || !await userManager.CheckPasswordAsync(user, model.Password))
                     return Unauthorized(new { message = "Email ou mot de passe incorrect" });
 
+                if (!user.IsActive)
+                    return Unauthorized(new { message = "Compte désactivé" });
+
                 var authClaims = new List<Claim>()
                 {
-
-                new (ClaimTypes.NameIdentifier, user.Id),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new (ClaimTypes.NameIdentifier, user.Id),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
 
                 var roles = await userManager.GetRolesAsync(user);
@@ -73,7 +75,7 @@ namespace RessourceRelationnelle.API.Controllers
         [Route("signup")]
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
-        { 
+        {
             try
             {
                 if (model.Password != model.ConfirmPassword)
@@ -91,7 +93,7 @@ namespace RessourceRelationnelle.API.Controllers
                 };
 
                 IdentityResult result = await userManager.CreateAsync(user, model.Password);
-               
+
                 if (!result.Succeeded)
                     return StatusCode(StatusCodes.Status500InternalServerError);
 
@@ -103,7 +105,7 @@ namespace RessourceRelationnelle.API.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            
+
         }
     }
 
@@ -120,5 +122,5 @@ namespace RessourceRelationnelle.API.Controllers
         public string Password { get; set; } = "";
         public string ConfirmPassword { get; set; } = "";
     }
-     
+
 }
