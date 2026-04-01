@@ -1,7 +1,6 @@
 import {
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
@@ -9,17 +8,22 @@ import {
 import UserCard from "./UserCard";
 import { USER_TABLE_HEADER } from "../constants/user-constant";
 import type { usersSchemaType } from "../schemas/users-schema";
-import TrSkeleton from "@/components/skeletons/TrSkeleton";
+import CardFetchError from "@/components/CardFetchError";
 
 type UsersListProps = {
   isLoading: boolean;
   error: Error | null;
   users: usersSchemaType;
+  refetch: () => void;
 };
 
-const UsersList = ({ isLoading, error, users }: UsersListProps) => {
+const UsersList = ({ isLoading, error, users, refetch }: UsersListProps) => {
+  if (isLoading) return <p>chargement</p>;
+
+  if (error) return <CardFetchError onRetry={refetch} />;
+
   return (
-    <div className="bg-muted/40 mx-auto w-[90%] overflow-hidden rounded-xl border">
+    <div className="bg-muted/40 w-full overflow-hidden rounded-xl border">
       <Table>
         <TableHeader>
           <TableRow className="bg-muted/60">
@@ -35,17 +39,9 @@ const UsersList = ({ isLoading, error, users }: UsersListProps) => {
         </TableHeader>
 
         <TableBody>
-          {isLoading ? (
-            <TrSkeleton />
-          ) : error ? (
-            <TableRow>
-              <TableCell colSpan={12} className="text-center">
-                Une erreur est survenue
-              </TableCell>
-            </TableRow>
-          ) : (
-            users.map((user) => <UserCard key={user.id} user={user} />)
-          )}
+          {users.map((user) => (
+            <UserCard key={user.id} user={user} />
+          ))}
         </TableBody>
       </Table>
     </div>

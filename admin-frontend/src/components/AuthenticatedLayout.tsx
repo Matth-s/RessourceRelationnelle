@@ -13,7 +13,7 @@ export const AuthenticatedLayout = ({ children }: AuthenticatedLayoutProps) => {
       </div>
       <div className="flex h-full w-4/5 flex-col">
         <PageHeader />
-        <div className="h-full bg-gray-100 p-2">{children}</div>
+        <div className="h-full bg-gray-100 p-8">{children}</div>
       </div>
     </div>
   );
