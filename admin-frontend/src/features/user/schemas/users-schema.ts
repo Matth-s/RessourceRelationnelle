@@ -5,9 +5,9 @@ export const userSchema = z.object({
   id: z.string(),
   username: z.string(),
   email: z.string(),
-  createdAt: z.date(),
+  createdAt: z.coerce.date(),
   isActive: z.boolean(),
-  emailVerified: z.date().optional(),
+  emailVerified: z.boolean(),
   role: z.array(z.enum(USER_ROLE)),
 });
 
