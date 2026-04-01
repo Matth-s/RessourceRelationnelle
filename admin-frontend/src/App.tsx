@@ -1,11 +1,10 @@
 import { Route, Routes, useNavigate } from "react-router";
 import { AuthOutlet } from "./components/AuthOutlet";
 import { USER_ROLE } from "./types/user-role-type";
-import { useAppDispatch } from "./store/hook";
+import { useAppDispatch, useAppSelector } from "./store/hook";
 import { getCurrentUserApi } from "./features/user/api/get-current-user-api";
-import { useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { login } from "./features/auth/auth.slice";
-import { useEffect } from "react";
 
 import LoginPage from "./pages/(auth)/LoginPage";
 import AuthLayout from "./pages/(auth)/AuthLayout";
@@ -14,27 +13,33 @@ import ResourcePage from "./pages/(main)/ResourcePage";
 import CategoryPage from "./pages/(main)/CategoryPage";
 import UserPage from "./pages/(main)/UserPage";
 import StatsPage from "./pages/(main)/StatsPage";
-import { Toaster } from "./components/ui/sonner";
+import { useEffect } from "react";
 
 const App = () => {
+  const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  // const getCurrentUser = useMutation({
-  //   mutationFn: getCurrentUserApi,
+  const { isPending, isError, data } = useQuery({
+    queryFn: getCurrentUserApi,
+    queryKey: ["current-user"],
+    retry: 0,
+  });
 
-  //   onSuccess: (data) => {
-  //     dispatch(login(data));
-  //   },
+  useEffect(() => {
+    if (data) {
+      dispatch(login(data));
+      navigate("/");
+    }
+  }, [data, user, dispatch]);
 
-  //   onError: () => {
-  //     navigate("/authentification/connexion");
-  //   },
-  // });
+  useEffect(() => {
+    if (isError) {
+      navigate("/authentification/connexion");
+    }
+  }, [isError]);
 
-  // useEffect(() => {
-  //   getCurrentUser.mutate();
-  // }, []);
+  if (isPending) return;
 
   return (
     <Routes>

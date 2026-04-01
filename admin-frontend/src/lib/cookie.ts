@@ -1,10 +1,10 @@
 export const setAuthCookie = (token: string) => {
-  cookieStore.set("auth-token", token);
+  document.cookie = `auth-token=${token}; path=/; SameSite=Lax`;
 };
 
 export const getAuthToken = () => {
   return document.cookie
-    .split(";")
+    .split("; ")
     .find((row) => row.startsWith("auth-token="))
     ?.split("=")[1];
 };

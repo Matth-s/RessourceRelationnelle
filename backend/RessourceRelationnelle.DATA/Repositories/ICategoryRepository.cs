@@ -10,5 +10,6 @@ namespace RessourceRelationnelle.DATA.Repositories
         Task<IEnumerable<CategoryModel>> GetAll();
         Task Delete(string id);
         Task<CategoryModel> Update(CategoryModel model);
+        Task<CategoryModel?> GetByName(string name);
     }
 }
