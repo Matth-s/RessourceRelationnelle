@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RessourceRelationnelle.DATA.Models;
+using RessourceRelationnelle.DATA.Repositories;
+using static SqlUserRepository;
 
 namespace RessourceRelationnelle.API.Controllers
 {
@@ -10,14 +12,16 @@ namespace RessourceRelationnelle.API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class SuperAdminController : ControllerBase
-    { 
+    {
         private readonly UserManager<UserModel> userManager;
         private readonly RoleManager<IdentityRole> roleManager;
+        private readonly IUserRepository userRepository;
 
-        public SuperAdminController( UserManager<UserModel> userManager, RoleManager<IdentityRole> roleManager)
-        { 
+        public SuperAdminController(UserManager<UserModel> userManager, RoleManager<IdentityRole> roleManager, IUserRepository userRepository)
+        {
             this.userManager = userManager;
             this.roleManager = roleManager;
+            this.userRepository = userRepository;
         }
 
         [HttpPost]
@@ -30,7 +34,7 @@ namespace RessourceRelationnelle.API.Controllers
 
             string result = await userRepository.Create(model);
 
-            switch(result)
+            switch (result)
             {
                 case "email":
                     return Conflict(new { message = "Email déjà existant" });
@@ -51,7 +55,7 @@ namespace RessourceRelationnelle.API.Controllers
 
             if (users.Length == 0)
                 return NotFound(new { message = "Aucun utilisateur trouvé" });
-            
+
             return Ok(users);
         }
 
@@ -61,9 +65,9 @@ namespace RessourceRelationnelle.API.Controllers
         {
             string deleted = await userRepository.Delete(id);
 
-            if(deleted == null)
-                return NotFound(new {message = "Utilisateur non trouvé"});
-            return Ok(new {message = "Utilisateur supprimé" });
+            if (deleted == null)
+                return NotFound(new { message = "Utilisateur non trouvé" });
+            return Ok(new { message = "Utilisateur supprimé" });
 
             //TODO : vérifier qu'un admin peut pas supp un superadmin
         }
@@ -73,8 +77,8 @@ namespace RessourceRelationnelle.API.Controllers
         public async Task<ActionResult> UpdateUser(string id, [FromBody] UserUpdateDto dto)
         {
             //TODO : verif roles non null
-            if(id == null)
-                return BadRequest(new {message = "L'id ne peut pas être vide"});
+            if (id == null)
+                return BadRequest(new { message = "L'id ne peut pas être vide" });
 
             UserUpdateIdDto userModel = new()
             {
@@ -90,7 +94,7 @@ namespace RessourceRelationnelle.API.Controllers
             if (userUpdated == null)
                 return NotFound(new { message = "Utilisateur non trouvé" });
 
-            return Ok(new {message = "Utilisateur modifié"});
+            return Ok(new { message = "Utilisateur modifié" });
         }
 
         public class UserUpdateDto
