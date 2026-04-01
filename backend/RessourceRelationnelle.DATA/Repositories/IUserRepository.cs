@@ -12,6 +12,7 @@ namespace RessourceRelationnelle.DATA.Repositories
     {
         Task<UserModel?> GetById(string id);
         Task<UserReturnAdmin[]?> GetAll();
+        Task<string> Delete(string id);
 
     }
 }
