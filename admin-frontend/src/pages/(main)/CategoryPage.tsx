@@ -21,30 +21,28 @@ const CategoryPage = () => {
   if (error || data === undefined) return <p>error</p>;
 
   return (
-    <AuthenticatedLayout
-      pageContent={
-        <>
-          <div className="flex items-center justify-between">
-            <h1>Catégories</h1>
-            <CategoryModal
-              setIsOpen={() => setIsOpen((prev) => !prev)}
-              isOpen={isOpen}
-              dialogButton={
-                <Button>
-                  <PlusIcon />
-                  Ajouter une catégorie
-                </Button>
-              }
-              form={<CreateCategoryForm closeModal={() => setIsOpen(false)} />}
-              dialogTitle="Nouvelle catégorie"
-              dialogDescription="Ajouter une nouvelle catégorie de ressource"
-            />
-          </div>
+    <AuthenticatedLayout>
+      <>
+        <div className="flex items-center justify-between">
+          <h1>Catégories</h1>
+          <CategoryModal
+            setIsOpen={() => setIsOpen((prev) => !prev)}
+            isOpen={isOpen}
+            dialogButton={
+              <Button>
+                <PlusIcon />
+                Ajouter une catégorie
+              </Button>
+            }
+            form={<CreateCategoryForm closeModal={() => setIsOpen(false)} />}
+            dialogTitle="Nouvelle catégorie"
+            dialogDescription="Ajouter une nouvelle catégorie de ressource"
+          />
+        </div>
 
-          <CategoriesList isLoading={isLoading} categories={data} />
-        </>
-      }
-    ></AuthenticatedLayout>
+        <CategoriesList isLoading={isLoading} categories={data} />
+      </>
+    </AuthenticatedLayout>
   );
 };
 

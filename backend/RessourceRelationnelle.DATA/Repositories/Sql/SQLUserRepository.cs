@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using RessourceRelationnelle.DATA;
 using RessourceRelationnelle.DATA.Models;
 using RessourceRelationnelle.DATA.Repositories;
-using static SqlUserRepository;
 
 public class SqlUserRepository : IUserRepository
 {

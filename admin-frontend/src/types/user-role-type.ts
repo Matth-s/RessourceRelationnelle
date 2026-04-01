@@ -1,4 +1,10 @@
+export interface IUserRoleConstant {
+  name: string;
+  value: IUserRole;
+}
+
 export const USER_ROLE = {
+  USER: "User",
   ADMIN: "Admin",
   MODERATOR: "Moderator",
   SUPERADMIN: "Superadmin",
