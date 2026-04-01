@@ -10,9 +10,10 @@ namespace RessourceRelationnelle.DATA.Repositories
 {
     public interface IUserRepository
     {
-        Task<UserModel?> GetById(string id);
+        Task<UserReturnAdmin?> GetById(string id);
         Task<UserReturnAdmin[]?> GetAll();
         Task<string> Delete(string id);
+        Task<UserModel> Update(UserUpdateIdDto model);
 
     }
 }
