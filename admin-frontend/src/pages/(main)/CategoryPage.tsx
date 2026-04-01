@@ -13,7 +13,11 @@ import { useState } from "react";
 const CategoryPage = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const { isLoading, error, data } = useQuery({
+  const {
+    isLoading,
+    error,
+    data = [],
+  } = useQuery({
     queryKey: [FETCH_KEYS.CATEGORY],
     queryFn: getCategoriesApi,
   });
