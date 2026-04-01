@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using RessourceRelationnelle.DATA;
 using RessourceRelationnelle.DATA.Models;
 using RessourceRelationnelle.DATA.Repositories;
@@ -15,29 +14,6 @@ public class SqlUserRepository : IUserRepository
         this.userManager = userManager;
     }
 
-    public async Task<UserReturnAdmin[]?> GetAll()
-    {
-        var users = await userManager.Users.ToListAsync();
-        if (users.Count == 0)
-            return null;
-
-        var returnUsers = new List<UserReturnAdmin>();
-        foreach (var user in users)
-        {
-            var roles = await userManager.GetRolesAsync(user);
-            returnUsers.Add(new UserReturnAdmin
-            {
-                Id = user.Id,
-                IsActive = user.IsActive,
-                Email = user.Email,
-                UserName = user.UserName,
-                Role = roles.ToArray()
-            });
-        }
-
-        return returnUsers.ToArray();
-    }
-
     public async Task<UserModel?> GetById(string id)
     {
         var user = await userManager.FindByIdAsync(id);
@@ -47,16 +23,5 @@ public class SqlUserRepository : IUserRepository
         user.Roles = roles.ToList();
 
         return user;
-    }
-
-    public class UserReturnAdmin
-    {
-        public string Id { get; set; } = "";
-        public bool IsActive { get; set; }
-        public string Email { get; set; } = "";
-
-        public string UserName { get; set; } = "";
-
-        public string[] Role { get; set; } = [];
     }
 }

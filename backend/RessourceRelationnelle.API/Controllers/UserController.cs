@@ -10,7 +10,7 @@ using System.Security.Claims;
 
 namespace RessourceRelationnelle.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/users")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -36,18 +36,16 @@ namespace RessourceRelationnelle.API.Controllers
 
             var user = await repository.GetById(userId);
 
-            var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+            if (user == null)
+                return NotFound();
 
+            var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
             UserReturn returnUser = new()
             {
                 Username = user.UserName,
                 Role = user.Roles.ToArray(),
                 Token = token
             };
-
-            if (user == null)
-                return NotFound();
-
             return Ok(returnUser);
         }
     }
