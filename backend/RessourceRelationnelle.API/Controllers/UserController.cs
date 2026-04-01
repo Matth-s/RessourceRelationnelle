@@ -10,7 +10,8 @@ using System.Security.Claims;
 
 namespace RessourceRelationnelle.API.Controllers
 {
-    [Route("api/users")]
+
+    [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {

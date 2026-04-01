@@ -2,6 +2,7 @@
 
 namespace RessourceRelationnelle.DATA.Repositories
 {
+
     public interface ICategoryRepository
     {
         Task<CategoryModel> Create(CategoryModel model);

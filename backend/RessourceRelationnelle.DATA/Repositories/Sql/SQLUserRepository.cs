@@ -5,6 +5,7 @@ using RessourceRelationnelle.DATA.Repositories;
 
 public class SqlUserRepository : IUserRepository
 {
+
     private readonly DataContext context;
     private readonly UserManager<UserModel> userManager;
 

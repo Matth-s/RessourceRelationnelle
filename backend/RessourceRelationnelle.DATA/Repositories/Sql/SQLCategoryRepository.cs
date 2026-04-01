@@ -4,6 +4,7 @@ using RessourceRelationnelle.DATA.Models;
 
 namespace RessourceRelationnelle.DATA.Repositories.Sql
 {
+
     public class SQLCategoryRepository : ICategoryRepository
     {
         private readonly DataContext context;

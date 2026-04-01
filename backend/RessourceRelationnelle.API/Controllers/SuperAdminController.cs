@@ -6,6 +6,7 @@ using RessourceRelationnelle.DATA.Models;
 
 namespace RessourceRelationnelle.API.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class SuperAdminController : ControllerBase
