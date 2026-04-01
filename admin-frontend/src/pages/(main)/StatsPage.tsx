@@ -1,10 +1,10 @@
-import { AuthenticatedLayout } from '@/components/AuthenticatedLayout';
+import { AuthenticatedLayout } from "@/components/AuthenticatedLayout";
 
 const StatsPage = () => {
   return (
-    <AuthenticatedLayout
-      pageContent={<p>StatsPage</p>}
-    ></AuthenticatedLayout>
+    <AuthenticatedLayout>
+      <p>StatsPage</p>
+    </AuthenticatedLayout>
   );
 };
 
