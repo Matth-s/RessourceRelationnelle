@@ -17,16 +17,16 @@ const CategoryPage = () => {
     isLoading,
     error,
     data = [],
+    refetch,
   } = useQuery({
     queryKey: [FETCH_KEYS.CATEGORY],
     queryFn: getCategoriesApi,
+    retry: false,
   });
-
-  if (error || data === undefined) return <p>error</p>;
 
   return (
     <AuthenticatedLayout>
-      <>
+      <div className="flex h-full flex-col gap-y-3">
         <div className="flex items-center justify-between">
           <h1>Catégories</h1>
           <CategoryModal
@@ -44,8 +44,13 @@ const CategoryPage = () => {
           />
         </div>
 
-        <CategoriesList isLoading={isLoading} categories={data} />
-      </>
+        <CategoriesList
+          isLoading={isLoading}
+          error={error}
+          categories={data}
+          refretch={refetch}
+        />
+      </div>
     </AuthenticatedLayout>
   );
 };
