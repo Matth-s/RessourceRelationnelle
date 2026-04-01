@@ -59,7 +59,7 @@ namespace RessourceRelationnelle.API
                 options.AddPolicy("AllowFront", policy =>
                 {
                     policy
-                        .AllowAnyOrigin()   // ou .WithOrigins("http://192.168.65.XX:5173")
+                        .AllowAnyOrigin()
                         .AllowAnyMethod()
                         .AllowAnyHeader();
                 });
