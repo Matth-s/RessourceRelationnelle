@@ -5,9 +5,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import UserCard from "./UserCard";
-import { USER_TABLE_HEADER } from "../constants/user-constant";
-import type { usersSchemaType } from "../schemas/users-schema";
+import UserCard from "../features/user/components/UserCard";
+import { USER_TABLE_HEADER } from "../features/user/constants/user-constant";
+import type { usersSchemaType } from "../features/user/schemas/users-schema";
 import CardFetchError from "@/components/CardFetchError";
 
 type UsersListProps = {

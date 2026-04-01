@@ -1,7 +1,7 @@
 import { AuthenticatedLayout } from "@/components/AuthenticatedLayout";
 import { getUsersApi } from "@/features/user/api/get-users-api";
 import HeaderUserPage from "@/features/user/components/HeaderUserPage";
-import UsersList from "@/features/user/components/UsersList";
+import UsersList from "@/components/UsersList";
 import UserStats from "@/features/user/components/UserStats";
 import { FETCH_KEYS } from "@/types/fetch-key-type";
 import { useQuery } from "@tanstack/react-query";
