@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RessourceRelationnelle.DATA.Models
 {
+
     public class UserModel : IdentityUser
     {
         public bool IsActive { get; set; } = true;

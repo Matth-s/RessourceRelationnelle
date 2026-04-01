@@ -8,6 +8,7 @@ using static SqlUserRepository;
 
 namespace RessourceRelationnelle.API.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class SuperAdminController : ControllerBase

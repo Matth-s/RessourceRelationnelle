@@ -8,6 +8,7 @@ using static SqlUserRepository;
 
 namespace RessourceRelationnelle.DATA.Repositories
 {
+
     public interface IUserRepository
     {
         Task<UserReturnAdmin?> GetById(string id);
