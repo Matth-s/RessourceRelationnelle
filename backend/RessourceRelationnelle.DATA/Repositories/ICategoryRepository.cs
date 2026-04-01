@@ -1,4 +1,4 @@
-﻿using RessourceRelationnelle.DATA.Models; 
+﻿using RessourceRelationnelle.DATA.Models;
 
 namespace RessourceRelationnelle.DATA.Repositories
 {
