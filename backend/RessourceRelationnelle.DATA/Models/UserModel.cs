@@ -14,5 +14,7 @@ namespace RessourceRelationnelle.DATA.Models
         public string? DemographicZoneId { get; set; }
         public DemographicZoneModel? DemographicZone { get; set; }
 
+        [NotMapped] 
+        public List<string> Roles { get; set; } = new();
     }
 }

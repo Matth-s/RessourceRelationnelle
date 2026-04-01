@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RessourceRelationnelle.DATA.Models;
-using RessourceRelationnelle.DATA.Repositories;
-using static SqlUserRepository;
 
 namespace RessourceRelationnelle.API.Controllers
 {
@@ -14,13 +12,11 @@ namespace RessourceRelationnelle.API.Controllers
     { 
         private readonly UserManager<UserModel> userManager;
         private readonly RoleManager<IdentityRole> roleManager;
-        private readonly IUserRepository userRepository;
 
-        public SuperAdminController( UserManager<UserModel> userManager, RoleManager<IdentityRole> roleManager, IUserRepository userRepository)
+        public SuperAdminController( UserManager<UserModel> userManager, RoleManager<IdentityRole> roleManager)
         { 
             this.userManager = userManager;
             this.roleManager = roleManager;
-            this.userRepository = userRepository;
         }
 
         [HttpPost]

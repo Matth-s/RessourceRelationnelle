@@ -1,7 +1,10 @@
 import { api } from "@/lib/axios-client";
+import { usersSchema, type usersSchemaType } from "../schemas/users-schema";
 
-export const getUsersApi = async () => {
-  const { data } = await api.get("/users");
+export const getUsersApi = async (): Promise<usersSchemaType> => {
+  const { data } = await api.get("/superadmin/users");
 
-  return data;
+  const validatedData = usersSchema.parse(data);
+
+  return validatedData;
 };

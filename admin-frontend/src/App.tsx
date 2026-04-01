@@ -1,9 +1,9 @@
-import { Route, Routes, useNavigate } from "react-router";
+import { Route, Routes, useLocation, useNavigate } from "react-router";
 import { AuthOutlet } from "./components/AuthOutlet";
 import { USER_ROLE } from "./types/user-role-type";
-import { useAppDispatch } from "./store/hook";
+import { useAppDispatch, useAppSelector } from "./store/hook";
 import { getCurrentUserApi } from "./features/user/api/get-current-user-api";
-import { useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { login } from "./features/auth/auth.slice";
 import { useEffect } from "react";
 
@@ -14,33 +14,43 @@ import ResourcePage from "./pages/(main)/ResourcePage";
 import CategoryPage from "./pages/(main)/CategoryPage";
 import UserPage from "./pages/(main)/UserPage";
 import StatsPage from "./pages/(main)/StatsPage";
-import { Toaster } from "./components/ui/sonner";
+import NotFoundGlobalPage from "./pages/NotFoundGlobalPage";
 
 const App = () => {
+  const { user } = useAppSelector((state) => state.auth);
+  const { pathname } = useLocation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  // const getCurrentUser = useMutation({
-  //   mutationFn: getCurrentUserApi,
+  const { isPending, isError, data } = useQuery({
+    queryFn: getCurrentUserApi,
+    queryKey: ["current-user"],
+    retry: false,
+  });
 
-  //   onSuccess: (data) => {
-  //     dispatch(login(data));
-  //   },
+  useEffect(() => {
+    if (data) {
+      dispatch(login(data));
+      const pathnameUrl =
+        pathname === "/authentification/connexion" ? "/" : pathname;
+      navigate(pathnameUrl);
+    }
+  }, [data, user, dispatch]);
 
-  //   onError: () => {
-  //     navigate("/authentification/connexion");
-  //   },
-  // });
+  useEffect(() => {
+    if (isError) {
+      navigate("/authentification/connexion");
+    }
+  }, [isError]);
 
-  // useEffect(() => {
-  //   getCurrentUser.mutate();
-  // }, []);
+  if (isPending) return;
 
   return (
     <Routes>
       {/* Authentification */}
       <Route element={<AuthLayout />}>
         <Route path="/authentification/connexion" element={<LoginPage />} />
+        <Route path="*" element={<NotFoundGlobalPage />} />
       </Route>
 
       <Route
