@@ -31,29 +31,31 @@ namespace RessourceRelationnelle.API.Controllers
         public async Task<ActionResult> GetUserByToken()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            
+
             if (userId == null)
                 return Unauthorized();
 
             var user = await repository.GetById(userId);
 
+            var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            UserReturn returnUser = new()
+            {
+                Username = user.Username,
+                Role = user.Role.ToList(),
+                Token = token
+            };
+
             if (user == null)
                 return NotFound();
 
-            var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-            UserReturn returnUser = new()
-            {
-                Username = user.UserName,
-                Role = user.Roles.ToArray(),
-                Token = token
-            };
             return Ok(returnUser);
         }
     }
     public class UserReturn
     {
         public string Username { get; set; } = "";
-        public string[] Role { get; set; } = [];
+        public List<string> Role { get; set; } = [];
         public string Token { get; set; } = "";
     }
 }
