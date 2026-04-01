@@ -87,8 +87,8 @@ public class SqlUserRepository : IUserRepository
 
         var currentRoles = await userManager.GetRolesAsync(user);
 
-        var rolesToAdd = model.Roles.Except(currentRoles);
-        var rolesToRemove = currentRoles.Except(model.Roles);
+        var rolesToAdd = model.Role.Except(currentRoles);
+        var rolesToRemove = currentRoles.Except(model.Role);
 
         await userManager.AddToRolesAsync(user, rolesToAdd);
         await userManager.RemoveFromRolesAsync(user, rolesToRemove);
@@ -102,7 +102,7 @@ public class SqlUserRepository : IUserRepository
         public string Email { get; set; }
         public string UserName { get; set; }
         public bool IsActive { get; set; }
-        public List<string> Roles { get; set; }
+        public List<string> Role { get; set; }
     }
 
     public class UserReturnAdmin

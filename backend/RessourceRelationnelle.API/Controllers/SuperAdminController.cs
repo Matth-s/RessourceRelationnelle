@@ -49,7 +49,7 @@ namespace RessourceRelationnelle.API.Controllers
                     if (!result.Succeeded)
                         return StatusCode(StatusCodes.Status500InternalServerError);
 
-                    foreach (var role in model.Roles)
+                    foreach (var role in model.Role)
                         await userManager.AddToRoleAsync(user, role.ToUpper());
 
                     return Ok();
@@ -91,6 +91,7 @@ namespace RessourceRelationnelle.API.Controllers
         [Authorize]
         public async Task<ActionResult> UpdateUser(string id, [FromBody] UserUpdateDto dto)
         {
+            //TODO : verif roles non null
             if(id == null)
                 return BadRequest(new {message = "L'id ne peut pas être vide"});
 
@@ -100,7 +101,7 @@ namespace RessourceRelationnelle.API.Controllers
                 Email = dto.Email,
                 UserName = dto.Username,
                 IsActive = dto.IsActive,
-                Roles = dto.Roles
+                Role = dto.Role
             };
 
             var userUpdated = await userRepository.Update(userModel);
@@ -117,7 +118,7 @@ namespace RessourceRelationnelle.API.Controllers
             public string Username { get; set; } = "";
             public string Password { get; set; } = "";
             public string ConfirmPassword { get; set; } = "";
-            public List<string> Roles { get; set; } = [];
+            public List<string> Role { get; set; } = [];
         }
 
         public class UserUpdateDto
@@ -125,7 +126,7 @@ namespace RessourceRelationnelle.API.Controllers
             public string Email { get; set; } = "";
             public string Username { get; set; } = "";
             public bool IsActive { get; set; }
-            public List<string> Roles { get; set; } = [];
+            public List<string> Role { get; set; } = [];
         }
     }
 }
