@@ -14,6 +14,5 @@ namespace RessourceRelationnelle.DATA.Models
 
         public string? DemographicZoneId { get; set; }
         public DemographicZoneModel? DemographicZone { get; set; }
-
     }
 }

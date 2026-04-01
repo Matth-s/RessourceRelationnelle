@@ -2,12 +2,10 @@ import Aside from "./Aside";
 import PageHeader from "./PageHeader";
 
 type AuthenticatedLayoutProps = {
-  pageContent: React.ReactNode;
+  children: React.ReactNode;
 };
 
-export const AuthenticatedLayout = ({
-  pageContent,
-}: AuthenticatedLayoutProps) => {
+export const AuthenticatedLayout = ({ children }: AuthenticatedLayoutProps) => {
   return (
     <div className="flex h-full">
       <div className="w-1/5">
@@ -15,8 +13,7 @@ export const AuthenticatedLayout = ({
       </div>
       <div className="h-full w-4/5">
         <PageHeader />
-
-        <div className="h-full bg-gray-100 p-2">{pageContent}</div>
+        <div className="h-full bg-gray-100 p-8">{children}</div>
       </div>
     </div>
   );
