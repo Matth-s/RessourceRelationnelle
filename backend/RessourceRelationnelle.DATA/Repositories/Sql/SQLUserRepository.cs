@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using RessourceRelationnelle.DATA;
 using RessourceRelationnelle.DATA.Models;
 using RessourceRelationnelle.DATA.Repositories;
+using static SqlUserRepository;
 
 public class SqlUserRepository : IUserRepository
 {
@@ -17,7 +19,7 @@ public class SqlUserRepository : IUserRepository
 
     public async Task<string> Create(UserBody model)
     {
-        UserModel? user = await context.Users.FirstOrDefaultAsync(x => x.Email ==  model.Email);
+        UserModel? user = await context.Users.FirstOrDefaultAsync(x => x.Email == model.Email);
 
         if (user != null)
             return "email";
