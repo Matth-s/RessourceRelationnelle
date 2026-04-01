@@ -5,17 +5,19 @@ import { FETCH_KEYS } from "@/types/fetch-key-type";
 import { useQuery } from "@tanstack/react-query";
 
 const UserPage = () => {
-  const { isPending, error, data } = useQuery({
+  const {
+    isPending,
+    error,
+    data = [],
+  } = useQuery({
     queryKey: [FETCH_KEYS.USERS],
     queryFn: getUsersApi,
   });
 
   return (
-    <AuthenticatedLayout
-      pageContent={
-        <UsersList isLoading={isPending} error={error} users={data ?? []} />
-      }
-    ></AuthenticatedLayout>
+    <AuthenticatedLayout>
+      <UsersList isLoading={isPending} error={error} users={data} />
+    </AuthenticatedLayout>
   );
 };
 
