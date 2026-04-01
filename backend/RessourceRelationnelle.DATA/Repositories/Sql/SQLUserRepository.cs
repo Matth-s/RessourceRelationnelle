@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using RessourceRelationnelle.DATA;
 using RessourceRelationnelle.DATA.Models;
 using RessourceRelationnelle.DATA.Repositories;
+using static SqlUserRepository;
 
 public class SqlUserRepository : IUserRepository
 {
@@ -44,22 +45,64 @@ public class SqlUserRepository : IUserRepository
                 Email = user.Email,
                 Username = user.UserName,
                 EmailVerified = user.EmailConfirmed,
-                Role = roles.ToArray()
+                Role = roles.ToList()
             });
         }
 
         return returnUsers.ToArray();
     }
 
-    public async Task<UserModel?> GetById(string id)
+    public async Task<UserReturnAdmin?> GetById(string id)
     {
         var user = await userManager.FindByIdAsync(id);
         if (user == null) return null;
 
         var roles = await userManager.GetRolesAsync(user);
-        user.Roles = roles.ToList();
+        UserReturnAdmin userReturn = new()
+        {
+            Id = user.Id,
+            CreatedAt = user.CreatedAt,
+            IsActive = user.IsActive,
+            Email = user.Email,
+            Username = user.UserName,
+            EmailVerified = user.EmailConfirmed,
+            Role = roles.ToList()
+        };
+
+        return userReturn;
+    }
+
+    public async Task<UserModel> Update(UserUpdateIdDto model)
+    {
+        var user = await userManager.FindByIdAsync(model.Id);
+
+        if (user == null)
+            return null;
+
+        user.Email = model.Email;
+        user.UserName = model.UserName;
+        user.IsActive = model.IsActive;
+
+        await userManager.UpdateAsync(user);
+
+        var currentRoles = await userManager.GetRolesAsync(user);
+
+        var rolesToAdd = model.Roles.Except(currentRoles);
+        var rolesToRemove = currentRoles.Except(model.Roles);
+
+        await userManager.AddToRolesAsync(user, rolesToAdd);
+        await userManager.RemoveFromRolesAsync(user, rolesToRemove);
 
         return user;
+    }
+
+    public class UserUpdateIdDto
+    {
+        public string Id { get; set; }
+        public string Email { get; set; }
+        public string UserName { get; set; }
+        public bool IsActive { get; set; }
+        public List<string> Roles { get; set; }
     }
 
     public class UserReturnAdmin
@@ -72,6 +115,6 @@ public class SqlUserRepository : IUserRepository
         public string Username { get; set; } = "";
         public bool EmailVerified { get; set; }
 
-        public string[] Role { get; set; } = [];
+        public List<string> Role { get; set; } = [];
     }
 }

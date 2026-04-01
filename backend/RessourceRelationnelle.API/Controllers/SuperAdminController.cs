@@ -49,7 +49,8 @@ namespace RessourceRelationnelle.API.Controllers
                     if (!result.Succeeded)
                         return StatusCode(StatusCodes.Status500InternalServerError);
 
-                    await userManager.AddToRoleAsync(user, model.Role.ToUpper());
+                    foreach (var role in model.Roles)
+                        await userManager.AddToRoleAsync(user, role.ToUpper());
 
                     return Ok();
                 }
@@ -81,7 +82,33 @@ namespace RessourceRelationnelle.API.Controllers
 
             if(deleted == null)
                 return NotFound(new {message = "Utilisateur non trouvé"});
-            return Ok("Utilisateur supprimé");
+            return Ok(new {message = "Utilisateur supprimé" });
+
+            //TODO : vérifier qu'un admin peut pas supp un superadmin
+        }
+
+        [HttpPut("users/{id}")]
+        [Authorize]
+        public async Task<ActionResult> UpdateUser(string id, [FromBody] UserUpdateDto dto)
+        {
+            if(id == null)
+                return BadRequest(new {message = "L'id ne peut pas être vide"});
+
+            UserUpdateIdDto userModel = new()
+            {
+                Id = id,
+                Email = dto.Email,
+                UserName = dto.Username,
+                IsActive = dto.IsActive,
+                Roles = dto.Roles
+            };
+
+            var userUpdated = await userRepository.Update(userModel);
+
+            if (userUpdated == null)
+                return NotFound(new { message = "Utilisateur non trouvé" });
+
+            return Ok(new {message = "Utilisateur modifié"});
         }
 
         public class UserBody
@@ -90,7 +117,15 @@ namespace RessourceRelationnelle.API.Controllers
             public string Username { get; set; } = "";
             public string Password { get; set; } = "";
             public string ConfirmPassword { get; set; } = "";
-            public string Role { get; set; } = "";
+            public List<string> Roles { get; set; } = [];
+        }
+
+        public class UserUpdateDto
+        {
+            public string Email { get; set; } = "";
+            public string Username { get; set; } = "";
+            public bool IsActive { get; set; }
+            public List<string> Roles { get; set; } = [];
         }
     }
 }
