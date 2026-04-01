@@ -16,6 +16,36 @@ public class SqlUserRepository : IUserRepository
         this.userManager = userManager;
     }
 
+    public async Task<string> Create(UserBody model)
+    {
+        UserModel? user = await context.Users.FirstOrDefaultAsync(x => x.Email ==  model.Email);
+
+        if (user != null)
+            return "email";
+
+        user = await context.Users.FirstOrDefaultAsync(x => x.UserName == model.Username);
+
+        if (user != null)
+            return "username";
+
+        user = new()
+        {
+            Email = model.Email,
+            UserName = model.Username,
+            IsActive = false
+        };
+
+        IdentityResult result = await userManager.CreateAsync(user, model.Password);
+
+        if (!result.Succeeded)
+            return "creation";
+
+        foreach (var role in model.Role)
+            await userManager.AddToRoleAsync(user, role.ToUpper());
+
+        return "ok";
+    }
+
     public async Task<string> Delete(string id)
     {
         UserModel? user = await context.Users.FirstOrDefaultAsync(x => x.Id == id);

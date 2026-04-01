@@ -27,38 +27,22 @@ namespace RessourceRelationnelle.API.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> CreateAccount([FromBody] UserBody model)
         {
+
+            if (model.Password != model.ConfirmPassword)
+                return BadRequest("Passwords do not match.");
+
+            string result = await userRepository.Create(model);
+
+            switch(result)
             {
-                try
-                {
-                    if (model.Password != model.ConfirmPassword)
-                        return BadRequest("Passwords do not match.");
-
-                    UserModel? user = await userManager.FindByEmailAsync(model.Email);
-                    if (user != null)
-                        return StatusCode(StatusCodes.Status500InternalServerError);
-
-                    user = new()
-                    {
-                        Email = model.Email,
-                        UserName = model.Username,
-                        SecurityStamp = Guid.NewGuid().ToString(),
-                    };
-
-                    IdentityResult result = await userManager.CreateAsync(user, model.Password);
-
-                    if (!result.Succeeded)
-                        return StatusCode(StatusCodes.Status500InternalServerError);
-
-                    foreach (var role in model.Role)
-                        await userManager.AddToRoleAsync(user, role.ToUpper());
-
-                    return Ok();
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(500, ex.Message);
-                }
-
+                case "email":
+                    return Conflict(new { message = "Email déjà existant" });
+                case "username":
+                    return Conflict(new { message = "Nom d'utilisateur déjà utilisé" });
+                case "creation":
+                    return BadRequest(new { message = "Erreur lors de la création de l'utilisareur" });
+                default:
+                    return Ok("Utilisateur créé");
             }
         }
 
@@ -110,15 +94,6 @@ namespace RessourceRelationnelle.API.Controllers
                 return NotFound(new { message = "Utilisateur non trouvé" });
 
             return Ok(new {message = "Utilisateur modifié"});
-        }
-
-        public class UserBody
-        {
-            public string Email { get; set; } = "";
-            public string Username { get; set; } = "";
-            public string Password { get; set; } = "";
-            public string ConfirmPassword { get; set; } = "";
-            public List<string> Role { get; set; } = [];
         }
 
         public class UserUpdateDto
