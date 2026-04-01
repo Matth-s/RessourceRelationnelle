@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization; 
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -41,7 +41,7 @@ namespace RessourceRelationnelle.API.Controllers
         /****************************** DELETE ******************************/
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task <ActionResult> Delete(string id)
+        public async Task<ActionResult> Delete(string id)
         {
             try
             {
@@ -65,7 +65,7 @@ namespace RessourceRelationnelle.API.Controllers
             {
                 CategoryModel? existingCategory = await repository.GetOneByName(model.CategoryName.ToUpper());
 
-                if (existingCategory != null) return Conflict(new { message = "Category already exists" });
+                if (existingCategory != null) return Conflict(new { message = "La catégorie existe déjà" });
 
                 CategoryModel category = new()
                 {
@@ -74,10 +74,10 @@ namespace RessourceRelationnelle.API.Controllers
 
                 await repository.Create(category);
                 return Ok(category);
-            } 
-            catch(Exception ex)
+            }
+            catch (Exception ex)
             {
-                return BadRequest(ex.Message); 
+                return BadRequest(ex.Message);
             }
         }
 
@@ -92,13 +92,14 @@ namespace RessourceRelationnelle.API.Controllers
                 if (existingCategory == null) return NotFound(new { message = "Category not found" });
 
                 CategoryModel? alreadyExistingCategory = await repository.GetByName(model.CategoryName);
-                if(alreadyExistingCategory != null)
+                if (alreadyExistingCategory != null)
                     return Conflict(new { message = "Category already exists" });
                 existingCategory.CategoryName = model.CategoryName.ToUpper();
                 await repository.Update(existingCategory);
                 return Ok(existingCategory);
 
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
