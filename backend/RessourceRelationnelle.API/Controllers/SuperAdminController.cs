@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RessourceRelationnelle.DATA.Models;
+using RessourceRelationnelle.DATA.Repositories;
+using static SqlUserRepository;
 
 namespace RessourceRelationnelle.API.Controllers
 {
@@ -12,11 +14,13 @@ namespace RessourceRelationnelle.API.Controllers
     { 
         private readonly UserManager<UserModel> userManager;
         private readonly RoleManager<IdentityRole> roleManager;
+        private readonly IUserRepository userRepository;
 
-        public SuperAdminController( UserManager<UserModel> userManager, RoleManager<IdentityRole> roleManager)
+        public SuperAdminController( UserManager<UserModel> userManager, RoleManager<IdentityRole> roleManager, IUserRepository userRepository)
         { 
             this.userManager = userManager;
             this.roleManager = roleManager;
+            this.userRepository = userRepository;
         }
 
         [HttpPost]
@@ -55,6 +59,18 @@ namespace RessourceRelationnelle.API.Controllers
                 }
 
             }
+        }
+
+        [HttpGet("users")]
+        [Authorize]
+        public async Task<ActionResult> GetAllUsers()
+        {
+            UserReturnAdmin[] users = await userRepository.GetAll();
+
+            if (users.Length == 0)
+                return NotFound(new { message = "Aucun utilisateur trouvé" });
+            
+            return Ok(users);
         }
 
         public class UserBody
