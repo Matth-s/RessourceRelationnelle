@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using RessourceRelationnelle.DATA.Models;
+using RessourceRelationnelle.DATA.Repositories;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -16,12 +17,14 @@ namespace RessourceRelationnelle.API.Controllers
         private readonly IConfiguration configuration;
         private readonly UserManager<UserModel> userManager;
         private readonly RoleManager<IdentityRole> roleManager;
+        private IUserRepository repository;
 
-        public AuthenticationController(IConfiguration configuration, UserManager<UserModel> userManager, RoleManager<IdentityRole> roleManager)
+        public AuthenticationController(IConfiguration configuration, UserManager<UserModel> userManager, RoleManager<IdentityRole> roleManager, IUserRepository repository)
         {
             this.configuration = configuration;
             this.userManager = userManager;
             this.roleManager = roleManager;
+            this.repository = repository;
         }
 
         [HttpPost]
@@ -74,38 +77,24 @@ namespace RessourceRelationnelle.API.Controllers
         [HttpPost]
         [Route("signup")]
         [AllowAnonymous]
-        public async Task<IActionResult> Register([FromBody] RegisterModel model)
+        public async Task<IActionResult> Register([FromBody] UserBody model)
         {
-            try
+            if (model.Password != model.ConfirmPassword)
+                return BadRequest("Passwords do not match.");
+
+            string result = await repository.Create(model);
+
+            switch (result)
             {
-                if (model.Password != model.ConfirmPassword)
-                    return BadRequest("Passwords do not match.");
-
-                UserModel? user = await userManager.FindByEmailAsync(model.Email);
-                if (user != null)
-                    return StatusCode(StatusCodes.Status500InternalServerError);
-
-                user = new()
-                {
-                    Email = model.Email,
-                    UserName = model.Username,
-                    SecurityStamp = Guid.NewGuid().ToString(),
-                };
-
-                IdentityResult result = await userManager.CreateAsync(user, model.Password);
-
-                if (!result.Succeeded)
-                    return StatusCode(StatusCodes.Status500InternalServerError);
-
-                await userManager.AddToRoleAsync(user, "User");
-
-                return Ok();
+                case "email":
+                    return Conflict(new { message = "Email déjà existant" });
+                case "username":
+                    return Conflict(new { message = "Nom d'utilisateur déjà utilisé" });
+                case "creation":
+                    return BadRequest(new { message = "Erreur lors de la création de l'utilisareur" });
+                default:
+                    return Ok("Utilisateur créé");
             }
-            catch
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-
         }
     }
 

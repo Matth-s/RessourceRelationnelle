@@ -30,7 +30,6 @@ namespace RessourceRelationnelle.API.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> CreateAccount([FromBody] UserBody model)
         {
-
             if (model.Password != model.ConfirmPassword)
                 return BadRequest("Passwords do not match.");
 
