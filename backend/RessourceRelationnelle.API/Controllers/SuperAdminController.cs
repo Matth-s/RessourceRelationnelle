@@ -16,12 +16,14 @@ namespace RessourceRelationnelle.API.Controllers
         private readonly UserManager<UserModel> userManager;
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly IUserRepository userRepository;
+        private readonly ICommentaryRepository repository;
 
-        public SuperAdminController(UserManager<UserModel> userManager, RoleManager<IdentityRole> roleManager, IUserRepository userRepository)
+        public SuperAdminController(UserManager<UserModel> userManager, RoleManager<IdentityRole> roleManager, IUserRepository userRepository, ICommentaryRepository commentaryRepository)
         {
             this.userManager = userManager;
             this.roleManager = roleManager;
             this.userRepository = userRepository;
+            this.repository = commentaryRepository;
         }
 
         [HttpPost]
@@ -96,6 +98,43 @@ namespace RessourceRelationnelle.API.Controllers
 
             return Ok(new { message = "Utilisateur modifié" });
         }
+
+
+        [HttpGet("comments")]
+        [Authorize(Roles = "Admin,SuperAdmin,Moderator")]
+        public async Task<ActionResult> GetAllComments()
+        {
+            var comments = await repository.GetAll();
+            var result = comments.Select(c => new
+            {
+                c.Id,
+                c.Content,
+                c.ModerationStatus,
+                c.CreatedAt,
+                User = new
+                {
+                    c.User.Id,
+                    Username = c.User.UserName,
+                    c.User.Email
+                },
+                Resource = new
+                {
+                    c.Resource.Id,
+                    c.Resource.Title
+                }
+            });
+            return Ok(result);
+        }
+
+        [HttpDelete("comments/{id}")]
+        [Authorize(Roles = "Admin,SuperAdmin,Moderator")]
+        public async Task<ActionResult> DeleteComment(string id)
+        {
+            var deleted = await repository.Delete(id);
+            if (!deleted) return NotFound();
+            return NoContent();
+        }
+
 
         public class UserUpdateDto
         {
