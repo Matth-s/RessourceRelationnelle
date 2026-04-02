@@ -36,6 +36,36 @@ namespace RessourceRelationnelle.API.Controllers
             }
         }
 
+        [HttpGet("UserResources/{userId}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<IEnumerable<ResourceModel>>> GetForUser(string? userId = null)
+            {
+            try
+            {
+                IEnumerable<ResourceModel> resources = await repository.GetForUser(userId);
+                return Ok(resources);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<ActionResult<IEnumerable<ResourceModel>>> GetAll()
+        {
+            try
+            {
+                IEnumerable<ResourceModel> resources = await repository.GetAll();
+                return Ok(resources);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
         [HttpPost]
         [Authorize(Roles = "User")]
         public async Task<ActionResult> Create([FromBody] CreateResourceModel model)
@@ -75,6 +105,55 @@ namespace RessourceRelationnelle.API.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> Delete(string id)
+        {
+            try
+            {
+                ResourceModel? resource = await repository.GetOne(id);
+                if (resource == null) return NotFound(new {message = "Ressource not found"});
+                await repository.Delete(resource.Id);
+                return Ok(new { message = "Resource deleted" });
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+
+        [HttpPut]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> Update([FromBody] UpdateResourceModel model)
+        {
+            try
+            {
+                ResourceModel? existingResource = await repository.GetOne(model.Id);
+                if (existingResource == null) return NotFound(new { message = "Ressource not found" });
+                ResourceModel updateResource = await repository.Update(model);
+                UpdateResourceModel updatedModel = new()
+                {
+                    Title = updateResource.Title,
+                    Resume = updateResource.Resume,
+                    Content = updateResource.Content,
+                    Url = updateResource.Url,
+                    UpdatedAt = updateResource.UpdatedAt,
+                    CategoryId = updateResource.CategoryId,
+                    ResourceTypeId = updateResource.TypeRessourceId,
+                    RelationTypeId = updateResource.TypeRelationId
+                };
+                return Ok(updatedModel);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+
         public class CreateResourceModel { 
             public string Title { get; set; } = string.Empty;
             public string Resume { get; set; } = string.Empty;
@@ -86,5 +165,5 @@ namespace RessourceRelationnelle.API.Controllers
             public string RelationTypeId { get; set; } = string.Empty;
         }
 
-    } 
+    }
 }

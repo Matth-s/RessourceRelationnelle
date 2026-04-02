@@ -119,7 +119,7 @@ namespace RessourceRelationnelle.API
             app.MapOpenApi();
 
             app.UseCors("AllowFront");       // 1. CORS en premier
-            //app.UseHttpsRedirection();       // 2. HTTPS
+            app.UseHttpsRedirection();       // 2. HTTPS
             app.UseAuthentication();         // 3. Qui es-tu ?
             app.UseAuthorization();          // 4. As-tu le droit ?
 

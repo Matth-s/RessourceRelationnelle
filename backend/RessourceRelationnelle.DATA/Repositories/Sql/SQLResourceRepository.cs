@@ -49,5 +49,49 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
+
+        public async Task<IEnumerable<ResourceModel?>> GetAll()
+        {
+            return await context.Resources
+                .Include(r => r.User)
+                .Include(r => r.Category)
+                .Include(r => r.TypeRessource)
+                .Include(r => r.TypeRelation)
+                .ToListAsync();
+        }
+
+        public async Task Delete(string id)
+        {
+            ResourceModel? model = await context.Resources.FirstOrDefaultAsync(x => x.Id == id);
+            if (model != null)
+            {
+                context.Resources.Remove(model);
+                await context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<ResourceModel> Update(UpdateResourceModel model)
+        {
+            ResourceModel? existingResource = context.Resources.FirstOrDefault(x => x.Id == model.Id);
+
+            if (existingResource == null)
+            {
+                throw new Exception("Resource not found");
+            }
+            existingResource.Title = model.Title;
+            existingResource.Resume = model.Resume;
+            existingResource.Content = model.Content;
+            existingResource.Url = model.Url;
+            existingResource.UpdatedAt = DateTime.UtcNow;
+            existingResource.TypeRessourceId = model.ResourceTypeId;
+            existingResource.TypeRelationId = model.RelationTypeId;
+
+            context.Resources.Update(existingResource);
+
+            await context.SaveChangesAsync();
+            return existingResource;
+
+
+        }
     }
 }
