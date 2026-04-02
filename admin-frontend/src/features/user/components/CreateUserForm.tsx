@@ -17,11 +17,13 @@ import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createUserApi } from "../api/create-user-api";
-import SubmitButton from "@/components/SubmitButton";
-import FormErrorMessage from "@/components/FormErrorMessage";
 import { FETCH_KEYS } from "@/types/fetch-key-type";
 import { toast } from "sonner";
+
 import ShowFormPassword from "@/features/auth/components/ShowFormPassword";
+import SubmitButton from "@/components/SubmitButton";
+import FormErrorMessage from "@/components/FormErrorMessage";
+import SelectFormRole from "./SelectFormRole";
 
 const CreateUserForm = () => {
   const queryClient = useQueryClient();
@@ -130,8 +132,8 @@ const CreateUserForm = () => {
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel>Roles</FieldLabel>
-                <Input {...field} />
+                <FieldLabel htmlFor={field.name}>Roles</FieldLabel>
+                <SelectFormRole value={field.value} onChange={field.onChange} />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
