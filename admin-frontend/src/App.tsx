@@ -15,6 +15,7 @@ import CategoryPage from "./pages/(main)/CategoryPage";
 import UserPage from "./pages/(main)/UserPage";
 import StatsPage from "./pages/(main)/StatsPage";
 import NotFoundGlobalPage from "./pages/NotFoundGlobalPage";
+import CommentsPage from "./pages/(main)/CommentsPage";
 
 const App = () => {
   const { user } = useAppSelector((state) => state.auth);
@@ -61,6 +62,7 @@ const App = () => {
         <Route path="/categories" element={<CategoryPage />} />
         <Route path="/utilisateurs" element={<UserPage />} />
         <Route path="/statistiques" element={<StatsPage />} />
+        <Route path="/commentaires" element={<CommentsPage />} />
       </Route>
     </Routes>
   );

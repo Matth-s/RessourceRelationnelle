@@ -7,7 +7,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 
-const CategoryError = ({ onRetry }: { onRetry: () => void }) => {
+const CardFetchError = ({ onRetry }: { onRetry: () => void }) => {
   return (
     <Card>
       <CardHeader>
@@ -20,4 +20,4 @@ const CategoryError = ({ onRetry }: { onRetry: () => void }) => {
   );
 };
 
-export default CategoryError;
+export default CardFetchError;

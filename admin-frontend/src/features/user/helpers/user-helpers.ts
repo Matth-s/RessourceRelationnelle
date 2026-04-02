@@ -5,7 +5,7 @@ export const createUserStats = (users: usersSchemaType): IStats[] => {
   const total = users.length;
   const totalAdmin = users.filter((user) => user.role.includes("Admin"));
   const totalSuperAdmin = users.filter((user) =>
-    user.role.includes("Superadmin"),
+    user.role.includes("SuperAdmin"),
   );
   const totalActive = users.filter(
     (user) => user.role.includes("User") && user.isActive,
@@ -28,7 +28,7 @@ export const createUserStats = (users: usersSchemaType): IStats[] => {
       value: totalAdmin.length,
     },
     {
-      title: "SuperAdmin",
+      title: "Super admin",
       value: totalSuperAdmin.length,
     },
     {

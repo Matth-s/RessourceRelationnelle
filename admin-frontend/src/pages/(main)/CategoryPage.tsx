@@ -4,11 +4,11 @@ import { getCategoriesApi } from "@/features/categories/api/get-categories-api";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import { FETCH_KEYS } from "@/types/fetch-key-type";
+import { useState } from "react";
 
 import CreateCategoryForm from "@/features/categories/components/CreateCategoryForm";
 import CategoriesList from "@/features/categories/components/CategoriesList";
 import CategoryModal from "@/features/categories/components/CategoryModal";
-import { useState } from "react";
 
 const CategoryPage = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
