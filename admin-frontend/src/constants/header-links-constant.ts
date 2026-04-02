@@ -5,6 +5,7 @@ import resourceIcon from "@/assets/resources-icon.svg";
 import categoriesIcon from "@/assets/category-icon.svg";
 import statsIcon from "@/assets/stats-icon.svg";
 import usersIcon from "@/assets/users-icon.svg";
+import commentsIcon from "@/assets/comments-icon.svg";
 
 export const HEADER_LINKS_CONSTANT = [
   {
@@ -36,5 +37,11 @@ export const HEADER_LINKS_CONSTANT = [
     path: "/statistiques",
     requiredRole: USER_ROLE,
     icon: statsIcon,
+  },
+  {
+    name: "Commentaires",
+    path: "/commentaires",
+    requiredRole: USER_ROLE,
+    icon: commentsIcon,
   },
 ];
