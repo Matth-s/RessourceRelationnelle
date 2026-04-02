@@ -17,6 +17,7 @@ namespace RessourceRelationnelle.DATA.Repositories.Sql
             return await context.Comments
                 .Include(c => c.User)
                 .Include(c => c.Resource)
+                .OrderByDescending(c => c.CreatedAt)
                 .ToListAsync();
         }
 
