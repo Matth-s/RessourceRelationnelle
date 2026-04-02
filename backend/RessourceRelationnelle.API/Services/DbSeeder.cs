@@ -459,7 +459,7 @@ namespace RessourceRelationnelle.API.Services
                         Id = Guid.NewGuid().ToString(),
                         ResourceId = resource.Id,
                         UserId = user.Id,
-                        ModerationStatus = "Approved",
+                        ModerationStatus = i % 2 == 0 ? "Approved" : "Pending",
                         CreatedAt = now.AddDays(-(i + 1)),
                         Content = GetCommentText(categorySeed.DisplayName, i)
                     });
