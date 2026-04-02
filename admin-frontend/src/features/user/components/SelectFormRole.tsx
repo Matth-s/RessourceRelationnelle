@@ -20,7 +20,7 @@ const SelectFormRole = ({ role, onChange }: SelectFormRoleProps) => {
       onValueChange={(p) => {
         if (p === null) return;
 
-        onChange(p);
+        onChange(p as IUserRole);
       }}
     >
       <SelectTrigger>
