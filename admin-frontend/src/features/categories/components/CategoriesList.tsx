@@ -9,20 +9,26 @@ import type { categoriesArrayType } from "../schemas/categories-schema";
 import { CATEGORIES_HEADER_TABLE } from "../constants/categories-constant";
 
 import CategoryCard from "./CategoryCard";
+import CardFetchError from "@/components/CardFetchError";
 
 type CategoriesListProps = {
   categories: categoriesArrayType;
   isLoading: boolean;
+  error: Error | null;
+  refetch: () => void;
 };
 
-const CategoriesList = ({ categories, isLoading }: CategoriesListProps) => {
+const CategoriesList = ({
+  categories,
+  isLoading,
+  error,
+  refetch,
+}: CategoriesListProps) => {
   if (isLoading) {
     return <p>Chargement...</p>;
   }
 
-  if (!categories?.length) {
-    return <p>Aucune catégorie</p>;
-  }
+  if (error) return <CardFetchError onRetry={refetch} />;
 
   return (
     <div className="bg-muted/40 mx-auto w-full overflow-hidden rounded-xl border">
