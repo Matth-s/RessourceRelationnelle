@@ -25,7 +25,7 @@ const CategoriesList = ({ categories, isLoading }: CategoriesListProps) => {
   }
 
   return (
-    <div className="bg-muted/40 mx-auto w-[90%] overflow-hidden rounded-xl border">
+    <div className="bg-muted/40 mx-auto w-full overflow-hidden rounded-xl border">
       <Table>
         <TableHeader>
           <TableRow className="bg-muted/60">

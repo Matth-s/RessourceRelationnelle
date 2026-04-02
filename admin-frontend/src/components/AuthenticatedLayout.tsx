@@ -7,7 +7,7 @@ type AuthenticatedLayoutProps = {
 
 export const AuthenticatedLayout = ({ children }: AuthenticatedLayoutProps) => {
   return (
-    <div className="flex h-full">
+    <div className="flex min-h-full">
       <div className="w-1/5">
         <Aside />
       </div>
