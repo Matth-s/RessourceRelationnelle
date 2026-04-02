@@ -26,6 +26,7 @@ import type { userSchemaType } from "../schemas/users-schema";
 import FormErrorMessage from "@/components/FormErrorMessage";
 import SubmitButton from "@/components/SubmitButton";
 import SelectActiveForm from "./SelectActiveForm";
+import SelectFormRole from "./SelectFormRole";
 
 type UpdateUserFormProps = {
   user: userSchemaType;
@@ -130,22 +131,19 @@ const UpdateUserForm = ({ user }: UpdateUserFormProps) => {
             )}
           />
 
-          {/* <Controller
-              name="role"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor={field.name}>Sport pratiqué</FieldLabel>
-                  <SelectFormRole
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            /> */}
+          <Controller
+            name="role"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor={field.name}>Roles</FieldLabel>
+                <SelectFormRole value={field.value} onChange={field.onChange} />
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
+            )}
+          />
 
           <Controller
             name="isActive"

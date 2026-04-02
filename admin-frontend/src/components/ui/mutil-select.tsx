@@ -314,7 +314,6 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
       animationConfig,
       maxCount = 3,
       modalPopover = false,
-      asChild = false,
       className,
       hideSelectAll = false,
       searchable = true,
@@ -839,57 +838,14 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                       .slice(0, responsiveSettings.maxCount)
                       .map((value) => {
                         const option = getOptionByValue(value);
-                        const IconComponent = option?.icon;
-                        const customStyle = option?.style;
                         if (!option) {
                           return null;
                         }
-                        const badgeStyle: React.CSSProperties = {
-                          animationDuration: `${animation}s`,
-                          ...(customStyle?.badgeColor && {
-                            backgroundColor: customStyle.badgeColor,
-                          }),
-                          ...(customStyle?.gradient && {
-                            background: customStyle.gradient,
-                            color: "white",
-                          }),
-                        };
                         return (
                           <Badge
                             key={value}
-                            className={cn(
-                              getBadgeAnimationClass(),
-                              multiSelectVariants({ variant }),
-                              customStyle?.gradient &&
-                                "border-transparent text-white",
-                              responsiveSettings.compactMode &&
-                                "px-1.5 py-0.5 text-xs",
-                              screenSize === "mobile" &&
-                                "max-w-[120px] truncate",
-                              singleLine && "flex-shrink-0 whitespace-nowrap",
-                              "[&>svg]:pointer-events-auto",
-                            )}
-                            style={{
-                              ...badgeStyle,
-                              animationDuration: `${
-                                animationConfig?.duration || animation
-                              }s`,
-                              animationDelay: `${animationConfig?.delay || 0}s`,
-                            }}
+                            className={cn("flex h-8 items-center rounded-xs")}
                           >
-                            {IconComponent && !responsiveSettings.hideIcons && (
-                              <IconComponent
-                                className={cn(
-                                  "mr-2 h-4 w-4",
-                                  responsiveSettings.compactMode &&
-                                    "mr-1 h-3 w-3",
-                                  customStyle?.iconColor && "text-current",
-                                )}
-                                {...(customStyle?.iconColor && {
-                                  style: { color: customStyle.iconColor },
-                                })}
-                              />
-                            )}
                             <span
                               className={cn(
                                 screenSize === "mobile" && "truncate",
@@ -915,7 +871,6 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                                 }
                               }}
                               aria-label={`Remove ${option.label} from selection`}
-                              className="-m-0.5 ml-2 h-4 w-4 cursor-pointer rounded-sm p-0.5 hover:bg-white/20 focus:ring-1 focus:ring-white/50 focus:outline-none"
                             >
                               <XCircle
                                 className={cn(
@@ -940,12 +895,6 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                           singleLine && "flex-shrink-0 whitespace-nowrap",
                           "[&>svg]:pointer-events-auto",
                         )}
-                        style={{
-                          animationDuration: `${
-                            animationConfig?.duration || animation
-                          }s`,
-                          animationDelay: `${animationConfig?.delay || 0}s`,
-                        }}
                       >
                         {`+ ${
                           selectedValues.length - responsiveSettings.maxCount
@@ -964,29 +913,6 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                     )}
                   </div>
                   <div className="flex items-center justify-between">
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        handleClear();
-                      }}
-                      onKeyDown={(event) => {
-                        if (event.key === "Enter" || event.key === " ") {
-                          event.preventDefault();
-                          event.stopPropagation();
-                          handleClear();
-                        }
-                      }}
-                      aria-label={`Clear all ${selectedValues.length} selected options`}
-                      className="text-muted-foreground hover:text-foreground focus:ring-ring mx-2 flex h-4 w-4 cursor-pointer items-center justify-center rounded-sm focus:ring-2 focus:ring-offset-1 focus:outline-none"
-                    >
-                      <XIcon className="h-4 w-4" />
-                    </div>
-                    <Separator
-                      orientation="vertical"
-                      className="flex h-full min-h-6"
-                    />
                     <ChevronDown
                       className="text-muted-foreground mx-2 h-4 cursor-pointer"
                       aria-hidden="true"
@@ -1183,25 +1109,11 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                 <CommandSeparator />
                 <CommandGroup>
                   <div className="flex items-center justify-between">
-                    {selectedValues.length > 0 && (
-                      <>
-                        <CommandItem
-                          onSelect={handleClear}
-                          className="flex-1 cursor-pointer justify-center"
-                        >
-                          Clear
-                        </CommandItem>
-                        <Separator
-                          orientation="vertical"
-                          className="flex h-full min-h-6"
-                        />
-                      </>
-                    )}
                     <CommandItem
                       onSelect={() => setIsPopoverOpen(false)}
-                      className="max-w-full flex-1 cursor-pointer justify-center"
+                      className="max-w-full flex-1 cursor-pointer justify-center text-center"
                     >
-                      Close
+                      Fermer
                     </CommandItem>
                   </div>
                 </CommandGroup>

@@ -15,7 +15,7 @@ const UserCard = ({ user }: UserCardProps) => {
       <TableCell>{email}</TableCell>
       <TableCell>{username}</TableCell>
       <TableCell>{role}</TableCell>
-      <TableCell>{createdAt.toDateString()}</TableCell>
+      <TableCell>{createdAt.toLocaleDateString()}</TableCell>
       <TableCell className="flex justify-center gap-x-1">
         <UpdateUserForm user={user} />
         <DeleteUserForm user={user} />
