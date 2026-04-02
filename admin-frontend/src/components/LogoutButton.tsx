@@ -4,6 +4,7 @@ import { logout } from "@/features/auth/auth.slice";
 import { useNavigate } from "react-router";
 
 import logoutIcon from "@/assets/logout-icon.svg";
+import { deleteAuthCookie } from "@/lib/cookie";
 
 const LogoutButton = () => {
   const dispatch = useAppDispatch();
@@ -12,6 +13,7 @@ const LogoutButton = () => {
   const handleClick = () => {
     dispatch(logout());
     navigate("/authentification/connexion");
+    deleteAuthCookie();
   };
 
   return (

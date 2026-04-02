@@ -4,47 +4,54 @@ import { getCategoriesApi } from "@/features/categories/api/get-categories-api";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import { FETCH_KEYS } from "@/types/fetch-key-type";
+import { useState } from "react";
 
 import CreateCategoryForm from "@/features/categories/components/CreateCategoryForm";
 import CategoriesList from "@/features/categories/components/CategoriesList";
 import CategoryModal from "@/features/categories/components/CategoryModal";
-import { useState } from "react";
 
 const CategoryPage = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const { isLoading, error, data } = useQuery({
+  const {
+    isLoading,
+    error,
+    data = [],
+    refetch,
+  } = useQuery({
     queryKey: [FETCH_KEYS.CATEGORY],
     queryFn: getCategoriesApi,
+    retry: false,
   });
 
-  if (error || data === undefined) return <p>error</p>;
-
   return (
-    <AuthenticatedLayout
-      pageContent={
-        <>
-          <div className="flex items-center justify-between">
-            <h1>Catégories</h1>
-            <CategoryModal
-              setIsOpen={() => setIsOpen((prev) => !prev)}
-              isOpen={isOpen}
-              dialogButton={
-                <Button>
-                  <PlusIcon />
-                  Ajouter une catégorie
-                </Button>
-              }
-              form={<CreateCategoryForm closeModal={() => setIsOpen(false)} />}
-              dialogTitle="Nouvelle catégorie"
-              dialogDescription="Ajouter une nouvelle catégorie de ressource"
-            />
-          </div>
+    <AuthenticatedLayout>
+      <div className="flex flex-col gap-y-4">
+        <div className="flex items-center justify-between">
+          <h1>Catégories</h1>
+          <CategoryModal
+            setIsOpen={() => setIsOpen((prev) => !prev)}
+            isOpen={isOpen}
+            dialogButton={
+              <Button>
+                <PlusIcon />
+                Ajouter une catégorie
+              </Button>
+            }
+            form={<CreateCategoryForm closeModal={() => setIsOpen(false)} />}
+            dialogTitle="Nouvelle catégorie"
+            dialogDescription="Ajouter une nouvelle catégorie de ressource"
+          />
+        </div>
 
-          <CategoriesList isLoading={isLoading} categories={data} />
-        </>
-      }
-    ></AuthenticatedLayout>
+        <CategoriesList
+          isLoading={isLoading}
+          categories={data}
+          error={error}
+          refetch={refetch}
+        />
+      </div>
+    </AuthenticatedLayout>
   );
 };
 

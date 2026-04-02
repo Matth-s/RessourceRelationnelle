@@ -3,7 +3,7 @@
     public  class CommentaryModel
     {
         public string Id { get; set; }
-        public string ModerationStatus { get; set; } = "Pending"; // "PENDING", "APPROVED", "REJECTED"
+        public string ModerationStatus { get; set; } = "Pending"; // "PENDING", "APPROVED"
         public string Content { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         // Foreign key to UserModel

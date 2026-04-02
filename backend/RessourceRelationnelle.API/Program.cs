@@ -17,17 +17,19 @@ namespace RessourceRelationnelle.API
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args); 
+            var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddControllers().AddJsonOptions(options =>
             {
-                options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+                options.JsonSerializerOptions.ReferenceHandler =
+                    System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
             });
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "Security", Version = "v1" });
+
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
@@ -37,37 +39,37 @@ namespace RessourceRelationnelle.API
                     In = ParameterLocation.Header,
                     Description = "Enter token",
                 });
-                options.AddSecurityRequirement(new OpenApiSecurityRequirement
-                 {
-                     {
-                         new OpenApiSecurityScheme
-                         {
-                             Reference = new OpenApiReference
-                             {
-                                 Type = ReferenceType.SecurityScheme,
-                                 Id = "Bearer",
-                             }
-                         },
-                         new string[]{ }
-                     }
-                 });
-            });
 
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer",
+                            }
+                        },
+                        Array.Empty<string>()
+                    }
+                });
+            });
 
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowFront", policy =>
                 {
                     policy
-                        .AllowAnyOrigin()   // ou .WithOrigins("http://192.168.65.XX:5173")
+                        .AllowAnyOrigin()
                         .AllowAnyMethod()
                         .AllowAnyHeader();
                 });
             });
 
-
             builder.Services.AddDbContext<DataContext>(options =>
-            options.UseSqlite(builder.Configuration.GetConnectionString("Default"),
+                options.UseSqlite(
+                    builder.Configuration.GetConnectionString("Default"),
                     b => b.MigrationsAssembly("RessourceRelationnelle.API")));
 
             builder.Services.AddScoped<IResourceRepository, SqlResourceRepository>();
@@ -75,44 +77,37 @@ namespace RessourceRelationnelle.API
             builder.Services.AddScoped<ICategoryRepository, SQLCategoryRepository>();
             builder.Services.AddScoped<IRelationTypeRepository, SQLRelationTypeRepository>();
             builder.Services.AddScoped<ITypeResourceRepository, SQLTypeResourceRepository>();
-            builder.Services.AddIdentity<UserModel, IdentityRole>()  // ← doit être AVANT
+            builder.Services.AddScoped<IUserRepository, SqlUserRepository>();
+            builder.Services.AddScoped<ICommentaryRepository, SqlCommentaryRepository>();
+
+            builder.Services.AddIdentity<UserModel, IdentityRole>()
                 .AddEntityFrameworkStores<DataContext>()
                 .AddDefaultTokenProviders();
-            builder.Services.AddScoped<IUserRepository, SqlUserRepository>(); // ← APRÈS Identity
-
-
 
             builder.Services.AddOpenApi();
 
             builder.Services.AddAuthentication(options =>
             {
-                // Authentification + autorisation en JWT
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(options =>
             {
-                // Configuration de la validation du token
-                options.SaveToken = true; // permet d'automatiser la vérification de l'expiration
-                options.RequireHttpsMetadata = false; // token pas dans url
-                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    // Ce qu'on vérifie quand on reçoit un token
-                    ValidateIssuer = false, // Vérif emetteur du token
-                    ValidateLifetime = true, // Vérif exipration token
-                    ValidateAudience = false, // Vérif client
-                    ValidateIssuerSigningKey = true, // Vérif signature
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+                    ValidateIssuer = false,
+                    ValidateLifetime = true,
+                    ValidateAudience = false,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
                 };
             });
 
             var app = builder.Build();
-
-            using (var scope = app.Services.CreateScope())
-            {
-                DataServices.Initialize(scope.ServiceProvider);
-            }
 
             app.UseSwagger();
             app.UseSwaggerUI();
@@ -124,20 +119,25 @@ namespace RessourceRelationnelle.API
             app.UseAuthorization();          // 4. As-tu le droit ?
 
             app.MapControllers();
+
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
+
                 try
                 {
                     var context = services.GetRequiredService<DataContext>();
                     context.Database.Migrate();
+
+                    DbSeeder.SeedAsync(services).GetAwaiter().GetResult();
                 }
                 catch (Exception ex)
                 {
                     var logger = services.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "Une erreur est survenue lors de la migration de la base de données.");
+                    logger.LogError(ex, "Une erreur est survenue lors de la migration ou du seeding de la base de données.");
                 }
             }
+
             app.Run();
         }
     }

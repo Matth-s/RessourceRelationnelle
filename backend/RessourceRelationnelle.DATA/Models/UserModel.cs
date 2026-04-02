@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RessourceRelationnelle.DATA.Models
 {
+
     public class UserModel : IdentityUser
     {
         public bool IsActive { get; set; } = true;
@@ -13,8 +14,5 @@ namespace RessourceRelationnelle.DATA.Models
 
         public string? DemographicZoneId { get; set; }
         public DemographicZoneModel? DemographicZone { get; set; }
-
-        [NotMapped] 
-        public List<string> Roles { get; set; } = new();
     }
 }

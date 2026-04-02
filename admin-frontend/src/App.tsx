@@ -1,10 +1,11 @@
-import { Route, Routes, useNavigate } from "react-router";
+import { Route, Routes, useLocation, useNavigate } from "react-router";
 import { AuthOutlet } from "./components/AuthOutlet";
-import { USER_ROLE } from "./types/user-role-type";
+import { USER_ROLE } from "./types/user-type";
 import { useAppDispatch, useAppSelector } from "./store/hook";
 import { getCurrentUserApi } from "./features/user/api/get-current-user-api";
 import { useQuery } from "@tanstack/react-query";
 import { login } from "./features/auth/auth.slice";
+import { useEffect } from "react";
 
 import LoginPage from "./pages/(auth)/LoginPage";
 import AuthLayout from "./pages/(auth)/AuthLayout";
@@ -13,23 +14,27 @@ import ResourcePage from "./pages/(main)/ResourcePage";
 import CategoryPage from "./pages/(main)/CategoryPage";
 import UserPage from "./pages/(main)/UserPage";
 import StatsPage from "./pages/(main)/StatsPage";
-import { useEffect } from "react";
+import NotFoundGlobalPage from "./pages/NotFoundGlobalPage";
+import CommentsPage from "./pages/(main)/CommentsPage";
 
 const App = () => {
   const { user } = useAppSelector((state) => state.auth);
+  const { pathname } = useLocation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const { isPending, isError, data } = useQuery({
     queryFn: getCurrentUserApi,
     queryKey: ["current-user"],
-    retry: 0,
+    retry: false,
   });
 
   useEffect(() => {
     if (data) {
       dispatch(login(data));
-      navigate("/");
+      const pathnameUrl =
+        pathname === "/authentification/connexion" ? "/" : pathname;
+      navigate(pathnameUrl);
     }
   }, [data, user, dispatch]);
 
@@ -46,6 +51,7 @@ const App = () => {
       {/* Authentification */}
       <Route element={<AuthLayout />}>
         <Route path="/authentification/connexion" element={<LoginPage />} />
+        <Route path="*" element={<NotFoundGlobalPage />} />
       </Route>
 
       <Route
@@ -56,6 +62,7 @@ const App = () => {
         <Route path="/categories" element={<CategoryPage />} />
         <Route path="/utilisateurs" element={<UserPage />} />
         <Route path="/statistiques" element={<StatsPage />} />
+        <Route path="/commentaires" element={<CommentsPage />} />
       </Route>
     </Routes>
   );

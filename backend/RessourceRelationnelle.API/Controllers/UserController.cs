@@ -10,6 +10,7 @@ using System.Security.Claims;
 
 namespace RessourceRelationnelle.API.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -30,7 +31,7 @@ namespace RessourceRelationnelle.API.Controllers
         public async Task<ActionResult> GetUserByToken()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            
+
             if (userId == null)
                 return Unauthorized();
 
@@ -40,8 +41,8 @@ namespace RessourceRelationnelle.API.Controllers
 
             UserReturn returnUser = new()
             {
-                Username = user.UserName,
-                Role = user.Roles.ToArray(),
+                Username = user.Username,
+                Role = user.Role.ToList(),
                 Token = token
             };
 
@@ -54,7 +55,7 @@ namespace RessourceRelationnelle.API.Controllers
     public class UserReturn
     {
         public string Username { get; set; } = "";
-        public string[] Role { get; set; } = [];
+        public List<string> Role { get; set; } = [];
         public string Token { get; set; } = "";
     }
 }

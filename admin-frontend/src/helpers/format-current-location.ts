@@ -17,6 +17,9 @@ export const formatCurrentLocation = (path: string): string => {
     case "/statistiques":
       formatted = "Statistiques";
       break;
+    case "/commentaires":
+      formatted = "Commentaires";
+      break;
     default:
       formatted = "";
   }

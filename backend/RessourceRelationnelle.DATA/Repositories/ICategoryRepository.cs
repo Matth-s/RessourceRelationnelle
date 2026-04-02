@@ -1,7 +1,8 @@
-﻿using RessourceRelationnelle.DATA.Models; 
+﻿using RessourceRelationnelle.DATA.Models;
 
 namespace RessourceRelationnelle.DATA.Repositories
 {
+
     public interface ICategoryRepository
     {
         Task<CategoryModel> Create(CategoryModel model);

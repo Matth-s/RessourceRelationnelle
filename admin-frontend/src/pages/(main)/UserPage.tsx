@@ -1,21 +1,28 @@
 import { AuthenticatedLayout } from "@/components/AuthenticatedLayout";
-import { getUsersApi } from "@/features/user/api/get-users-api";
-import UsersList from "@/features/user/components/UsersList";
-import { FETCH_KEYS } from "@/types/fetch-key-type";
-import { useQuery } from "@tanstack/react-query";
+import { useUsers } from "@/features/user/hooks/use-users";
+
+import HeaderUserPage from "@/features/user/components/HeaderUserPage";
+import UsersList from "@/components/UsersList";
+import UserStats from "@/features/user/components/UserStats";
 
 const UserPage = () => {
-  const { isPending, error, data } = useQuery({
-    queryKey: [FETCH_KEYS.USERS],
-    queryFn: getUsersApi,
-  });
+  const { isPending, error, data, refetch } = useUsers();
 
   return (
-    <AuthenticatedLayout
-      pageContent={
-        <UsersList isLoading={isPending} error={error} users={data ?? []} />
-      }
-    ></AuthenticatedLayout>
+    <AuthenticatedLayout>
+      <div className="flex min-h-full flex-col gap-y-4">
+        <HeaderUserPage />
+
+        <UserStats isLoading={isPending} error={error} data={data} />
+
+        <UsersList
+          refetch={refetch}
+          isLoading={isPending}
+          error={error}
+          users={data}
+        />
+      </div>
+    </AuthenticatedLayout>
   );
 };
 
