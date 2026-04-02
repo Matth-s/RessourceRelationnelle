@@ -10,7 +10,7 @@ const UserPage = () => {
 
   return (
     <AuthenticatedLayout>
-      <div className="flex h-full flex-col gap-y-4">
+      <div className="flex min-h-full flex-col gap-y-4">
         <HeaderUserPage />
 
         <UserStats isLoading={isPending} error={error} data={data} />

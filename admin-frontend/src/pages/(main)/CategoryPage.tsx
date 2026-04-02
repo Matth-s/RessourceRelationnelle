@@ -22,7 +22,7 @@ const CategoryPage = () => {
 
   return (
     <AuthenticatedLayout>
-      <>
+      <div className="flex flex-col gap-y-4">
         <div className="flex items-center justify-between">
           <h1>Catégories</h1>
           <CategoryModal
@@ -41,7 +41,7 @@ const CategoryPage = () => {
         </div>
 
         <CategoriesList isLoading={isLoading} categories={data} />
-      </>
+      </div>
     </AuthenticatedLayout>
   );
 };
