@@ -1,20 +1,20 @@
-import { USER_ROLE, type IUserRoleConstant } from "@/types/user-role-type";
+import { USER_ROLE, type IUserRoleConstant } from "@/types/user-type";
 
 export const USER_ROLE_CONSTANT: IUserRoleConstant[] = [
   {
-    name: "User",
+    label: "User",
     value: USER_ROLE.USER,
   },
   {
-    name: "Admin",
+    label: "Admin",
     value: USER_ROLE.ADMIN,
   },
   {
-    name: "Modérateur",
+    label: "Modérateur",
     value: USER_ROLE.MODERATOR,
   },
   {
-    name: "Super admin",
+    label: "Super admin",
     value: USER_ROLE.SUPERADMIN,
   },
 ];

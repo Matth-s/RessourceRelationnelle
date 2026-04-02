@@ -6,7 +6,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { USER_ROLE_CONSTANT } from "@/constants/user-constant";
-import type { IUserRole } from "@/types/user-role-type";
+import type { IUserRole } from "@/types/user-type";
 
 type SelectFormRoleProps = {
   role: IUserRole;
@@ -29,7 +29,7 @@ const SelectFormRole = ({ role, onChange }: SelectFormRoleProps) => {
       <SelectContent>
         {USER_ROLE_CONSTANT.map((item) => (
           <SelectItem key={item.value} value={item.value}>
-            {item.name}
+            {item.label}
           </SelectItem>
         ))}
       </SelectContent>

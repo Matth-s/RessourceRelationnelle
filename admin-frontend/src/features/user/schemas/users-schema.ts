@@ -1,4 +1,4 @@
-import { USER_ROLE } from "@/types/user-role-type";
+import { USER_ROLE } from "@/types/user-type";
 import { z } from "zod";
 
 export const userSchema = z.object({

@@ -1,22 +1,12 @@
 import { AuthenticatedLayout } from "@/components/AuthenticatedLayout";
-import { getUsersApi } from "@/features/user/api/get-users-api";
+import { useUsers } from "@/features/user/hooks/use-users";
+
 import HeaderUserPage from "@/features/user/components/HeaderUserPage";
 import UsersList from "@/components/UsersList";
 import UserStats from "@/features/user/components/UserStats";
-import { FETCH_KEYS } from "@/types/fetch-key-type";
-import { useQuery } from "@tanstack/react-query";
 
 const UserPage = () => {
-  const {
-    isPending,
-    error,
-    data = [],
-    refetch,
-  } = useQuery({
-    queryKey: [FETCH_KEYS.USERS],
-    queryFn: getUsersApi,
-    retry: false,
-  });
+  const { isPending, error, data, refetch } = useUsers();
 
   return (
     <AuthenticatedLayout>
