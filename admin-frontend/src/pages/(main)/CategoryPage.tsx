@@ -13,12 +13,16 @@ import CategoryModal from "@/features/categories/components/CategoryModal";
 const CategoryPage = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const { isLoading, error, data } = useQuery({
+  const {
+    isLoading,
+    error,
+    data = [],
+    refetch,
+  } = useQuery({
     queryKey: [FETCH_KEYS.CATEGORY],
     queryFn: getCategoriesApi,
+    retry: false,
   });
-
-  if (error || data === undefined) return <p>error</p>;
 
   return (
     <AuthenticatedLayout>
@@ -40,7 +44,12 @@ const CategoryPage = () => {
           />
         </div>
 
-        <CategoriesList isLoading={isLoading} categories={data} />
+        <CategoriesList
+          isLoading={isLoading}
+          categories={data}
+          error={error}
+          refetch={refetch}
+        />
       </div>
     </AuthenticatedLayout>
   );
