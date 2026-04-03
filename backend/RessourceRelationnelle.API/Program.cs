@@ -113,10 +113,10 @@ namespace RessourceRelationnelle.API
             app.UseSwaggerUI();
             app.MapOpenApi();
 
-            app.UseCors("AllowFront");
-            app.UseHttpsRedirection();
-            app.UseAuthentication();
-            app.UseAuthorization();
+            app.UseCors("AllowFront");       // 1. CORS en premier
+            app.UseHttpsRedirection();       // 2. HTTPS
+            app.UseAuthentication();         // 3. Qui es-tu ?
+            app.UseAuthorization();          // 4. As-tu le droit ?
 
             app.MapControllers();
 

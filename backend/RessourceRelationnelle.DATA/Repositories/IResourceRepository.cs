@@ -6,5 +6,20 @@ namespace RessourceRelationnelle.DATA.Repositories
         Task<ResourceModel> Create(ResourceModel model);
         Task<ResourceModel?> GetOne(string id);
         Task<IEnumerable<ResourceModel>> GetForUser(string? userId = null);
+        Task<IEnumerable<ResourceModel>> GetAll();
+        Task Delete(string id);
+        Task<ResourceModel> Update(UpdateResourceModel model);
+    }
+    public class UpdateResourceModel
+    {
+        public string Id { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
+        public string Resume { get; set; } = string.Empty;
+        public string Content { get; set; } = string.Empty;
+        public string Url { get; set; } = string.Empty;
+        public DateTime? UpdatedAt { get; set; }
+        public string CategoryId { get; set; } = string.Empty;
+        public string ResourceTypeId { get; set; } = string.Empty;
+        public string RelationTypeId { get; set; } = string.Empty;
     }
 }
