@@ -21,7 +21,7 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
             await context.SaveChangesAsync();
 
             return await context.Resources
-                .Include(r => r.User)
+                //.Include(r => r.User)
                 .Include(r => r.Category)
                 .Include(r => r.TypeRessource)
                 .Include(r => r.TypeRelation)
@@ -31,7 +31,7 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
         public async Task<IEnumerable<ResourceModel>> GetForUser(string? userId = null)
         {
             return await context.Resources
-                .Include(r => r.User)
+                //.Include(r => r.User)
                 .Include(r => r.Category)
                 .Include(r => r.TypeRessource)
                 .Include(r => r.TypeRelation)
@@ -42,7 +42,7 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
         public async Task<ResourceModel?> GetOne(string id)
         {
             return await context.Resources
-                .Include(r => r.User)
+                //.Include(r => r.User)
                 .Include(r => r.Category)
                 .Include(r => r.TypeRessource)
                 .Include(r => r.TypeRelation)
@@ -50,10 +50,10 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<IEnumerable<ResourceModel?>> GetAll()
+        public async Task<IEnumerable<ResourceModel>> GetAll()
         {
             return await context.Resources
-                .Include(r => r.User)
+                //.Include(r => r.User)
                 .Include(r => r.Category)
                 .Include(r => r.TypeRessource)
                 .Include(r => r.TypeRelation)
@@ -90,8 +90,6 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
 
             await context.SaveChangesAsync();
             return existingResource;
-
-
         }
     }
 }
