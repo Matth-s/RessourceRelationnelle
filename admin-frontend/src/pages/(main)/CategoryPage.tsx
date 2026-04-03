@@ -26,7 +26,7 @@ const CategoryPage = () => {
 
   return (
     <AuthenticatedLayout>
-      <div className="flex flex-col gap-y-4">
+      <div className="flex h-full flex-col gap-y-4">
         <div className="flex items-center justify-between">
           <h1>Catégories</h1>
           <CategoryModal

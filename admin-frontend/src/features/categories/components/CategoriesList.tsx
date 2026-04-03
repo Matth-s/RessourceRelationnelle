@@ -10,6 +10,7 @@ import { CATEGORIES_HEADER_TABLE } from "../constants/categories-constant";
 
 import CategoryCard from "./CategoryCard";
 import CardFetchError from "@/components/CardFetchError";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type CategoriesListProps = {
   categories: categoriesArrayType;
@@ -24,9 +25,7 @@ const CategoriesList = ({
   error,
   refetch,
 }: CategoriesListProps) => {
-  if (isLoading) {
-    return <p>Chargement...</p>;
-  }
+  if (isLoading) return <Skeleton className="h-full w-full bg-gray-200" />;
 
   if (error) return <CardFetchError onRetry={refetch} />;
 
