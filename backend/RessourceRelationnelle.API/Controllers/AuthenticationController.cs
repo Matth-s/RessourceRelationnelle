@@ -62,9 +62,12 @@ namespace RessourceRelationnelle.API.Controllers
                 return Ok(new
                 {
                     token = new JwtSecurityTokenHandler().WriteToken(token),
+                    email = user.Email,
                     expiration = token.ValidTo,
                     username = user.UserName,
-                    role = roles
+                    role = roles,
+                    demographicZone = user.DemographicZone?.Zone,
+                    socialStatus = user.SocialStatus
                 });
             }
             catch
