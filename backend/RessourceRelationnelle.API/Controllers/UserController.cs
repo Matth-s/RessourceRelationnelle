@@ -74,7 +74,7 @@ namespace RessourceRelationnelle.API.Controllers
                 Email = user.Email,
                 Role = roles,
                 SocialStatus = user.SocialStatus,
-                DemographicZone = user.DemographicZone.Zone
+                DemographicZone = user.DemographicZone?.Zone
             };
 
             return Ok(returnUser);
