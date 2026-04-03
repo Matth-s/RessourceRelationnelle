@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RessourceRelationnelle.API"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RessourceRelationnelle.DATA", "RessourceRelationnelle.DATA\RessourceRelationnelle.DATA.csproj", "{239AA51F-409A-49D8-8D58-16CCC42D0386}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RessourceRelationnelle.Tests", "RessourceRelationnelle.Tests\RessourceRelationnelle.Tests.csproj", "{54FD4E02-081D-4441-ADBB-086FD471ABFF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{239AA51F-409A-49D8-8D58-16CCC42D0386}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{239AA51F-409A-49D8-8D58-16CCC42D0386}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{239AA51F-409A-49D8-8D58-16CCC42D0386}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54FD4E02-081D-4441-ADBB-086FD471ABFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54FD4E02-081D-4441-ADBB-086FD471ABFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54FD4E02-081D-4441-ADBB-086FD471ABFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54FD4E02-081D-4441-ADBB-086FD471ABFF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
