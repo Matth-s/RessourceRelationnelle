@@ -103,6 +103,24 @@ public class SqlUserRepository : IUserRepository
         return userReturn;
     }
 
+    public async Task<List<string>> GetRolesByUserId(string id)
+    {
+        var user = await userManager.FindByIdAsync(id);
+        if (user == null) return null;
+
+        var roles = await userManager.GetRolesAsync(user);
+
+        return roles.ToList();
+    }
+
+    public async Task<UserModel?> GetUserById(string id)
+    {
+        var user = await userManager.FindByIdAsync(id);
+        if (user == null) return null;
+        
+        return user;
+    }
+
     public async Task<UserModel> Update(UserUpdateIdDto model)
     {
         var user = await userManager.FindByIdAsync(model.Id);
