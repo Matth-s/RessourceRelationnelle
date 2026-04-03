@@ -11,6 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import type { ICommentModeration } from "@/types/comment-type";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type CommentListProps = {
   error: Error | null;
@@ -29,7 +30,7 @@ const CommentList = ({
   selectedStatus,
   refrech,
 }: CommentListProps) => {
-  if (isLoading) return <div>chargement</div>;
+  if (isLoading) return <Skeleton className="h-full w-full bg-gray-200" />;
 
   if (error) return <CardFetchError onRetry={refrech} />;
 

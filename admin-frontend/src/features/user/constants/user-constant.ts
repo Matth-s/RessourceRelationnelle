@@ -1,9 +1,9 @@
 export const USER_TABLE_HEADER = [
   {
-    name: "Name",
+    name: "Email",
   },
   {
-    name: "Email",
+    name: "Name",
   },
   {
     name: "Rôle",

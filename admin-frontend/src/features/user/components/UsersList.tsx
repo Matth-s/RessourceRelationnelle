@@ -5,10 +5,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import UserCard from "../features/user/components/UserCard";
-import { USER_TABLE_HEADER } from "../features/user/constants/user-constant";
-import type { usersSchemaType } from "../features/user/schemas/users-schema";
+import UserCard from "./UserCard";
+import { USER_TABLE_HEADER } from "../constants/user-constant";
+import type { usersSchemaType } from "../schemas/users-schema";
 import CardFetchError from "@/components/CardFetchError";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type UsersListProps = {
   isLoading: boolean;
@@ -18,7 +19,7 @@ type UsersListProps = {
 };
 
 const UsersList = ({ isLoading, error, users, refetch }: UsersListProps) => {
-  if (isLoading) return <p>chargement</p>;
+  if (isLoading) return <Skeleton className="h-full w-full bg-gray-200" />;
 
   if (error) return <CardFetchError onRetry={refetch} />;
 
