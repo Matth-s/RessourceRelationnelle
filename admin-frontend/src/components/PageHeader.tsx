@@ -1,6 +1,7 @@
 import { useAppSelector } from "@/store/hook";
 import { useLocation } from "react-router";
 import { formatCurrentLocation } from "@/helpers/format-current-location";
+import RoleCollapsible from "./RoleCollapsible";
 
 const PageHeader = () => {
   const { pathname } = useLocation();
@@ -15,7 +16,9 @@ const PageHeader = () => {
       <div className="flex flex-col items-start">
         <p className="text-sm font-semibold text-gray-900">{user.username}</p>
 
-        <p className="text-sm text-gray-500">{user.role}</p>
+        <p className="text-sm text-gray-500">
+          <RoleCollapsible userRole={user.role} />
+        </p>
       </div>
     </div>
   );
