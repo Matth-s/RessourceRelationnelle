@@ -65,6 +65,8 @@ namespace RessourceRelationnelle.API.Controllers
             try
             {
                 IEnumerable<ResourcesReturn> resources = await repository.GetAll();
+                if(resources == null)
+                    return NotFound();
                 return Ok(resources);
             }
             catch (Exception ex)
