@@ -51,6 +51,9 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
 
+            if (r == null)
+                return null;
+
             return new ResourcesReturn
             {
                 Id = r.Id,
