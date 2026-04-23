@@ -334,6 +334,14 @@ namespace RessourceRelationnelle.API.Migrations
                     b.Property<bool>("IsVisible")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("MediaTtype")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("MediaUrl")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("PublicationStatus")
                         .IsRequired()
                         .HasColumnType("TEXT");
