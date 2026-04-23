@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RessourceRelationnelle.API.Services;
+using RessourceRelationnelle.Data.Repositories.Sql;
 using RessourceRelationnelle.DATA.Models;
 using RessourceRelationnelle.DATA.Repositories;
 
@@ -59,11 +60,11 @@ namespace RessourceRelationnelle.API.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<ResourceModel>>> GetAll()
+        public async Task<ActionResult<IEnumerable<ResourcesReturn>>> GetAll()
         {
             try
             {
-                IEnumerable<ResourceModel> resources = await repository.GetAll();
+                IEnumerable<ResourcesReturn> resources = await repository.GetAll();
                 return Ok(resources);
             }
             catch (Exception ex)

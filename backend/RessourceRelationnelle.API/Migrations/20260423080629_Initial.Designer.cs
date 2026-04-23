@@ -11,7 +11,7 @@ using RessourceRelationnelle.DATA;
 namespace RessourceRelationnelle.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20260319170618_Initial")]
+    [Migration("20260423080629_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -336,6 +336,14 @@ namespace RessourceRelationnelle.API.Migrations
 
                     b.Property<bool>("IsVisible")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("MediaTtype")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("MediaUrl")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("PublicationStatus")
                         .IsRequired()
