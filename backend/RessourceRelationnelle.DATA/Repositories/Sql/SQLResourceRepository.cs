@@ -133,7 +133,7 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
         public string Content { get; set; } = "";
         public string Url { get; set; } = "";
         public string MediaUrl { get; set; } = "";
-        public string MediaTtype { get; set; } = "";
+        public string MediaType { get; set; } = "";
         public bool IsVisible { get; set; }
         public string PublicationStatus { get; set; } = "";
         public DateTime? UpdatedAt { get; set; }
@@ -154,6 +154,6 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
     public class TypeRelationDto
     {
         public string Id { get; set; } = "";
-        public string TypeResource { get; set; } = "";
+        public string TypeRelation{ get; set; } = "";
     }
 }
