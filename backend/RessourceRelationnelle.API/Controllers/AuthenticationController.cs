@@ -61,6 +61,7 @@ namespace RessourceRelationnelle.API.Controllers
 
                 return Ok(new
                 {
+                    id = user.Id,
                     token = new JwtSecurityTokenHandler().WriteToken(token),
                     email = user.Email,
                     expiration = token.ValidTo,
