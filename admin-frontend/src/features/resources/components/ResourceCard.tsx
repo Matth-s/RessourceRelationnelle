@@ -9,8 +9,6 @@ type ResourceCardProps = {
 const ResourceCard = ({ resource }: ResourceCardProps) => {
   const user = useAppSelector((state) => state.auth.user);
 
-  console.log(user);
-
   return (
     <div className="max-w-md rounded-lg bg-white p-4 shadow-md">
       <h3 className="text-center text-lg font-bold">{resource.title}</h3>
