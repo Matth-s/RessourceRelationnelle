@@ -2,18 +2,18 @@ import { useAppDispatch } from "@/store/hook";
 import { Button } from "./ui/button";
 import { logout } from "@/features/auth/auth.slice";
 import { useNavigate } from "react-router";
+import { deleteAuthCookie } from "@/lib/cookie";
 
 import logoutIcon from "@/assets/logout-icon.svg";
-import { deleteAuthCookie } from "@/lib/cookie";
 
 const LogoutButton = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const handleClick = () => {
+    deleteAuthCookie();
     dispatch(logout());
     navigate("/authentification/connexion");
-    deleteAuthCookie();
   };
 
   return (
