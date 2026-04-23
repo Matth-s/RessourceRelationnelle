@@ -71,7 +71,9 @@ namespace RessourceRelationnelle.API
                 options.UseNpgsql(
                     builder.Configuration.GetConnectionString("DefaultConnection"),
                     b => b.MigrationsAssembly("RessourceRelationnelle.API")));
-
+            builder.Services.AddMemoryCache();
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddScoped<ResourceViewService>();
             builder.Services.AddScoped<IResourceRepository, SqlResourceRepository>();
             builder.Services.AddScoped<IEventRepository, SQLEventRepository>();
             builder.Services.AddScoped<ICategoryRepository, SQLCategoryRepository>();

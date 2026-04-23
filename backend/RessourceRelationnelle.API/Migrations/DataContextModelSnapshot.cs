@@ -381,6 +381,9 @@ namespace RessourceRelationnelle.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("ViewCount")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");

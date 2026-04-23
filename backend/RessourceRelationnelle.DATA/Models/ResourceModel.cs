@@ -14,6 +14,7 @@ namespace RessourceRelationnelle.DATA.Models
         public DateTime? UpdatedAt { get; set; } = null;
         public DateTime PublishedAt { get; set; } = DateTime.UtcNow;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public int ViewCount { get; set; } = 0;
 
 
 
