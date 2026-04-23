@@ -21,6 +21,7 @@ export const useComments = () => {
   } = useQuery({
     queryKey: [FETCH_KEYS.COMMENTS],
     queryFn: getCommentsApi,
+    retry: false
   });
 
   const uniquesDate = getUniquesDateComment(data);
