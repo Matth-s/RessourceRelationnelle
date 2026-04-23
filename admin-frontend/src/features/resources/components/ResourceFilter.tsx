@@ -17,7 +17,7 @@ const ResourceFilter = ({
   const allFilters = [undefined, ...filters];
 
   return (
-    <div className="flex w-fit overflow-hidden rounded-sm">
+    <div className="mb-4 flex w-fit overflow-hidden rounded-sm">
       {allFilters.map((filter) => {
         const isSelected =
           filter === undefined
