@@ -2,6 +2,8 @@
 using RessourceRelationnelle.DATA;
 using RessourceRelationnelle.DATA.Models;
 using RessourceRelationnelle.DATA.Repositories;
+using System.Globalization;
+using static SqlUserRepository;
 
 namespace RessourceRelationnelle.Data.Repositories.Sql
 {
@@ -50,14 +52,44 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<IEnumerable<ResourceModel>> GetAll()
+        public async Task<IEnumerable<ResourcesReturn>> GetAll()
         {
-            return await context.Resources
-                //.Include(r => r.User)
+            var resources = await context.Resources
+                .Include(r => r.User)
                 .Include(r => r.Category)
                 .Include(r => r.TypeRessource)
                 .Include(r => r.TypeRelation)
                 .ToListAsync();
+
+            if (resources.Count() == 0)
+                return null;
+
+            var returnResources = new List<ResourcesReturn>();
+
+            foreach (var r in resources)
+            {
+                returnResources.Add(new ResourcesReturn
+                {
+                    Id = r.Id,
+                    Title = r.Title,
+                    Resume = r.Resume,
+                    Content = r.Content,
+                    Url = r.Url,
+                    MediaTtype = r.MediaTtype,
+                    MediaUrl = r.MediaUrl,
+                    IsVisible = r.IsVisible,
+                    PublicationStatus = r.PublicationStatus,
+                    UpdatedAt = r.UpdatedAt,
+                    PublishedAt = r.PublishedAt,
+                    CreatedAt = r.CreatedAt,
+                    User = new UserDto { Id = r.User.Id, Username = r.User.UserName},
+                    Category = r.Category,
+                    TypeResource = r.TypeRessource,
+                    TypeRelation = new TypeRelationDto { Id = r.TypeRelation.Id, TypeResource = r.TypeRelation.TypeRelation }
+                });
+            }
+
+            return returnResources.ToArray();
         }
 
         public async Task Delete(string id)
@@ -91,5 +123,37 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
             await context.SaveChangesAsync();
             return existingResource;
         }
+    }
+
+    public class ResourcesReturn
+    {
+        public string Id { get; set; } = "";
+        public string Title { get; set; } = "";
+        public string Resume { get; set; } = "";
+        public string Content { get; set; } = "";
+        public string Url { get; set; } = "";
+        public string MediaUrl { get; set; } = "";
+        public string MediaTtype { get; set; } = "";
+        public bool IsVisible { get; set; }
+        public string PublicationStatus { get; set; } = "";
+        public DateTime? UpdatedAt { get; set; }
+        public DateTime PublishedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public UserDto User { get; set; } = new UserDto();
+        public CategoryModel Category { get; set; } = new CategoryModel();
+        public TypeResourceModel TypeResource { get; set; } = new TypeResourceModel();
+        public TypeRelationDto TypeRelation { get; set; } = new TypeRelationDto();
+    }
+
+    public class UserDto
+    {
+        public string Id { get; set; } = "";
+        public string Username { get; set; } = "";
+    }
+
+    public class TypeRelationDto
+    {
+        public string Id { get; set; } = "";
+        public string TypeResource { get; set; } = "";
     }
 }

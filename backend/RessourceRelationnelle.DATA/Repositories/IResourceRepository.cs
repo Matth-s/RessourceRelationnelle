@@ -1,4 +1,5 @@
-﻿using RessourceRelationnelle.DATA.Models; 
+﻿using RessourceRelationnelle.Data.Repositories.Sql;
+using RessourceRelationnelle.DATA.Models; 
 
 namespace RessourceRelationnelle.DATA.Repositories
 {    public interface IResourceRepository
@@ -6,7 +7,7 @@ namespace RessourceRelationnelle.DATA.Repositories
         Task<ResourceModel> Create(ResourceModel model);
         Task<ResourceModel?> GetOne(string id);
         Task<IEnumerable<ResourceModel>> GetForUser(string? userId = null);
-        Task<IEnumerable<ResourceModel>> GetAll();
+        Task<IEnumerable<ResourcesReturn>> GetAll();
         Task Delete(string id);
         Task<ResourceModel> Update(UpdateResourceModel model);
     }
