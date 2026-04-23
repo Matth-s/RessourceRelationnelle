@@ -105,7 +105,6 @@ namespace RessourceRelationnelle.API.Services
                         Title = item.Title,
                         Resume = item.Resume,
                         Content = item.Content,
-                        Url = item.Url,
                         IsVisible = item.IsVisible,
                         PublicationStatus = item.PublicationStatus,
                         UpdatedAt = null,
@@ -152,7 +151,6 @@ namespace RessourceRelationnelle.API.Services
             public string Title { get; set; }
             public string Resume { get; set; }
             public string Content { get; set; }
-            public string Url { get; set; }
             public bool IsVisible { get; set; }
             public string PublicationStatus { get; set; }
             public string CategoryId { get; set; }

@@ -93,7 +93,6 @@ namespace RessourceRelationnelle.API.Controllers
                     Title = model.Title,
                     Resume = model.Resume,
                     Content = model.Content,
-                    Url = model.Url,
                     PublicationStatus = "Pending",
                     IsVisible = false,
                     CreatedAt = DateTime.UtcNow,
@@ -145,7 +144,6 @@ namespace RessourceRelationnelle.API.Controllers
                     Title = model.Title,
                     Resume = model.Resume,
                     Content = model.Content ?? string.Empty,
-                    Url = fileUrl,
                     PublicationStatus = "Pending",
                     IsVisible = false,
                     CreatedAt = DateTime.UtcNow,
@@ -170,7 +168,7 @@ namespace RessourceRelationnelle.API.Controllers
         {
             try
             {
-                ResourceModel? resource = await repository.GetOne(id);
+                ResourceModel? resource = await repository.GetResource(id);
                 if (resource == null) return NotFound(new { message = "Ressource not found" });
                 await repository.Delete(resource.Id);
                 return Ok(new { message = "Resource deleted" });
@@ -187,7 +185,7 @@ namespace RessourceRelationnelle.API.Controllers
         {
             try
             {
-                ResourceModel? existingResource = await repository.GetOne(model.Id);
+                ResourceModel? existingResource = await repository.GetResource(model.Id);
                 if (existingResource == null) return NotFound(new { message = "Ressource not found" });
                 ResourceModel updateResource = await repository.Update(model);
                 UpdateResourceModel updatedModel = new()
@@ -195,7 +193,6 @@ namespace RessourceRelationnelle.API.Controllers
                     Title = updateResource.Title,
                     Resume = updateResource.Resume,
                     Content = updateResource.Content,
-                    Url = updateResource.Url,
                     UpdatedAt = updateResource.UpdatedAt,
                     CategoryId = updateResource.CategoryId,
                     ResourceTypeId = updateResource.TypeRessourceId,
@@ -214,7 +211,6 @@ namespace RessourceRelationnelle.API.Controllers
             public string Title { get; set; } = string.Empty;
             public string Resume { get; set; } = string.Empty;
             public string Content { get; set; } = string.Empty;
-            public string Url { get; set; } = string.Empty;
             public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
             public string CategoryId { get; set; } = string.Empty;
             public string ResourceTypeId { get; set; } = string.Empty;
@@ -226,7 +222,7 @@ namespace RessourceRelationnelle.API.Controllers
             public string Title { get; set; } = string.Empty;
             public string Resume { get; set; } = string.Empty;
             public string? Content { get; set; }
-            public string? Url { get; set; }
+            public string? Url { get; set; } = string.Empty;
             public IFormFile? File { get; set; }
             public string CategoryId { get; set; } = string.Empty;
             public string ResourceTypeId { get; set; } = string.Empty;
