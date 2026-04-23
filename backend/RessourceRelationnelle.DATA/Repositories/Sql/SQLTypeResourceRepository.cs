@@ -1,10 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RessourceRelationnelle.DATA.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RessourceRelationnelle.DATA.Repositories.Sql
 {
@@ -27,21 +22,27 @@ namespace RessourceRelationnelle.DATA.Repositories.Sql
 
         public async Task Delete(string id)
         {
-            TypeResourceModel? existingTypeResource = await context.TypeResources.FirstOrDefaultAsync(x => x.Id == id);
+            TypeResourceModel? existingTypeResource = await context.TypeResources
+                .FirstOrDefaultAsync(x => x.Id == id);
             if (existingTypeResource != null)
             {
                 context.TypeResources.Remove(existingTypeResource);
                 await context.SaveChangesAsync();
             }
         }
-        public Task<IEnumerable<TypeResourceModel>> GetAll()
+
+        public async Task<IEnumerable<TypeResourceModel>> GetAll()
         {
-            throw new NotImplementedException();
+            return await context.TypeResources
+                .AsNoTracking()
+                .ToListAsync();
         }
 
-        public Task<TypeResourceModel?> GetOne(string id)
+        public async Task<TypeResourceModel?> GetOne(string id)
         {
-            throw new NotImplementedException();
+            return await context.TypeResources
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<TypeResourceModel?> GetOneByName(string name)
@@ -51,9 +52,18 @@ namespace RessourceRelationnelle.DATA.Repositories.Sql
                 .FirstOrDefaultAsync(x => x.TypeRessource == name);
         }
 
-        public Task<TypeResourceModel> Update(TypeResourceModel model)
+        public async Task<TypeResourceModel> Update(TypeResourceModel model)
         {
-            throw new NotImplementedException();
+            TypeResourceModel? existing = await context.TypeResources
+                .FirstOrDefaultAsync(x => x.Id == model.Id);
+
+            if (existing == null)
+                throw new Exception("Type de resource not found");
+
+            existing.TypeRessource = model.TypeRessource;
+
+            await context.SaveChangesAsync();
+            return existing;
         }
     }
 }

@@ -85,3 +85,4 @@ coverage/
 .env
 .env.*
 .env.local
+**/appsettings.Development.json
