@@ -68,8 +68,8 @@ namespace RessourceRelationnelle.API
             });
 
             builder.Services.AddDbContext<DataContext>(options =>
-                options.UseSqlite(
-                    builder.Configuration.GetConnectionString("Default"),
+                options.UseNpgsql(
+                    builder.Configuration.GetConnectionString("DefaultConnection"),
                     b => b.MigrationsAssembly("RessourceRelationnelle.API")));
 
             builder.Services.AddScoped<IResourceRepository, SqlResourceRepository>();
