@@ -5,7 +5,7 @@ namespace RessourceRelationnelle.DATA.Repositories
 {    public interface IResourceRepository
     {
         Task<ResourceModel> Create(ResourceModel model);
-        Task<ResourceModel?> GetOne(string id);
+        Task<ResourcesReturn?> GetOne(string id);
         Task<IEnumerable<ResourceModel>> GetForUser(string? userId = null);
         Task<IEnumerable<ResourcesReturn>> GetAll();
         Task Delete(string id);

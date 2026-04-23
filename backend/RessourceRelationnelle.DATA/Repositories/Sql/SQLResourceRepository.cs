@@ -41,15 +41,35 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
                 .ToListAsync();
         }
 
-        public async Task<ResourceModel?> GetOne(string id)
+        public async Task<ResourcesReturn?> GetOne(string id)
         {
-            return await context.Resources
-                //.Include(r => r.User)
+            var r = await context.Resources
+                .Include(r => r.User)
                 .Include(r => r.Category)
                 .Include(r => r.TypeRessource)
                 .Include(r => r.TypeRelation)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
+
+            return new ResourcesReturn
+            {
+                Id = r.Id,
+                Title = r.Title,
+                Resume = r.Resume,
+                Content = r.Content,
+                Url = r.Url,
+                MediaType = r.MediaTtype,
+                MediaUrl = r.MediaUrl,
+                IsVisible = r.IsVisible,
+                PublicationStatus = r.PublicationStatus,
+                UpdatedAt = r.UpdatedAt,
+                PublishedAt = r.PublishedAt,
+                CreatedAt = r.CreatedAt,
+                User = new UserDto { Id = r.User.Id, Username = r.User.UserName },
+                Category = r.Category,
+                TypeResource = r.TypeRessource,
+                TypeRelation = new TypeRelationDto { Id = r.TypeRelation.Id, TypeRelation = r.TypeRelation.TypeRelation }
+            };
         }
 
         public async Task<IEnumerable<ResourcesReturn>> GetAll()
