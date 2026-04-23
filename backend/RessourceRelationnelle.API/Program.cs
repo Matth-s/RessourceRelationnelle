@@ -80,6 +80,10 @@ namespace RessourceRelationnelle.API
             builder.Services.AddScoped<IUserRepository, SqlUserRepository>();
             builder.Services.AddScoped<ICommentaryRepository, SqlCommentaryRepository>();
 
+            //Supabase
+            builder.Services.AddSingleton<IStorageService, StorageService>();
+
+
             builder.Services.AddIdentity<UserModel, IdentityRole>()
                 .AddEntityFrameworkStores<DataContext>()
                 .AddDefaultTokenProviders();
