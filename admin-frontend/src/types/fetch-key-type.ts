@@ -1,6 +1,7 @@
 export const FETCH_KEYS = {
-  CATEGORY: "category",
+  CATEGORY: "CATEGORY",
   USERS: "USERS",
   COMMENTS: "COMMENTS",
   RESOURCES: "RESOURCES",
+  STATISTICS: "STATISTICS",
 } as const;

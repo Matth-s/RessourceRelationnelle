@@ -1,16 +1,16 @@
 import type { IPublicationResource } from "@/types/resource-type";
 
 export const formatPublicationStatus = (
-  status: IPublicationResource,
+  publicationStatus: IPublicationResource,
 ): string => {
-  switch (status) {
+  switch (publicationStatus) {
     case "Approved":
-      return "Apprové";
+      return "Appouvé";
     case "Pending":
       return "En attente";
     case "Rejected":
       return "Rejeté";
     default:
-      return "Inconnu";
+      return "Inconnue";
   }
 };
