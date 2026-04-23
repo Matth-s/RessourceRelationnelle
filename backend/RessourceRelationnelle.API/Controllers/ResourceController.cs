@@ -28,13 +28,17 @@ namespace RessourceRelationnelle.API.Controllers
 
         [HttpGet("{id}")]
         [AllowAnonymous]
-        public async Task<ActionResult<ResourcesReturn>> GetOne(string id)
+        public async Task<ActionResult<ResourcesReturn>> GetOne(string id, [FromServices] ResourceViewService viewService)
         {
             try
             {
                 ResourcesReturn? resource = await repository.GetOne(id);
+
                 if (resource == null)
                     return NotFound();
+
+                await viewService.RecordViewAsync(id);
+
                 return Ok(resource);
             }
             catch (Exception ex)

@@ -67,6 +67,7 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
                 UpdatedAt = r.UpdatedAt,
                 PublishedAt = r.PublishedAt,
                 CreatedAt = r.CreatedAt,
+                ViewCount = r.ViewCount,
                 User = new UserDto { Id = r.User.Id, Username = r.User.UserName },
                 Category = r.Category,
                 TypeResource = r.TypeRessource,
@@ -103,6 +104,7 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
                     UpdatedAt = r.UpdatedAt,
                     PublishedAt = r.PublishedAt,
                     CreatedAt = r.CreatedAt,
+                    ViewCount = r.ViewCount,
                     User = new UserDto { Id = r.User.Id, Username = r.User.UserName},
                     Category = r.Category,
                     TypeResource = r.TypeRessource,
@@ -169,6 +171,7 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
         public DateTime? UpdatedAt { get; set; }
         public DateTime PublishedAt { get; set; }
         public DateTime CreatedAt { get; set; }
+        public int ViewCount { get; set; }
         public UserDto User { get; set; } = new UserDto();
         public CategoryModel Category { get; set; } = new CategoryModel();
         public TypeResourceModel TypeResource { get; set; } = new TypeResourceModel();
