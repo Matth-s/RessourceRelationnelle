@@ -57,7 +57,6 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
                 Title = r.Title,
                 Resume = r.Resume,
                 Content = r.Content,
-                Url = r.Url,
                 MediaType = r.MediaTtype,
                 MediaUrl = r.MediaUrl,
                 IsVisible = r.IsVisible,
@@ -94,7 +93,6 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
                     Title = r.Title,
                     Resume = r.Resume,
                     Content = r.Content,
-                    Url = r.Url,
                     MediaType = r.MediaTtype,
                     MediaUrl = r.MediaUrl,
                     IsVisible = r.IsVisible,
@@ -133,7 +131,6 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
             existingResource.Title = model.Title;
             existingResource.Resume = model.Resume;
             existingResource.Content = model.Content;
-            existingResource.Url = model.Url;
             existingResource.UpdatedAt = DateTime.UtcNow;
             existingResource.TypeRessourceId = model.ResourceTypeId;
             existingResource.TypeRelationId = model.RelationTypeId;
@@ -143,6 +140,17 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
             await context.SaveChangesAsync();
             return existingResource;
         }
+
+        public async Task<ResourceModel?> GetResource(string id)
+        {
+            return await context.Resources
+                .Include(r => r.User)
+                .Include(r => r.Category)
+                .Include(r => r.TypeRessource)
+                .Include(r => r.TypeRelation)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id);
+        }
     }
 
     public class ResourcesReturn
@@ -151,7 +159,6 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
         public string Title { get; set; } = "";
         public string Resume { get; set; } = "";
         public string Content { get; set; } = "";
-        public string Url { get; set; } = "";
         public string MediaUrl { get; set; } = "";
         public string MediaType { get; set; } = "";
         public bool IsVisible { get; set; }

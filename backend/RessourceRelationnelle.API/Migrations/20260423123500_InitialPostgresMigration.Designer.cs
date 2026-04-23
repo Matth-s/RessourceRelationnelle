@@ -12,7 +12,7 @@ using RessourceRelationnelle.DATA;
 namespace RessourceRelationnelle.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20260423101724_InitialPostgresMigration")]
+    [Migration("20260423123500_InitialPostgresMigration")]
     partial class InitialPostgresMigration
     {
         /// <inheritdoc />
@@ -379,10 +379,6 @@ namespace RessourceRelationnelle.API.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("UserId")
                         .IsRequired()

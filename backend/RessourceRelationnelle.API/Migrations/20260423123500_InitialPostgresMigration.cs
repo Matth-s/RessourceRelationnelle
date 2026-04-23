@@ -221,7 +221,6 @@ namespace RessourceRelationnelle.API.Migrations
                     Title = table.Column<string>(type: "text", nullable: false),
                     Resume = table.Column<string>(type: "text", nullable: false),
                     Content = table.Column<string>(type: "text", nullable: false),
-                    Url = table.Column<string>(type: "text", nullable: false),
                     MediaUrl = table.Column<string>(type: "text", nullable: false),
                     MediaTtype = table.Column<string>(type: "text", nullable: false),
                     IsVisible = table.Column<bool>(type: "boolean", nullable: false),
