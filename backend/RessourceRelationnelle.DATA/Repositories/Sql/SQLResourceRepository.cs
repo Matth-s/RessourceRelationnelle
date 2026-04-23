@@ -75,7 +75,7 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
                     Resume = r.Resume,
                     Content = r.Content,
                     Url = r.Url,
-                    MediaTtype = r.MediaTtype,
+                    MediaType = r.MediaTtype,
                     MediaUrl = r.MediaUrl,
                     IsVisible = r.IsVisible,
                     PublicationStatus = r.PublicationStatus,
@@ -85,7 +85,7 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
                     User = new UserDto { Id = r.User.Id, Username = r.User.UserName},
                     Category = r.Category,
                     TypeResource = r.TypeRessource,
-                    TypeRelation = new TypeRelationDto { Id = r.TypeRelation.Id, TypeResource = r.TypeRelation.TypeRelation }
+                    TypeRelation = new TypeRelationDto { Id = r.TypeRelation.Id, TypeRelation = r.TypeRelation.TypeRelation }
                 });
             }
 
