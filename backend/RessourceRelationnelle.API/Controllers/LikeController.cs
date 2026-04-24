@@ -28,7 +28,12 @@ namespace RessourceRelationnelle.API.Controllers
         {
             try
             {
-                LikeModel? createLike = await repository.Create(model);
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                if (userId == null)
+                    return Unauthorized(new { message = "Erreur lors de la récupération de l'utilisateur" });
+
+                LikeModel? createLike = await repository.Create(model, userId);
 
                 if (createLike == null) return Conflict(new { message = "Ressource déjà likée" });
 

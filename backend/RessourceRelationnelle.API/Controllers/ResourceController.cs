@@ -106,7 +106,7 @@ namespace RessourceRelationnelle.API.Controllers
 
 
                     if (contentType.StartsWith("image/") ||
-                        extension is ".jpg" or ".jpeg" or ".png" or ".gif" or ".webp" or ".bmp")
+                        extension is ".jpg" or ".jpeg" or ".png" or ".gif" or ".webp" or ".bmp" or ".svg")
                     {
                         folder = "images";
                     }
@@ -135,6 +135,8 @@ namespace RessourceRelationnelle.API.Controllers
                     PublicationStatus = model.PublicationStatus,
                     IsVisible = model.IsVisible ?? false,
                     CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    PublishedAt = DateTime.UtcNow,
                     UserId = userId,
                     CategoryId = model.CategoryId,
                     TypeRessourceId = model.ResourceTypeId,

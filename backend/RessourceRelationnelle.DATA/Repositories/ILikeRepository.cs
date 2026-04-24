@@ -10,7 +10,7 @@ namespace RessourceRelationnelle.DATA.Repositories
 {
     public interface ILikeRepository
     {
-        Task<LikeModel> Create(LikeDto model);
+        Task<LikeModel> Create(LikeDto model, string userId);
         Task<string> Delete(string userId, string resourceId);
         Task<List<LikesWResourcesDto>> GetAll();
         Task<List<LikesWResourcesDto>> GetLikesForUser(string userId);

@@ -17,10 +17,10 @@ namespace RessourceRelationnelle.DATA.Repositories.Sql
             this.context = context;
         }
 
-        public async Task<LikeModel> Create(LikeDto model)
+        public async Task<LikeModel> Create(LikeDto model, string userId)
         {
 
-            var existingLike = await context.Like.FindAsync(model.UserId, model.ResourceId);
+            var existingLike = await context.Like.FindAsync(userId, model.ResourceId);
 
             if (existingLike != null)
             {
@@ -29,7 +29,7 @@ namespace RessourceRelationnelle.DATA.Repositories.Sql
 
             LikeModel like = new()
             {
-                UserId = model.UserId,
+                UserId = userId,
                 ResourceId = model.ResourceId
             };
 
@@ -111,7 +111,6 @@ namespace RessourceRelationnelle.DATA.Repositories.Sql
 
     public class LikeDto
     {
-        public string UserId { get; set; } = "";
         public string ResourceId { get; set; } = "";
     }
 
