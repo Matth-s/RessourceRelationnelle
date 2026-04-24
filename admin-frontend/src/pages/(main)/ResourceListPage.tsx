@@ -25,7 +25,7 @@ const ResourceListPage = () => {
           resourceLength={resources.length}
         />
 
-        <Link to={"/ressources/"}>
+        <Link to={"/ressources/nouvelle-ressource"}>
           <Button variant="outline">Ajouter une ressource</Button>
         </Link>
       </div>

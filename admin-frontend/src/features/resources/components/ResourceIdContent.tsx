@@ -23,17 +23,18 @@ const ResourceIdContent = ({ resource }: ResourceIdContentProps) => {
     createdAt,
     content,
     viewCount,
+    likeCount,
   } = resource;
 
   return (
-    <div className="mx-auto flex max-w-4xl flex-col gap-4">
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-4">
       {mediaType && (
         <div className="h-96 w-full overflow-hidden rounded-xl">
-          {mediaType === "image" && (
+          {mediaType === "image" && mediaUrl && (
             <img className="h-full w-full object-contain" src={mediaUrl} />
           )}
 
-          {mediaType === "video" && (
+          {mediaType === "video" && mediaUrl && (
             <video controls>
               <source src={mediaUrl} type="video/mp4" />
             </video>
@@ -66,7 +67,7 @@ const ResourceIdContent = ({ resource }: ResourceIdContentProps) => {
         </div>
         <div className="flex items-center gap-2">
           <Heart />
-          89 j'aime
+          <p>{likeCount} j'aime</p>
         </div>
       </div>
 
