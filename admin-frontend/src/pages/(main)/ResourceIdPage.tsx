@@ -50,7 +50,10 @@ const ResourceIdPage = () => {
           Retour
         </Button>
 
-        {userId !== data.user.id && <ModerateResourceModal resource={data} />}
+        <ModerateResourceModal resource={data} />
+        {userId === data.user.id && (
+          <Button variant="outline">Modifier le contenue</Button>
+        )}
       </div>
 
       <ResourceIdContent resource={data} />
