@@ -20,9 +20,11 @@ const ResourceList = ({
   if (error) return <CardFetchError onRetry={refetch} />;
 
   return (
-    <div className="flex flex-wrap justify-center gap-4">
+    <div className="mx-auto max-w-4xl columns-2 gap-4">
       {resources.map((resource) => (
-        <ResourceCard key={resource.id} resource={resource} />
+        <div key={resource.id} className="mb-4 break-inside-avoid">
+          <ResourceCard resource={resource} />
+        </div>
       ))}
     </div>
   );
