@@ -11,7 +11,7 @@ namespace RessourceRelationnelle.API.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "LikeModel",
+                name: "Like",
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "text", nullable: false),
@@ -20,34 +20,34 @@ namespace RessourceRelationnelle.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LikeModel", x => new { x.UserId, x.ResourceId });
+                    table.PrimaryKey("PK_Like", x => new { x.UserId, x.ResourceId });
                     table.ForeignKey(
-                        name: "FK_LikeModel_AspNetUsers_UserId",
+                        name: "FK_Like_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_LikeModel_Resources_ResourceId",
+                        name: "FK_Like_Resources_ResourceId",
                         column: x => x.ResourceId,
                         principalTable: "Resources",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_LikeModel_Resources_ResourceModelId",
+                        name: "FK_Like_Resources_ResourceModelId",
                         column: x => x.ResourceModelId,
                         principalTable: "Resources",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_LikeModel_ResourceId",
-                table: "LikeModel",
+                name: "IX_Like_ResourceId",
+                table: "Like",
                 column: "ResourceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_LikeModel_ResourceModelId",
-                table: "LikeModel",
+                name: "IX_Like_ResourceModelId",
+                table: "Like",
                 column: "ResourceModelId");
         }
 
@@ -55,7 +55,7 @@ namespace RessourceRelationnelle.API.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "LikeModel");
+                name: "Like");
         }
     }
 }

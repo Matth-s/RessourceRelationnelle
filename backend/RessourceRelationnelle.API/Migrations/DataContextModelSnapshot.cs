@@ -287,7 +287,7 @@ namespace RessourceRelationnelle.API.Migrations
 
                     b.HasIndex("ResourceId");
 
-                    b.ToTable("LikeModel");
+                    b.ToTable("Like");
                 });
 
             modelBuilder.Entity("RessourceRelationnelle.DATA.Models.ParticipationModel", b =>
@@ -359,11 +359,9 @@ namespace RessourceRelationnelle.API.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("MediaTtype")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("MediaUrl")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PublicationStatus")

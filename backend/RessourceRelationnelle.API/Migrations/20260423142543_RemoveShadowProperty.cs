@@ -11,16 +11,16 @@ namespace RessourceRelationnelle.API.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_LikeModel_Resources_ResourceModelId",
-                table: "LikeModel");
+                name: "FK_Like_Resources_ResourceModelId",
+                table: "Like");
 
             migrationBuilder.DropIndex(
-                name: "IX_LikeModel_ResourceModelId",
-                table: "LikeModel");
+                name: "IX_Like_ResourceModelId",
+                table: "Like");
 
             migrationBuilder.DropColumn(
                 name: "ResourceModelId",
-                table: "LikeModel");
+                table: "Like");
         }
 
         /// <inheritdoc />
@@ -28,18 +28,18 @@ namespace RessourceRelationnelle.API.Migrations
         {
             migrationBuilder.AddColumn<string>(
                 name: "ResourceModelId",
-                table: "LikeModel",
+                table: "Like",
                 type: "text",
                 nullable: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_LikeModel_ResourceModelId",
-                table: "LikeModel",
+                name: "IX_Like_ResourceModelId",
+                table: "Like",
                 column: "ResourceModelId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_LikeModel_Resources_ResourceModelId",
-                table: "LikeModel",
+                name: "FK_Like_Resources_ResourceModelId",
+                table: "Like",
                 column: "ResourceModelId",
                 principalTable: "Resources",
                 principalColumn: "Id");

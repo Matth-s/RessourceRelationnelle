@@ -278,7 +278,7 @@ namespace RessourceRelationnelle.API.Migrations
                     b.ToTable("Event");
                 });
 
-            modelBuilder.Entity("RessourceRelationnelle.DATA.Models.LikeModel", b =>
+            modelBuilder.Entity("RessourceRelationnelle.DATA.Models.Like", b =>
                 {
                     b.Property<string>("UserId")
                         .HasColumnType("text");
@@ -290,7 +290,7 @@ namespace RessourceRelationnelle.API.Migrations
 
                     b.HasIndex("ResourceId");
 
-                    b.ToTable("LikeModel");
+                    b.ToTable("Like");
                 });
 
             modelBuilder.Entity("RessourceRelationnelle.DATA.Models.ParticipationModel", b =>
@@ -642,7 +642,7 @@ namespace RessourceRelationnelle.API.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("RessourceRelationnelle.DATA.Models.LikeModel", b =>
+            modelBuilder.Entity("RessourceRelationnelle.DATA.Models.Like", b =>
                 {
                     b.HasOne("RessourceRelationnelle.DATA.Models.ResourceModel", "Resource")
                         .WithMany("Likes")

@@ -7,8 +7,8 @@ namespace RessourceRelationnelle.DATA.Models
         public string Title { get; set; } = string.Empty;
         public string Resume { get; set; } = string.Empty;
         public string Content { get; set; } = string.Empty;
-        public string MediaUrl { get; set; } = string.Empty;
-        public string MediaTtype { get; set; } = string.Empty; // Image, Video
+        public string? MediaUrl { get; set; } = string.Empty;
+        public string? MediaTtype { get; set; } = string.Empty; // Image, Video
         public bool IsVisible { get; set; } = true;
         public string PublicationStatus { get; set; } = "Pending"; // "PENDING", "APPROVED", "REJECTED"
         public DateTime? UpdatedAt { get; set; } = null;

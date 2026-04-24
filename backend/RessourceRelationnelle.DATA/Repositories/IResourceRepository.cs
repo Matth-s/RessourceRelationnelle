@@ -12,6 +12,7 @@ namespace RessourceRelationnelle.DATA.Repositories
         Task<IEnumerable<ResourcesReturn>> GetAll();
         Task Delete(string id);
         Task<ResourceModel> Update(UpdateResourceModel model);
+        Task<ResourceModel> UpdateStatus(string resourceId, UpdateStatusResourceDto model);
     }
     public class UpdateResourceModel
     {
@@ -23,5 +24,11 @@ namespace RessourceRelationnelle.DATA.Repositories
         public string CategoryId { get; set; } = string.Empty;
         public string ResourceTypeId { get; set; } = string.Empty;
         public string RelationTypeId { get; set; } = string.Empty;
+    }
+
+    public class UpdateStatusResourceDto()
+    {
+        public bool IsVisible { get; set; }
+        public string PublicationStatus { get; set; } = "";
     }
 }

@@ -166,6 +166,24 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
+
+        public async Task<ResourceModel> UpdateStatus(string resourceId, UpdateStatusResourceDto model)
+        {
+            ResourceModel? existingResource = context.Resources.FirstOrDefault(x => x.Id == resourceId);
+
+            if (existingResource == null)
+            {
+                return null;
+            }
+
+            existingResource.IsVisible = model.IsVisible;
+            existingResource.PublicationStatus = model.PublicationStatus;
+
+            context.Resources.Update(existingResource);
+
+            await context.SaveChangesAsync();
+            return existingResource;
+        }
     }
 
     public class ResourcesReturn
