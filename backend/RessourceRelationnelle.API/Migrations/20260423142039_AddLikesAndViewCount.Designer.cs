@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RessourceRelationnelle.DATA;
@@ -11,9 +12,11 @@ using RessourceRelationnelle.DATA;
 namespace RessourceRelationnelle.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20260423142039_AddLikesAndViewCount")]
+    partial class AddLikesAndViewCount
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -283,9 +286,14 @@ namespace RessourceRelationnelle.API.Migrations
                     b.Property<string>("ResourceId")
                         .HasColumnType("text");
 
+                    b.Property<string>("ResourceModelId")
+                        .HasColumnType("text");
+
                     b.HasKey("UserId", "ResourceId");
 
                     b.HasIndex("ResourceId");
+
+                    b.HasIndex("ResourceModelId");
 
                     b.ToTable("LikeModel");
                 });
@@ -642,10 +650,14 @@ namespace RessourceRelationnelle.API.Migrations
             modelBuilder.Entity("RessourceRelationnelle.DATA.Models.LikeModel", b =>
                 {
                     b.HasOne("RessourceRelationnelle.DATA.Models.ResourceModel", "Resource")
-                        .WithMany("Likes")
+                        .WithMany()
                         .HasForeignKey("ResourceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("RessourceRelationnelle.DATA.Models.ResourceModel", null)
+                        .WithMany("Likes")
+                        .HasForeignKey("ResourceModelId");
 
                     b.HasOne("RessourceRelationnelle.DATA.Models.UserModel", "User")
                         .WithMany("Likes")

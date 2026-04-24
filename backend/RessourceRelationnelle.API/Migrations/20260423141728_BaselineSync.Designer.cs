@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RessourceRelationnelle.DATA;
@@ -11,9 +12,11 @@ using RessourceRelationnelle.DATA;
 namespace RessourceRelationnelle.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20260423141728_BaselineSync")]
+    partial class BaselineSync
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -273,21 +276,6 @@ namespace RessourceRelationnelle.API.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Event");
-                });
-
-            modelBuilder.Entity("RessourceRelationnelle.DATA.Models.LikeModel", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ResourceId")
-                        .HasColumnType("text");
-
-                    b.HasKey("UserId", "ResourceId");
-
-                    b.HasIndex("ResourceId");
-
-                    b.ToTable("LikeModel");
                 });
 
             modelBuilder.Entity("RessourceRelationnelle.DATA.Models.ParticipationModel", b =>
@@ -639,25 +627,6 @@ namespace RessourceRelationnelle.API.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("RessourceRelationnelle.DATA.Models.LikeModel", b =>
-                {
-                    b.HasOne("RessourceRelationnelle.DATA.Models.ResourceModel", "Resource")
-                        .WithMany("Likes")
-                        .HasForeignKey("ResourceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RessourceRelationnelle.DATA.Models.UserModel", "User")
-                        .WithMany("Likes")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Resource");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("RessourceRelationnelle.DATA.Models.ParticipationModel", b =>
                 {
                     b.HasOne("RessourceRelationnelle.DATA.Models.ActiveSessionModel", "Session")
@@ -764,11 +733,6 @@ namespace RessourceRelationnelle.API.Migrations
                     b.Navigation("Resources");
                 });
 
-            modelBuilder.Entity("RessourceRelationnelle.DATA.Models.ResourceModel", b =>
-                {
-                    b.Navigation("Likes");
-                });
-
             modelBuilder.Entity("RessourceRelationnelle.DATA.Models.TypeRelationModel", b =>
                 {
                     b.Navigation("Ressources");
@@ -777,11 +741,6 @@ namespace RessourceRelationnelle.API.Migrations
             modelBuilder.Entity("RessourceRelationnelle.DATA.Models.TypeResourceModel", b =>
                 {
                     b.Navigation("Ressources");
-                });
-
-            modelBuilder.Entity("RessourceRelationnelle.DATA.Models.UserModel", b =>
-                {
-                    b.Navigation("Likes");
                 });
 #pragma warning restore 612, 618
         }

@@ -17,6 +17,7 @@ namespace RessourceRelationnelle.DATA
         public DbSet<SharedModel> Shared { get; set; }
         public DbSet<TypeResourceModel> TypeResources { get; set; }
         public DbSet<TypeRelationModel> TypeRelations { get; set; }
+        public DbSet<LikeModel> Like { get; set; }
 
 
         public DataContext(DbContextOptions<DataContext> options)
@@ -33,6 +34,8 @@ namespace RessourceRelationnelle.DATA
                 .HasKey(p => new { p.UserId, p.SessionId });
             modelBuilder.Entity<SharedModel>()
                 .HasKey(p => new { p.UserId, p.ResourceId });
+            modelBuilder.Entity<LikeModel>()
+                .HasKey(l => new { l.UserId, l.ResourceId });
 
             modelBuilder.Entity<ResourceModel>()
                 .HasOne(r => r.Category)
@@ -53,6 +56,11 @@ namespace RessourceRelationnelle.DATA
                 .HasOne(r => r.User)
                 .WithMany()
                 .HasForeignKey(r => r.UserId);
+           
+            modelBuilder.Entity<LikeModel>()
+                .HasOne(l => l.Resource)
+                .WithMany(r => r.Likes)
+                .HasForeignKey(l => l.ResourceId);
         }
     }
 }

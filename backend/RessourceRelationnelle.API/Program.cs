@@ -81,6 +81,7 @@ namespace RessourceRelationnelle.API
             builder.Services.AddScoped<ITypeResourceRepository, SQLTypeResourceRepository>();
             builder.Services.AddScoped<IUserRepository, SqlUserRepository>();
             builder.Services.AddScoped<ICommentaryRepository, SqlCommentaryRepository>();
+            builder.Services.AddScoped<ILikeRepository, SQLLikeRepository>();
 
             //Supabase
             builder.Services.AddSingleton<IStorageService, StorageService>();

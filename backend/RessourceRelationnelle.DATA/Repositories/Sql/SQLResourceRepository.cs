@@ -41,18 +41,24 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
                 .ToListAsync();
         }
 
-        public async Task<ResourcesReturn?> GetOne(string id)
+        public async Task<ResourcesReturn?> GetOne(string userId, string resourceId)
         {
             var r = await context.Resources
                 .Include(r => r.User)
                 .Include(r => r.Category)
                 .Include(r => r.TypeRessource)
                 .Include(r => r.TypeRelation)
+                .Include(r => r.Likes)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == id);
+                .FirstOrDefaultAsync(x => x.Id == resourceId);
 
             if (r == null)
                 return null;
+
+            LikeModel? liked = null;
+
+            if(userId != null)
+                liked = await context.Like.FindAsync(userId, resourceId);
 
             return new ResourcesReturn
             {
@@ -68,6 +74,8 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
                 PublishedAt = r.PublishedAt,
                 CreatedAt = r.CreatedAt,
                 ViewCount = r.ViewCount,
+                LikeCount = r.Likes.Count,
+                Liked = liked != null,
                 User = new UserDto { Id = r.User.Id, Username = r.User.UserName },
                 Category = r.Category,
                 TypeResource = r.TypeRessource,
@@ -82,6 +90,7 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
                 .Include(r => r.Category)
                 .Include(r => r.TypeRessource)
                 .Include(r => r.TypeRelation)
+                .Include(r => r.Likes)
                 .ToListAsync();
 
             if (resources.Count() == 0)
@@ -105,6 +114,7 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
                     PublishedAt = r.PublishedAt,
                     CreatedAt = r.CreatedAt,
                     ViewCount = r.ViewCount,
+                    LikeCount = r.Likes.Count,
                     User = new UserDto { Id = r.User.Id, Username = r.User.UserName},
                     Category = r.Category,
                     TypeResource = r.TypeRessource,
@@ -172,6 +182,8 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
         public DateTime PublishedAt { get; set; }
         public DateTime CreatedAt { get; set; }
         public int ViewCount { get; set; }
+        public int LikeCount { get; set; }
+        public bool Liked { get; set; } = false;
         public UserDto User { get; set; } = new UserDto();
         public CategoryModel Category { get; set; } = new CategoryModel();
         public TypeResourceModel TypeResource { get; set; } = new TypeResourceModel();

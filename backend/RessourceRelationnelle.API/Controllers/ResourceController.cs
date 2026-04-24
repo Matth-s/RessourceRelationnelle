@@ -5,6 +5,7 @@ using RessourceRelationnelle.API.Services;
 using RessourceRelationnelle.Data.Repositories.Sql;
 using RessourceRelationnelle.DATA.Models;
 using RessourceRelationnelle.DATA.Repositories;
+using System.Security.Claims;
 
 namespace RessourceRelationnelle.API.Controllers
 {
@@ -32,7 +33,9 @@ namespace RessourceRelationnelle.API.Controllers
         {
             try
             {
-                ResourcesReturn? resource = await repository.GetOne(id);
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                ResourcesReturn? resource = await repository.GetOne(userId, id);
 
                 if (resource == null)
                     return NotFound();

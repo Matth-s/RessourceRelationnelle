@@ -26,6 +26,7 @@ namespace RessourceRelationnelle.DATA.Models
         public string TypeRessourceId { get; set; } = string.Empty;
         public TypeResourceModel TypeRessource { get; set; } = null!;
         public string TypeRelationId { get; set; } = string.Empty;
-        public TypeRelationModel TypeRelation { get; set; } = null!;         
+        public TypeRelationModel TypeRelation { get; set; } = null!;
+        public List<LikeModel> Likes { get; set; } = new List<LikeModel>();
     }
 }
