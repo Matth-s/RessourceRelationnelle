@@ -5,13 +5,14 @@ namespace RessourceRelationnelle.DATA.Repositories
 {    public interface IResourceRepository
     {
         Task<ResourceModel> Create(ResourceModel model);
-        Task<ResourcesReturn?> GetOne(string id);
+        Task<ResourcesReturn?> GetOne(string userId, string resourceId);
         Task<ResourceModel?> GetResource(string id);
 
         Task<IEnumerable<ResourceModel>> GetForUser(string? userId = null);
         Task<IEnumerable<ResourcesReturn>> GetAll();
         Task Delete(string id);
         Task<ResourceModel> Update(UpdateResourceModel model);
+        Task<ResourceModel> UpdateStatus(string resourceId, UpdateStatusResourceDto model);
     }
     public class UpdateResourceModel
     {
@@ -23,5 +24,11 @@ namespace RessourceRelationnelle.DATA.Repositories
         public string CategoryId { get; set; } = string.Empty;
         public string ResourceTypeId { get; set; } = string.Empty;
         public string RelationTypeId { get; set; } = string.Empty;
+    }
+
+    public class UpdateStatusResourceDto()
+    {
+        public bool IsVisible { get; set; }
+        public string PublicationStatus { get; set; } = "";
     }
 }

@@ -7,8 +7,8 @@ namespace RessourceRelationnelle.DATA.Models
         public string Title { get; set; } = string.Empty;
         public string Resume { get; set; } = string.Empty;
         public string Content { get; set; } = string.Empty;
-        public string MediaUrl { get; set; } = string.Empty;
-        public string MediaTtype { get; set; } = string.Empty; // Image, Video
+        public string? MediaUrl { get; set; } = string.Empty;
+        public string? MediaTtype { get; set; } = string.Empty; // Image, Video
         public bool IsVisible { get; set; } = true;
         public string PublicationStatus { get; set; } = "Pending"; // "PENDING", "APPROVED", "REJECTED"
         public DateTime? UpdatedAt { get; set; } = null;
@@ -26,6 +26,7 @@ namespace RessourceRelationnelle.DATA.Models
         public string TypeRessourceId { get; set; } = string.Empty;
         public TypeResourceModel TypeRessource { get; set; } = null!;
         public string TypeRelationId { get; set; } = string.Empty;
-        public TypeRelationModel TypeRelation { get; set; } = null!;         
+        public TypeRelationModel TypeRelation { get; set; } = null!;
+        public List<LikeModel> Likes { get; set; } = new List<LikeModel>();
     }
 }

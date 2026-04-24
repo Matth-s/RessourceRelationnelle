@@ -12,8 +12,8 @@ using RessourceRelationnelle.DATA;
 namespace RessourceRelationnelle.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20260423135007_Initial")]
-    partial class Initial
+    [Migration("20260423141728_BaselineSync")]
+    partial class BaselineSync
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
