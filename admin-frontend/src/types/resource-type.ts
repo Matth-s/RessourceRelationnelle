@@ -6,3 +6,13 @@ export const PUBLICATION_RESOURCE_KEY = {
 
 export type IPublicationResource =
   (typeof PUBLICATION_RESOURCE_KEY)[keyof typeof PUBLICATION_RESOURCE_KEY];
+
+export interface IVisibilityForm {
+  value: boolean;
+  label: string;
+}
+
+export interface IResourcePublicationStatus {
+  value: IPublicationResource;
+  label: string;
+}
