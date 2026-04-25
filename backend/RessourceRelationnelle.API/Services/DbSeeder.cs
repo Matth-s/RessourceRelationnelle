@@ -438,7 +438,7 @@ namespace RessourceRelationnelle.API.Services
             context.Resources.AddRange(createdResources);
 
             var comments = new List<CommentaryModel>();
-            var progressions = new List<ProgressionModel>();
+            var interactions = new List<InteractionModel>();
             var sharedItems = new List<SharedModel>();
 
             foreach (var categorySeed in CategorySeeds)
@@ -464,7 +464,7 @@ namespace RessourceRelationnelle.API.Services
                         Content = GetCommentText(categorySeed.DisplayName, i)
                     });
 
-                    progressions.Add(new ProgressionModel
+                    interactions.Add(new InteractionModel
                     {
                         UserId = user.Id,
                         ResourceId = resource.Id,
@@ -487,7 +487,7 @@ namespace RessourceRelationnelle.API.Services
             }
 
             context.Comments.AddRange(comments);
-            context.Progression.AddRange(progressions);
+            context.Interactions.AddRange(interactions);
             context.Shared.AddRange(sharedItems);
 
             var activityTypeId = resourceTypesByName["ACTIVITÉ / JEU À RÉALISER"].Id;

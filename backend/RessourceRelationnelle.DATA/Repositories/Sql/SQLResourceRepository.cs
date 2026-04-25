@@ -44,10 +44,12 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
         public async Task<ResourceModel?> GetOne(string id)
         {
             return await context.Resources
-                //.Include(r => r.User)
+                .Include(r => r.User)
                 .Include(r => r.Category)
                 .Include(r => r.TypeRessource)
                 .Include(r => r.TypeRelation)
+                .Include(r => r.Comments.Where(c => c.ModerationStatus == "Approved"))
+                    .ThenInclude(c => c.User)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
@@ -75,7 +77,7 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
                     Resume = r.Resume,
                     Content = r.Content,
                     Url = r.Url,
-                    MediaTtype = r.MediaTtype,
+                    MediaType = r.MediaType,
                     MediaUrl = r.MediaUrl,
                     IsVisible = r.IsVisible,
                     PublicationStatus = r.PublicationStatus,
@@ -133,7 +135,7 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
         public string Content { get; set; } = "";
         public string Url { get; set; } = "";
         public string MediaUrl { get; set; } = "";
-        public string MediaTtype { get; set; } = "";
+        public string MediaType { get; set; } = "";
         public bool IsVisible { get; set; }
         public string PublicationStatus { get; set; } = "";
         public DateTime? UpdatedAt { get; set; }

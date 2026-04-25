@@ -11,8 +11,8 @@ using RessourceRelationnelle.DATA;
 namespace RessourceRelationnelle.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20260423080629_Initial")]
-    partial class Initial
+    [Migration("20260425100627_RenameProgressionToInteraction")]
+    partial class RenameProgressionToInteraction
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -269,6 +269,30 @@ namespace RessourceRelationnelle.API.Migrations
                     b.ToTable("Event");
                 });
 
+            modelBuilder.Entity("RessourceRelationnelle.DATA.Models.InteractionModel", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ResourceId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("BookMarked")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsFavorite")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("updatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("UserId", "ResourceId");
+
+                    b.HasIndex("ResourceId");
+
+                    b.ToTable("Interactions");
+                });
+
             modelBuilder.Entity("RessourceRelationnelle.DATA.Models.ParticipationModel", b =>
                 {
                     b.Property<string>("UserId")
@@ -292,30 +316,6 @@ namespace RessourceRelationnelle.API.Migrations
                     b.HasIndex("SessionId");
 
                     b.ToTable("Participations");
-                });
-
-            modelBuilder.Entity("RessourceRelationnelle.DATA.Models.ProgressionModel", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ResourceId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("BookMarked")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("IsFavorite")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("updatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("UserId", "ResourceId");
-
-                    b.HasIndex("ResourceId");
-
-                    b.ToTable("Progression");
                 });
 
             modelBuilder.Entity("RessourceRelationnelle.DATA.Models.ResourceModel", b =>
@@ -619,6 +619,25 @@ namespace RessourceRelationnelle.API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("RessourceRelationnelle.DATA.Models.InteractionModel", b =>
+                {
+                    b.HasOne("RessourceRelationnelle.DATA.Models.ResourceModel", "Resource")
+                        .WithMany()
+                        .HasForeignKey("ResourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RessourceRelationnelle.DATA.Models.UserModel", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Resource");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("RessourceRelationnelle.DATA.Models.ParticipationModel", b =>
                 {
                     b.HasOne("RessourceRelationnelle.DATA.Models.ActiveSessionModel", "Session")
@@ -634,25 +653,6 @@ namespace RessourceRelationnelle.API.Migrations
                         .IsRequired();
 
                     b.Navigation("Session");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("RessourceRelationnelle.DATA.Models.ProgressionModel", b =>
-                {
-                    b.HasOne("RessourceRelationnelle.DATA.Models.ResourceModel", "Resource")
-                        .WithMany()
-                        .HasForeignKey("ResourceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RessourceRelationnelle.DATA.Models.UserModel", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Resource");
 
                     b.Navigation("User");
                 });

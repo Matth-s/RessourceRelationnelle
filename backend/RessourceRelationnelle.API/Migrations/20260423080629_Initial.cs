@@ -222,7 +222,7 @@ namespace RessourceRelationnelle.API.Migrations
                     Content = table.Column<string>(type: "TEXT", nullable: false),
                     Url = table.Column<string>(type: "TEXT", nullable: false),
                     MediaUrl = table.Column<string>(type: "TEXT", nullable: false),
-                    MediaTtype = table.Column<string>(type: "TEXT", nullable: false),
+                    MediaType = table.Column<string>(type: "TEXT", nullable: false),
                     IsVisible = table.Column<bool>(type: "INTEGER", nullable: false),
                     PublicationStatus = table.Column<string>(type: "TEXT", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: true),

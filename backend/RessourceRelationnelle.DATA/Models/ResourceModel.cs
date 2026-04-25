@@ -9,12 +9,13 @@ namespace RessourceRelationnelle.DATA.Models
         public string Content { get; set; } = string.Empty;
         public string Url { get; set; } = string.Empty;
         public string MediaUrl { get; set; } = string.Empty;
-        public string MediaTtype { get; set; } = string.Empty; // Image, Video
+        public string MediaType { get; set; } = string.Empty; // Image, Video
         public bool IsVisible { get; set; } = true;
         public string PublicationStatus { get; set; } = "Pending"; // "PENDING", "APPROVED", "REJECTED"
         public DateTime? UpdatedAt { get; set; } = null;
         public DateTime PublishedAt { get; set; } = DateTime.UtcNow;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public List<CommentaryModel> Comments { get; set; } = new();
 
 
 

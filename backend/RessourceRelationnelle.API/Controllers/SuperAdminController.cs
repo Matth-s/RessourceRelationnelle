@@ -98,6 +98,34 @@ namespace RessourceRelationnelle.API.Controllers
             return Ok(new { message = "Utilisateur modifié" });
         }
 
+        [HttpPut("comments/{id}")]
+        [Authorize(Roles = "Admin,SuperAdmin,Moderator")]
+        public async Task<ActionResult> UpdateCommentStatus(string id, [FromBody] UpdateCommentStatusModel model)
+        {
+            var comment = await repository.GetById(id);
+            if (comment == null)
+                return NotFound(new { message = "Commentaire non trouvé" });
+
+            if (model.Action == "approve")
+            {
+                comment.ModerationStatus = "Approved";
+                await repository.Update(comment);
+                return Ok(new { message = "Commentaire approuvé" });
+            }
+            else if (model.Action == "reject")
+            {
+                await repository.Delete(id);
+                return Ok(new { message = "Commentaire supprimé" });
+            }
+
+            return BadRequest(new { message = "Action invalide. Utilisez 'approve' ou 'reject'" });
+        }
+
+        public class UpdateCommentStatusModel
+        {
+            public string Action { get; set; } = string.Empty; // "approve" ou "reject"
+        }
+
 
         [HttpGet("comments")]
         [Authorize(Roles = "Admin,SuperAdmin,Moderator")]

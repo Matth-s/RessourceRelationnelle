@@ -13,7 +13,7 @@ namespace RessourceRelationnelle.DATA
         public DbSet<DemographicZoneModel> DemographicsZone { get; set; }
         public DbSet<EventModel> Event { get; set; }
         public DbSet<ParticipationModel> Participations { get; set; }
-        public DbSet<ProgressionModel> Progression { get; set; }
+        public DbSet<InteractionModel> Interactions { get; set; }
         public DbSet<SharedModel> Shared { get; set; }
         public DbSet<TypeResourceModel> TypeResources { get; set; }
         public DbSet<TypeRelationModel> TypeRelations { get; set; }
@@ -27,8 +27,8 @@ namespace RessourceRelationnelle.DATA
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<ProgressionModel>()
-                .HasKey(p => new { p.UserId, p.ResourceId });
+            modelBuilder.Entity<InteractionModel>()
+                .HasKey(i => new { i.UserId, i.ResourceId });
             modelBuilder.Entity<ParticipationModel>()
                 .HasKey(p => new { p.UserId, p.SessionId });
             modelBuilder.Entity<SharedModel>()

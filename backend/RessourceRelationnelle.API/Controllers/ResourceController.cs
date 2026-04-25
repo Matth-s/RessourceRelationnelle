@@ -35,6 +35,7 @@ namespace RessourceRelationnelle.API.Controllers
                 ResourceModel? resource = await repository.GetOne(id);
                 if (resource == null)
                     return NotFound();
+
                 return Ok(resource);
             }
             catch (Exception ex)

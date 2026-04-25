@@ -1,7 +1,12 @@
-import type { RegisterSchema } from "../components/register-form/schemas/register-schemas";
 import { api } from "@/lib/axios-client";
 
-export const registerApi = async (form: RegisterSchema) => {
-  const { data } = await api.post("/authentication/signup", form);
-  return data;
+type RegisterPayload = {
+  email: string;
+  username: string;
+  password: string;
+  confirmPassword: string;
+};
+
+export const registerApi = async (payload: RegisterPayload): Promise<void> => {
+  await api.post("/authentication/signup", payload);
 };

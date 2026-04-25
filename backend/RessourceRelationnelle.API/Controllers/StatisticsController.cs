@@ -52,7 +52,7 @@ namespace RessourceRelationnelle.API.Controllers
                 .ToListAsync();
 
             // Ressources les plus mises en favori
-            var topFavorites = await context.Progression
+            var topFavorites = await context.Interactions
                 .Where(p => p.IsFavorite)
                 .GroupBy(p => p.ResourceId)
                 .Select(g => new { ResourceId = g.Key, Count = g.Count() })
@@ -65,7 +65,7 @@ namespace RessourceRelationnelle.API.Controllers
                 .ToListAsync();
 
             // Ressources les plus bookmarkées
-            var topBookmarked = await context.Progression
+            var topBookmarked = await context.Interactions
                 .Where(p => p.BookMarked)
                 .GroupBy(p => p.ResourceId)
                 .Select(g => new { ResourceId = g.Key, Count = g.Count() })

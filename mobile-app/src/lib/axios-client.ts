@@ -1,16 +1,15 @@
 import axios from "axios";
-import { getAuthToken } from "./cookie";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5223/api";
 
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: API_URL,
 });
 
 api.interceptors.request.use((config) => {
-  const token = getAuthToken();
-
+  const token = localStorage.getItem("auth_token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
-
   return config;
 });

@@ -1,6 +1,6 @@
 ﻿namespace RessourceRelationnelle.DATA.Models
 {
-    public class ProgressionModel
+    public class InteractionModel
     {     
         public bool IsFavorite { get; set; } = false;
         public bool BookMarked { get; set; } = false;

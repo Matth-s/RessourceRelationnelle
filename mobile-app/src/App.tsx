@@ -2,13 +2,17 @@ import AuthLayout from "./pages/(auth)/AuthLayout";
 import LoginPage from "./pages/(auth)/LoginPage";
 import RegisterPage from "./pages/(auth)/RegisterPage";
 import HomePage from "./pages/HomePage";
+import ResourcesPage from "./pages/ResourcesPage";
+import ResourceDetailPage from "./pages/ResourceDetailPage";
 import { Route, Routes } from "react-router";
 
 const App = () => {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
-      <Route path="/home" element={<p>HomePage</p>} />
+      <Route path="/home" element={<HomePage />} />
+      <Route path="/resources" element={<ResourcesPage />} />
+      <Route path="/resources/:id" element={<ResourceDetailPage />} />
       <Route path="/auth/" element={<AuthLayout />}>
         <Route path="register" element={<RegisterPage />} />
         <Route path="login" element={<LoginPage />} />
