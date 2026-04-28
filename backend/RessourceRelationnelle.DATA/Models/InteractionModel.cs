@@ -4,9 +4,8 @@
     {     
         public bool IsFavorite { get; set; } = false;
         public bool BookMarked { get; set; } = false;
+        public bool IsExploited { get; set; } = false;
         public DateTime updatedAt { get; set; } = DateTime.UtcNow;
-
-        // STATUS EXPLOTATION ????????
 
         // clés étrangeres
         public string UserId { get; set; } = string.Empty;

@@ -3,6 +3,7 @@ import { api } from "@/lib/axios-client";
 export type Interaction = {
   isFavorite: boolean;
   bookMarked: boolean;
+  isExploited: boolean;
   resourceId: string;
 };
 
@@ -21,4 +22,8 @@ export const toggleFavoriteApi = async (resourceId: string): Promise<void> => {
 
 export const toggleBookmarkApi = async (resourceId: string): Promise<void> => {
   await api.post(`/Interaction/bookmark/${resourceId}`);
+};
+
+export const toggleExploitationApi = async (resourceId: string): Promise<void> => {
+  await api.post(`/Interaction/exploitation/${resourceId}`);
 };

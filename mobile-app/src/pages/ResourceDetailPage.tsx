@@ -9,7 +9,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { type Resource, getResourceByIdApi } from "@/features/resources/api/get-resources-api";
 import { type Comment, getCommentsByResourceApi, postCommentApi } from "@/features/resources/api/comments-api";
-import { toggleFavoriteApi, toggleBookmarkApi, getInteractionApi } from "@/features/resources/api/interaction-api";
+import { toggleFavoriteApi, toggleBookmarkApi, toggleExploitationApi, getInteractionApi } from "@/features/resources/api/interaction-api";
 
 const ResourceDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -20,6 +20,7 @@ const ResourceDetailPage = () => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState("");
   const [isFavorite, setIsFavorite] = useState(false);
+  const [isExploited, setIsExploited] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -40,7 +41,8 @@ const ResourceDetailPage = () => {
         if (user) {
           const interaction = await getInteractionApi(id);
           if (interaction) {
-            setIsFavorite(interaction.isFavorite);
+            setIsFavorite(interaction.isFavorite)
+            setIsExploited(interaction.isExploited);
             setIsBookmarked(interaction.bookMarked);
           }
         }
@@ -66,6 +68,14 @@ const ResourceDetailPage = () => {
     try {
       await toggleBookmarkApi(id);
       setIsBookmarked(!isBookmarked);
+    } catch { /* erreur silencieuse */ }
+  };
+
+  const handleToggleExploitation = async () => {
+    if (!user || !id) return;
+    try {
+      await toggleExploitationApi(id);
+      setIsExploited(!isExploited);
     } catch { /* erreur silencieuse */ }
   };
 
@@ -157,7 +167,13 @@ const ResourceDetailPage = () => {
               disabled={!user}
               onClick={handleToggleFavorite}
             />
-            <ActionButton icon={CheckCircle} label="Marquer comme exploité" disabled={!user} onClick={() => {}} />
+            <ActionButton 
+              icon={CheckCircle}
+              label="Marquer comme exploité"
+              active={isExploited}
+              disabled={!user}
+              onClick={handleToggleExploitation}
+            />
             <ActionButton
               icon={Bookmark}
               label={isBookmarked ? "Retirer le signet" : "Mettre de côté"}
@@ -168,7 +184,7 @@ const ResourceDetailPage = () => {
             <ActionButton icon={Share2} label="Partager" onClick={handleShare} />
           </div>
 
-          {!user && <p className="text-xs text-gray-400">Connectez-vous pour utiliser les favoris et signets</p>}
+          {!user && <p className="text-xs text-gray-400">Connectez-vous pour utiliser les favoris, les signets et les exploitations</p>}
 
           {/* Relation */}
           {relationName && (

@@ -30,6 +30,7 @@ namespace RessourceRelationnelle.DATA.Repositories.Sql
                     ResourceId = resourceId,
                     IsFavorite = true,
                     BookMarked = false,
+                    IsExploited = false,
                     updatedAt = DateTime.UtcNow
                 };
                 context.Interactions.Add(interaction);
@@ -56,6 +57,7 @@ namespace RessourceRelationnelle.DATA.Repositories.Sql
                     ResourceId = resourceId,
                     IsFavorite = false,
                     BookMarked = true,
+                    IsExploited = false,
                     updatedAt = DateTime.UtcNow
                 };
                 context.Interactions.Add(interaction);
@@ -68,6 +70,54 @@ namespace RessourceRelationnelle.DATA.Repositories.Sql
 
             await context.SaveChangesAsync();
             return interaction;
+        }
+
+        public async Task<InteractionModel> ToggleExploitation(string userId, string resourceId)
+        {
+            var interaction = await GetByUserAndResource(userId, resourceId);
+
+            if (interaction == null)
+            {
+                interaction = new InteractionModel
+                {
+                    UserId = userId,
+                    ResourceId = resourceId,
+                    IsFavorite = false,
+                    BookMarked = false,
+                    IsExploited = true,
+                    updatedAt = DateTime.UtcNow
+                };
+                context.Interactions.Add(interaction);
+            }
+            else
+            {
+                interaction.IsExploited = !interaction.IsExploited;
+                interaction.updatedAt = DateTime.UtcNow;
+            }
+
+            await context.SaveChangesAsync();
+            return interaction;
+        }
+
+        public async Task<List<InteractionModel>> GetFavorites(string userId)
+        {
+            return await context.Interactions
+                .Where(i => i.UserId == userId && i.IsFavorite)
+                .ToListAsync();
+        }
+
+        public async Task<List<InteractionModel>> GetBookmarks(string userId)
+        {
+            return await context.Interactions
+                .Where(i => i.UserId == userId && i.BookMarked)
+                .ToListAsync();
+        }
+
+        public async Task<List<InteractionModel>> GetExploited(string userId)
+        {
+            return await context.Interactions
+                .Where(i => i.UserId == userId && i.IsExploited)
+                .ToListAsync();
         }
     }
 }

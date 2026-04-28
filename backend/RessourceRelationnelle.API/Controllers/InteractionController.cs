@@ -30,13 +30,14 @@ namespace RessourceRelationnelle.API.Controllers
 
             if (interaction == null)
             {
-                return Ok(new { isFavorite = false, bookMarked = false, resourceId });
+                return Ok(new { isFavorite = false, bookMarked = false,isExploited = false, resourceId });
             }
 
             return Ok(new
             {
                 interaction.IsFavorite,
                 interaction.BookMarked,
+                interaction.IsExploited,
                 interaction.ResourceId
             });
         }
@@ -48,7 +49,7 @@ namespace RessourceRelationnelle.API.Controllers
             if (userId == null) return Unauthorized();
 
             var result = await repository.ToggleFavorite(userId, resourceId);
-            return Ok(new { result.IsFavorite, result.BookMarked, result.ResourceId });
+            return Ok(new { result.IsFavorite, result.BookMarked, result.IsExploited, result.ResourceId });
         }
 
         [HttpPost("bookmark/{resourceId}")]
@@ -58,7 +59,48 @@ namespace RessourceRelationnelle.API.Controllers
             if (userId == null) return Unauthorized();
 
             var result = await repository.ToggleBookmark(userId, resourceId);
-            return Ok(new { result.IsFavorite, result.BookMarked, result.ResourceId });
+            return Ok(new { result.IsFavorite, result.BookMarked, result.IsExploited, result.ResourceId });
         }
+
+        [HttpPost("exploitation/{resourceId}")]
+        public async Task<ActionResult> ToggleExploitation(string resourceId)
+        {   
+            var userId = userManager.GetUserId(User);
+            if (userId == null) return Unauthorized();
+
+            var result = await repository.ToggleExploitation(userId, resourceId);
+            return Ok(new { result.IsFavorite, result.BookMarked, result.IsExploited, result.ResourceId });
+        }
+
+        [HttpGet("favorites")]
+        public async Task<ActionResult> GetFavorites()
+        {
+            var userId = userManager.GetUserId(User);
+            if (userId == null) return Unauthorized();
+
+            var favorites = await repository.GetFavorites(userId);
+            return Ok(favorites);
+        }
+
+        [HttpGet("bookmarks")]
+        public async Task<ActionResult> GetBookmarks()
+        {
+            var userId = userManager.GetUserId(User);
+            if (userId == null) return Unauthorized();
+
+            var bookmarks = await repository.GetBookmarks(userId);
+            return Ok(bookmarks);
+        }
+
+        [HttpGet("exploited")]
+        public async Task<ActionResult> GetExploited()
+        {
+            var userId = userManager.GetUserId(User);
+            if (userId == null) return Unauthorized();
+
+            var exploited = await repository.GetExploited(userId);
+            return Ok(exploited);
+        }
+
     }
 }
