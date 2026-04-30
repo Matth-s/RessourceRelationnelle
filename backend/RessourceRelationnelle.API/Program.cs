@@ -86,6 +86,8 @@ namespace RessourceRelationnelle.API
             //Supabase
             builder.Services.AddSingleton<IStorageService, StorageService>();
 
+            builder.Services.AddSingleton<GameSessionService>();
+
 
             builder.Services.AddIdentity<UserModel, IdentityRole>()
                 .AddEntityFrameworkStores<DataContext>()
