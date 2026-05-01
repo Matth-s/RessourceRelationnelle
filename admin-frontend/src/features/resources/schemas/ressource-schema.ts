@@ -8,7 +8,7 @@ export const resourceObjectSchema = z.object({
   content: z.string(),
   isVisible: z.boolean(),
   publicationStatus: z.enum(PUBLICATION_RESOURCE_KEY),
-  updatedAt: z.string(),
+  updatedAt: z.string().nullable(),
   publishedAt: z.string(),
   createdAt: z.string(),
   mediaType: z.string(),

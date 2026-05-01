@@ -8,6 +8,7 @@ const ResourceListPage = () => {
   const {
     isLoading,
     error,
+    data,
     resources,
     uniquePublicationStatuses,
     selectedModerationStatus,
@@ -22,7 +23,7 @@ const ResourceListPage = () => {
           onChangeFilter={setSelectedModerationStatus}
           filters={uniquePublicationStatuses}
           selectedModerationStatus={selectedModerationStatus}
-          resourceLength={resources.length}
+          resources={data}
         />
 
         <Link to={"/ressources/"}>

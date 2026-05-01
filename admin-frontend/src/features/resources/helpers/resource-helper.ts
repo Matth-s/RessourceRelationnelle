@@ -1,4 +1,5 @@
 import type { IPublicationResource } from "@/types/resource-type";
+import type { resourceArrayType } from "../schemas/ressource-schema";
 
 export const formatPublicationStatus = (
   publicationStatus: IPublicationResource,
@@ -13,4 +14,17 @@ export const formatPublicationStatus = (
     default:
       return "Inconnue";
   }
+};
+
+export const getResourceLengthByType = ({
+  data,
+  publicationStatus,
+}: {
+  data: resourceArrayType;
+  publicationStatus?: IPublicationResource;
+}): number => {
+  if (!publicationStatus) return data.length;
+
+  return data.filter((item) => item.publicationStatus === publicationStatus)
+    .length;
 };
