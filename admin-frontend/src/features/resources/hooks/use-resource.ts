@@ -18,7 +18,7 @@ export const useResource = () => {
   } = useQuery({
     queryKey: [FETCH_KEYS.RESOURCES],
     queryFn: getResourcesApi,
-    retry: false
+    retry: false,
   });
 
   const handleChangeModerationStatus = (
@@ -40,6 +40,7 @@ export const useResource = () => {
   ];
 
   return {
+    data,
     isLoading,
     error,
     resources: filtredRessources,

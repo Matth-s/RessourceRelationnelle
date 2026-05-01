@@ -8,6 +8,7 @@ const ResourceListPage = () => {
   const {
     isLoading,
     error,
+    data,
     resources,
     uniquePublicationStatuses,
     selectedModerationStatus,
@@ -22,10 +23,10 @@ const ResourceListPage = () => {
           onChangeFilter={setSelectedModerationStatus}
           filters={uniquePublicationStatuses}
           selectedModerationStatus={selectedModerationStatus}
-          resourceLength={resources.length}
+          resources={data}
         />
 
-        <Link to={"/ressources/nouvelle-ressource"}>
+        <Link to={"/ressources/"}>
           <Button variant="outline">Ajouter une ressource</Button>
         </Link>
       </div>
