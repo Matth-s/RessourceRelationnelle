@@ -27,3 +27,7 @@ export const toggleBookmarkApi = async (resourceId: string): Promise<void> => {
 export const toggleExploitationApi = async (resourceId: string): Promise<void> => {
   await api.post(`/Interaction/exploitation/${resourceId}`);
 };
+
+export const markAsExploitedApi = async (resourceId: string): Promise<void> => {
+  await api.post(`/Interaction/mark-exploited/${resourceId}`);
+};

@@ -9,7 +9,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { type Resource, getResourceByIdApi } from "@/features/resources/api/get-resources-api";
 import { type Comment, getCommentsByResourceApi, postCommentApi } from "@/features/resources/api/comments-api";
-import { toggleFavoriteApi, toggleBookmarkApi, toggleExploitationApi, getInteractionApi } from "@/features/resources/api/interaction-api";
+import { toggleFavoriteApi, toggleBookmarkApi, toggleExploitationApi, markAsExploitedApi, getInteractionApi } from "@/features/resources/api/interaction-api";
 
 const ResourceDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -39,6 +39,7 @@ const ResourceDetailPage = () => {
         } catch { /* pas de commentaires */ }
 
         if (user) {
+          try { await markAsExploitedApi(id); } catch { /* marquage silencieux */ }
           const interaction = await getInteractionApi(id);
           if (interaction) {
             setIsFavorite(interaction.isFavorite)

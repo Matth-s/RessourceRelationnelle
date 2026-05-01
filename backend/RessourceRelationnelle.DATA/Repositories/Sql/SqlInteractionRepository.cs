@@ -99,6 +99,34 @@ namespace RessourceRelationnelle.DATA.Repositories.Sql
             return interaction;
         }
 
+        public async Task<InteractionModel> MarkAsExploited(string userId, string resourceId)
+        {
+            var interaction = await GetByUserAndResource(userId, resourceId);
+
+            if (interaction == null)
+            {
+                interaction = new InteractionModel
+                {
+                    UserId = userId,
+                    ResourceId = resourceId,
+                    IsFavorite = false,
+                    BookMarked = false,
+                    IsExploited = true,
+                    updatedAt = DateTime.UtcNow
+                };
+                context.Interactions.Add(interaction);
+                await context.SaveChangesAsync();
+            }
+            else if (!interaction.IsExploited)
+            {
+                interaction.IsExploited = true;
+                interaction.updatedAt = DateTime.UtcNow;
+                await context.SaveChangesAsync();
+            }
+
+            return interaction;
+        }
+
         public async Task<List<InteractionModel>> GetFavorites(string userId)
         {
             return await context.Interactions

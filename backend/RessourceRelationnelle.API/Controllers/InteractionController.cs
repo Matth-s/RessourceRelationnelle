@@ -72,6 +72,16 @@ namespace RessourceRelationnelle.API.Controllers
             return Ok(new { result.IsFavorite, result.BookMarked, result.IsExploited, result.ResourceId });
         }
 
+        [HttpPost("mark-exploited/{resourceId}")]
+        public async Task<ActionResult> MarkAsExploited(string resourceId)
+        {
+            var userId = userManager.GetUserId(User);
+            if (userId == null) return Unauthorized();
+
+            var result = await repository.MarkAsExploited(userId, resourceId);
+            return Ok(new { result.IsFavorite, result.BookMarked, result.IsExploited, result.ResourceId });
+        }
+
         [HttpGet("favorites")]
         public async Task<ActionResult> GetFavorites()
         {
