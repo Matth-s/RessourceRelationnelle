@@ -14,7 +14,7 @@ export const getResourcesApi = async (): Promise<resourceArrayType> => {
 
       if (!result.success) {
         console.error("Invalid item:", result.error);
-        return null; // on marque comme invalide
+        return null; 
       }
 
       return result.data;

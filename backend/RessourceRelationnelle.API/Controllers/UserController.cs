@@ -46,6 +46,7 @@ namespace RessourceRelationnelle.API.Controllers
 
             UserInforReturn returnUser = new()
             {
+                Id = user.Id,
                 Username = user.UserName,
                 Email = user.Email,
                 Role = roles,
@@ -61,6 +62,7 @@ namespace RessourceRelationnelle.API.Controllers
 
     public class UserInforReturn
     {
+        public string Id { get; set; } = "";
         public string Username { get; set; } = "";
         public string Email { get; set; } = "";
         public List<string> Role { get; set; } = [];

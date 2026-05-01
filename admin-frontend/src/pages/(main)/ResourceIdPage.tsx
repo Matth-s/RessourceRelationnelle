@@ -4,7 +4,7 @@ import ResourceIdContent from "@/features/resources/components/ResourceIdContent
 import ModerateResourceModal from "@/features/resources/components/ModerateResourceModal";
 
 import { Button } from "@/components/ui/button";
-import { getResourceById } from "@/features/resources/api/get-resource-by-id";
+import { getResourceById } from "@/features/resources/api/get-resource-by-id-api";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft } from "lucide-react";
 import { useNavigate, useParams } from "react-router";

@@ -41,15 +41,46 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
                 .ToListAsync();
         }
 
-        public async Task<ResourceModel?> GetOne(string id)
+        public async Task<ResourcesReturn?> GetOne(string userId, string resourceId)
         {
-            return await context.Resources
-                //.Include(r => r.User)
+            var r = await context.Resources
+                .Include(r => r.User)
                 .Include(r => r.Category)
                 .Include(r => r.TypeRessource)
                 .Include(r => r.TypeRelation)
+                .Include(r => r.Likes)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == id);
+                .FirstOrDefaultAsync(x => x.Id == resourceId);
+
+            if (r == null)
+                return null;
+
+            LikeModel? liked = null;
+
+            if(userId != null)
+                liked = await context.Like.FindAsync(userId, resourceId);
+
+            return new ResourcesReturn
+            {
+                Id = r.Id,
+                Title = r.Title,
+                Resume = r.Resume,
+                Content = r.Content,
+                MediaType = r.MediaTtype,
+                MediaUrl = r.MediaUrl,
+                IsVisible = r.IsVisible,
+                PublicationStatus = r.PublicationStatus,
+                UpdatedAt = r.UpdatedAt,
+                PublishedAt = r.PublishedAt,
+                CreatedAt = r.CreatedAt,
+                ViewCount = r.ViewCount,
+                LikeCount = r.Likes.Count,
+                Liked = liked != null,
+                User = new UserDto { Id = r.User.Id, Username = r.User.UserName },
+                Category = r.Category,
+                TypeResource = r.TypeRessource,
+                TypeRelation = new TypeRelationDto { Id = r.TypeRelation.Id, TypeRelation = r.TypeRelation.TypeRelation }
+            };
         }
 
         public async Task<IEnumerable<ResourcesReturn>> GetAll()
@@ -59,6 +90,7 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
                 .Include(r => r.Category)
                 .Include(r => r.TypeRessource)
                 .Include(r => r.TypeRelation)
+                .Include(r => r.Likes)
                 .ToListAsync();
 
             if (resources.Count() == 0)
@@ -74,18 +106,19 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
                     Title = r.Title,
                     Resume = r.Resume,
                     Content = r.Content,
-                    Url = r.Url,
-                    MediaTtype = r.MediaTtype,
+                    MediaType = r.MediaTtype,
                     MediaUrl = r.MediaUrl,
                     IsVisible = r.IsVisible,
                     PublicationStatus = r.PublicationStatus,
                     UpdatedAt = r.UpdatedAt,
                     PublishedAt = r.PublishedAt,
                     CreatedAt = r.CreatedAt,
+                    ViewCount = r.ViewCount,
+                    LikeCount = r.Likes.Count,
                     User = new UserDto { Id = r.User.Id, Username = r.User.UserName},
                     Category = r.Category,
                     TypeResource = r.TypeRessource,
-                    TypeRelation = new TypeRelationDto { Id = r.TypeRelation.Id, TypeResource = r.TypeRelation.TypeRelation }
+                    TypeRelation = new TypeRelationDto { Id = r.TypeRelation.Id, TypeRelation = r.TypeRelation.TypeRelation }
                 });
             }
 
@@ -113,10 +146,38 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
             existingResource.Title = model.Title;
             existingResource.Resume = model.Resume;
             existingResource.Content = model.Content;
-            existingResource.Url = model.Url;
             existingResource.UpdatedAt = DateTime.UtcNow;
             existingResource.TypeRessourceId = model.ResourceTypeId;
             existingResource.TypeRelationId = model.RelationTypeId;
+
+            context.Resources.Update(existingResource);
+
+            await context.SaveChangesAsync();
+            return existingResource;
+        }
+
+        public async Task<ResourceModel?> GetResource(string id)
+        {
+            return await context.Resources
+                .Include(r => r.User)
+                .Include(r => r.Category)
+                .Include(r => r.TypeRessource)
+                .Include(r => r.TypeRelation)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<ResourceModel> UpdateStatus(string resourceId, UpdateStatusResourceDto model)
+        {
+            ResourceModel? existingResource = context.Resources.FirstOrDefault(x => x.Id == resourceId);
+
+            if (existingResource == null)
+            {
+                return null;
+            }
+
+            existingResource.IsVisible = model.IsVisible;
+            existingResource.PublicationStatus = model.PublicationStatus;
 
             context.Resources.Update(existingResource);
 
@@ -131,14 +192,16 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
         public string Title { get; set; } = "";
         public string Resume { get; set; } = "";
         public string Content { get; set; } = "";
-        public string Url { get; set; } = "";
         public string MediaUrl { get; set; } = "";
-        public string MediaTtype { get; set; } = "";
+        public string MediaType { get; set; } = "";
         public bool IsVisible { get; set; }
         public string PublicationStatus { get; set; } = "";
         public DateTime? UpdatedAt { get; set; }
         public DateTime PublishedAt { get; set; }
         public DateTime CreatedAt { get; set; }
+        public int ViewCount { get; set; }
+        public int LikeCount { get; set; }
+        public bool Liked { get; set; } = false;
         public UserDto User { get; set; } = new UserDto();
         public CategoryModel Category { get; set; } = new CategoryModel();
         public TypeResourceModel TypeResource { get; set; } = new TypeResourceModel();
@@ -154,6 +217,6 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
     public class TypeRelationDto
     {
         public string Id { get; set; } = "";
-        public string TypeResource { get; set; } = "";
+        public string TypeRelation{ get; set; } = "";
     }
 }

@@ -15,7 +15,7 @@ import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { updateResourceById } from "../api/update-resource-by-id";
+import { updateResourceById } from "../api/update-resource-by-id-api";
 import { toast } from "sonner";
 import { useState } from "react";
 import { Edit } from "lucide-react";

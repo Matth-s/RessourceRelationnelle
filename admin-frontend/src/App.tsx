@@ -18,6 +18,7 @@ import NotFoundGlobalPage from "./pages/NotFoundGlobalPage";
 import CommentsPage from "./pages/(main)/CommentsPage";
 import ResourceListPage from "./pages/(main)/ResourceListPage";
 import ResourceIdPage from "./pages/(main)/ResourceIdPage";
+import ResourceCreatePage from "./pages/(main)/ResourceCreatePage";
 
 const App = () => {
   const { user } = useAppSelector((state) => state.auth);
@@ -64,6 +65,7 @@ const App = () => {
         <Route path="/ressources" element={<ResourcePage />}>
           <Route index element={<ResourceListPage />} />
           <Route path=":id" element={<ResourceIdPage />} />
+          <Route path="nouvelle-ressource" element={<ResourceCreatePage />} />
         </Route>
 
         <Route path="/categories" element={<CategoryPage />} />

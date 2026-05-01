@@ -68,10 +68,12 @@ namespace RessourceRelationnelle.API
             });
 
             builder.Services.AddDbContext<DataContext>(options =>
-                options.UseSqlite(
-                    builder.Configuration.GetConnectionString("Default"),
+                options.UseNpgsql(
+                    builder.Configuration.GetConnectionString("DefaultConnection"),
                     b => b.MigrationsAssembly("RessourceRelationnelle.API")));
-
+            builder.Services.AddMemoryCache();
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddScoped<ResourceViewService>();
             builder.Services.AddScoped<IResourceRepository, SqlResourceRepository>();
             builder.Services.AddScoped<IEventRepository, SQLEventRepository>();
             builder.Services.AddScoped<ICategoryRepository, SQLCategoryRepository>();
@@ -79,9 +81,12 @@ namespace RessourceRelationnelle.API
             builder.Services.AddScoped<ITypeResourceRepository, SQLTypeResourceRepository>();
             builder.Services.AddScoped<IUserRepository, SqlUserRepository>();
             builder.Services.AddScoped<ICommentaryRepository, SqlCommentaryRepository>();
+            builder.Services.AddScoped<ILikeRepository, SQLLikeRepository>();
 
             //Supabase
             builder.Services.AddSingleton<IStorageService, StorageService>();
+
+            builder.Services.AddSingleton<GameSessionService>();
 
 
             builder.Services.AddIdentity<UserModel, IdentityRole>()
