@@ -1,16 +1,18 @@
 import { Button } from "@/components/ui/button";
 import type { IPublicationResource } from "@/types/resource-type";
+import type { resourceArrayType } from "../schemas/ressource-schema";
+import { getResourceLengthByType } from "../helpers/resource-helper";
 
 type ResourceFilterProps = {
   onChangeFilter: (filter?: IPublicationResource) => void;
   filters: IPublicationResource[];
   selectedModerationStatus?: IPublicationResource;
-  resourceLength: number;
+  resources: resourceArrayType;
 };
 
 const ResourceFilter = ({
   onChangeFilter,
-  resourceLength,
+  resources,
   filters,
   selectedModerationStatus,
 }: ResourceFilterProps) => {
@@ -19,6 +21,11 @@ const ResourceFilter = ({
   return (
     <div className="mb-4 flex w-fit overflow-hidden rounded-sm">
       {allFilters.map((filter) => {
+        const resourceLength = getResourceLengthByType({
+          data: resources,
+          publicationStatus: filter,
+        });
+
         const isSelected =
           filter === undefined
             ? selectedModerationStatus === undefined

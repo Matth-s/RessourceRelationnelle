@@ -1,18 +1,25 @@
 import {
-  resourceArraySchema,
+  resourceObjectSchema,
   type resourceArrayType,
+  type resourceObjectType,
 } from "../schemas/ressource-schema";
 import { api } from "@/lib/axios-client";
 
 export const getResourcesApi = async (): Promise<resourceArrayType> => {
   const { data } = await api.get("/resource");
 
-  const { data: validatedData, error } = resourceArraySchema.safeParse(data);
+  const validatedData = data
+    .map((item: unknown) => {
+      const result = resourceObjectSchema.safeParse(item);
 
-  if (error) {
-    console.log(error);
-    throw new Error("");
-  }
+      if (!result.success) {
+        console.error("Invalid item:", result.error);
+        return null;
+      }
+
+      return result.data;
+    })
+    .filter((item: resourceObjectType) => item !== null);
 
   return validatedData;
 };
