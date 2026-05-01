@@ -1,7 +1,10 @@
 import { Button } from "@/components/ui/button";
 import type { IPublicationResource } from "@/types/resource-type";
 import type { resourceArrayType } from "../schemas/ressource-schema";
-import { getResourceLengthByType } from "../helpers/resource-helper";
+import {
+  formatPublicationStatus,
+  getResourceLengthByType,
+} from "../helpers/resource-helper";
 
 type ResourceFilterProps = {
   onChangeFilter: (filter?: IPublicationResource) => void;
@@ -38,7 +41,7 @@ const ResourceFilter = ({
             onClick={() => onChangeFilter(filter)}
             className="h-16 rounded-none px-8"
           >
-            <p>{filter ?? "Total"}</p>
+            <p>{filter ? formatPublicationStatus(filter) : "Total"}</p>
             <span>{resourceLength}</span>
           </Button>
         );
