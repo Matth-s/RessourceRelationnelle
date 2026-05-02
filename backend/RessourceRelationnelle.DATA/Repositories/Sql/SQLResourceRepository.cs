@@ -49,6 +49,8 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
                 .Include(r => r.TypeRessource)
                 .Include(r => r.TypeRelation)
                 .Include(r => r.Likes)
+                .Include(r => r.Comments)
+                    .ThenInclude(c => c.User)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == resourceId);
 
@@ -76,6 +78,7 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
                 ViewCount = r.ViewCount,
                 LikeCount = r.Likes.Count,
                 Liked = liked != null,
+                Comments = r.Comments.Where(c => c.ModerationStatus == "Approved").OrderByDescending(c => c.CreatedAt).Select(c => new CommentDto { Id = c.Id, Content = c.Content, CreatedAt = c.CreatedAt, ModerationStatus = c.ModerationStatus, User = new UserDto { Id = c.User.Id, Username = c.User.UserName } }).ToList(),
                 User = new UserDto { Id = r.User.Id, Username = r.User.UserName },
                 Category = r.Category,
                 TypeResource = r.TypeRessource,
@@ -83,17 +86,24 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
             };
         }
 
-        public async Task<IEnumerable<ResourcesReturn>> GetAll()
+        public async Task<IEnumerable<ResourcesReturn>> GetAll(bool includeAll = false)
         {
-            var resources = await context.Resources
+            var query = context.Resources
                 .Include(r => r.User)
                 .Include(r => r.Category)
                 .Include(r => r.TypeRessource)
                 .Include(r => r.TypeRelation)
                 .Include(r => r.Likes)
-                .ToListAsync();
+                .AsQueryable();
 
-            if (resources.Count() == 0)
+            if (!includeAll)
+            {
+                query = query.Where(r => r.PublicationStatus == "Approved");
+            }
+
+            var resources = await query.ToListAsync();
+
+            if (resources.Count == 0)
                 return null;
 
             var returnResources = new List<ResourcesReturn>();
@@ -115,7 +125,7 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
                     CreatedAt = r.CreatedAt,
                     ViewCount = r.ViewCount,
                     LikeCount = r.Likes.Count,
-                    User = new UserDto { Id = r.User.Id, Username = r.User.UserName},
+                    User = new UserDto { Id = r.User.Id, Username = r.User.UserName },
                     Category = r.Category,
                     TypeResource = r.TypeRessource,
                     TypeRelation = new TypeRelationDto { Id = r.TypeRelation.Id, TypeRelation = r.TypeRelation.TypeRelation }
@@ -206,6 +216,16 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
         public CategoryModel Category { get; set; } = new CategoryModel();
         public TypeResourceModel TypeResource { get; set; } = new TypeResourceModel();
         public TypeRelationDto TypeRelation { get; set; } = new TypeRelationDto();
+        public List<CommentDto> Comments { get; set; } = new List<CommentDto>();
+    }
+
+    public class CommentDto
+    {
+        public string Id { get; set; } = "";
+        public string Content { get; set; } = "";
+        public DateTime CreatedAt { get; set; }
+        public string ModerationStatus { get; set; } = "";
+        public UserDto User { get; set; } = new UserDto();
     }
 
     public class UserDto

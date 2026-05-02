@@ -10,7 +10,7 @@ export const updateCommentApi = async (
 ): Promise<moderateCommentResponseType> => {
   const { commentId, moderationStatus } = formData;
 
-  const { data } = await api.put(`/superadmin/${commentId}`, {
+  const { data } = await api.put(`/superadmin/comments/${commentId}`, {
     moderationStatus,
   });
 

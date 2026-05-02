@@ -125,12 +125,16 @@ const ShowComment = ({ comment }: ShowCommentProps) => {
                 <Controller
                   name="moderationStatus"
                   control={form.control}
-                  render={({ fieldState }) => (
+                  render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
                       <FieldLabel>Status de la modération</FieldLabel>
-                      <Select defaultValue={comment.moderationStatus}>
+                      <Select
+                        defaultValue={comment.moderationStatus}
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
                         <SelectTrigger>
-                          <SelectValue></SelectValue>
+                          <SelectValue />
                         </SelectTrigger>
 
                         <SelectGroup>

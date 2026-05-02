@@ -133,7 +133,24 @@ namespace RessourceRelationnelle.API.Controllers
             if (!deleted) return NotFound();
             return NoContent();
         }
+        
+        [HttpPut("comments/{id}")]
+        [Authorize(Roles = "Admin,SuperAdmin,Moderator")]
+        public async Task<ActionResult> UpdateCommentStatus(string id, [FromBody] UpdateCommentStatusDto model)
+        {
+            var comment = await repository.GetById(id);
+            if (comment == null) return NotFound(new { message = "Commentaire non trouvé" });
 
+            var updated = await repository.UpdateStatus(id, model.ModerationStatus);
+            if (!updated) return BadRequest(new { message = "Erreur lors de la mise à jour" });
+
+            return Ok(new { message = "Statut du commentaire mis à jour" });
+        }
+
+        public class UpdateCommentStatusDto
+        {
+            public string ModerationStatus { get; set; } = "";
+        }
 
         public class UserUpdateDto
         {

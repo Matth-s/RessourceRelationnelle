@@ -9,7 +9,7 @@ namespace RessourceRelationnelle.DATA.Repositories
         Task<ResourceModel?> GetResource(string id);
 
         Task<IEnumerable<ResourceModel>> GetForUser(string? userId = null);
-        Task<IEnumerable<ResourcesReturn>> GetAll();
+        Task<IEnumerable<ResourcesReturn>> GetAll(bool includeAll = false);
         Task Delete(string id);
         Task<ResourceModel> Update(UpdateResourceModel model);
         Task<ResourceModel> UpdateStatus(string resourceId, UpdateStatusResourceDto model);
