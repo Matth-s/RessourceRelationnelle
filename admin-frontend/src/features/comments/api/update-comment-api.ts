@@ -2,11 +2,11 @@ import { api } from "@/lib/axios-client";
 import {
   moderateCommentResponseSchema,
   type moderateCommentResponseType,
-  type moderateCommentWithType,
+  type moderateCommentType,
 } from "../schemas/moderate-comment-schema";
 
 export const updateCommentApi = async (
-  formData: moderateCommentWithType,
+  formData: moderateCommentType,
 ): Promise<moderateCommentResponseType> => {
   const { commentId, moderationStatus } = formData;
 
