@@ -10,6 +10,7 @@ import { ChevronLeft } from "lucide-react";
 import { useNavigate, useParams } from "react-router";
 import { useAppSelector } from "@/store/hook";
 import { FETCH_KEYS } from "@/types/fetch-key-type";
+import DeleteResourceDialog from "@/features/resources/components/DeleteResource";
 
 const ResourceIdPage = () => {
   const userId = useAppSelector((state) => state.auth.user?.id);
@@ -50,10 +51,13 @@ const ResourceIdPage = () => {
           Retour
         </Button>
 
-        <ModerateResourceModal resource={data} />
-        {userId === data.user.id && (
-          <Button variant="outline">Modifier le contenue</Button>
-        )}
+        <div className="flex items-center gap-x-4">
+          <ModerateResourceModal resource={data} />
+          {userId === data.user.id && (
+            <Button variant="outline">Modifier le contenue</Button>
+          )}
+          <DeleteResourceDialog resource={data} />
+        </div>
       </div>
 
       <ResourceIdContent resource={data} />
