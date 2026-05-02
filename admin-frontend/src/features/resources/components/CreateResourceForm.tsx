@@ -13,6 +13,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useState } from "react";
 
 import type { createOrUpdateSchemaType } from "../schemas/create-or-update-schema";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+import { useRelationType } from "@/hooks/use-relation-type";
+import { useResourceType } from "@/hooks/use-resource-type";
 
 type CreateResourceFormProps = {
   username: string;
@@ -24,6 +34,9 @@ const CreateResourceForm = ({
   username,
 }: CreateResourceFormProps) => {
   const [file, setFile] = useState<File | undefined>(undefined);
+
+  const { data: relations = [] } = useRelationType();
+  const { data: resourceType = [] } = useResourceType();
 
   useEffect(() => {
     setFile(formData.getValues("file"));
@@ -52,9 +65,29 @@ const CreateResourceForm = ({
         )}
       </div>
 
-      <p className="w-fit rounded-sm bg-blue-100 px-3 py-1 text-sm">
-        Type de relation
-      </p>
+      <Controller
+        name="relationTypeId"
+        control={formData.control}
+        render={({ field, fieldState }) => (
+          <Field data-invalid={fieldState.invalid}>
+            <Select value={field.value} onValueChange={field.onChange}>
+              <SelectTrigger>
+                <SelectValue placeholder="Type de relation" />
+              </SelectTrigger>
+
+              <SelectContent>
+                {relations.map((relation) => (
+                  <SelectItem key={relation.id} value={relation.id}>
+                    {relation.typeRelation}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+          </Field>
+        )}
+      />
 
       <Controller
         name="title"
@@ -103,7 +136,29 @@ const CreateResourceForm = ({
 
       <div className="rounded-xl bg-blue-100 px-4 py-8">
         <h3 className="font-bold">Types de relations concernées</h3>
-        <p>Type de resource</p>
+        <Controller
+          name="resourceTypeId"
+          control={formData.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Type de relation" />
+                </SelectTrigger>
+
+                <SelectContent>
+                  {resourceType.map((res) => (
+                    <SelectItem key={res.id} value={res.id}>
+                      {res.typeRessource}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
       </div>
 
       <Card>

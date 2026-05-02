@@ -26,7 +26,7 @@ const ResourceListPage = () => {
           resources={data}
         />
 
-        <Link to={"/ressources/"}>
+        <Link to={"/ressources/nouvelle-ressource"}>
           <Button variant="outline">Ajouter une ressource</Button>
         </Link>
       </div>

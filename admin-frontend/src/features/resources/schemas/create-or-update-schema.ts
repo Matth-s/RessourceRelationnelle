@@ -6,7 +6,7 @@ export const createOrUpdateSchema = z.object({
   resume: z.string().max(200, "Le résumé ne doit pas dépasser 200 caractères"),
   content: z.string().min(10, "Le contenu est requis"),
   file: z.instanceof(File).optional(),
-  categoryId: z.uuid(),
+  categoryId: z.string(),
   resourceTypeId: z.uuid(),
   relationTypeId: z.uuid(),
   mediaType: z.string(),

@@ -26,7 +26,7 @@ const SheetFormModeration = ({ formData }: SheetFormModerationProps) => {
       <SheetTrigger className="ml-auto" asChild>
         <Button variant="outline">Ouvrir les menus</Button>
       </SheetTrigger>
-      <SheetContent className="pb-8">
+      <SheetContent className="px-4 pb-8">
         <SheetHeader className="p-8">
           <SheetTitle>
             Modifier la visibilité et le statut de publication
@@ -57,7 +57,7 @@ const SheetFormModeration = ({ formData }: SheetFormModerationProps) => {
         </div>
 
         <Button type="submit" form="create-resource-form">
-          dede
+          Créer la ressource
         </Button>
       </SheetContent>
     </Sheet>
