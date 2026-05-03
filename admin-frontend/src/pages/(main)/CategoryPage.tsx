@@ -1,28 +1,17 @@
 import { AuthenticatedLayout } from "@/components/AuthenticatedLayout";
-import { useQuery } from "@tanstack/react-query";
-import { getCategoriesApi } from "@/features/categories/api/get-categories-api";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
-import { FETCH_KEYS } from "@/types/fetch-key-type";
 import { useState } from "react";
 
 import CreateCategoryForm from "@/features/categories/components/CreateCategoryForm";
 import CategoriesList from "@/features/categories/components/CategoriesList";
 import CategoryModal from "@/features/categories/components/CategoryModal";
+import { useGetCategories } from "@/features/categories/hooks/use-get-categories";
 
 const CategoryPage = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const {
-    isLoading,
-    error,
-    data = [],
-    refetch,
-  } = useQuery({
-    queryKey: [FETCH_KEYS.CATEGORY],
-    queryFn: getCategoriesApi,
-    retry: false,
-  });
+  const { isLoading, error, data = [], refetch } = useGetCategories();
 
   return (
     <AuthenticatedLayout>

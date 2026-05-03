@@ -2,7 +2,7 @@ import CreateResourceForm from "./CreateResourceForm";
 import ResourceIdContent from "./ResourceIdContent";
 import SheetFormModeration from "./SheetFormModeration";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createResourceApi } from "../api/create-resource-api";
 import { useForm } from "react-hook-form";
 import {
@@ -16,6 +16,9 @@ import { transformCreateResourceToView } from "../helpers/resource-helper";
 import { Button } from "@/components/ui/button";
 
 import type { ICurrentUserResponse } from "@/features/user/schemas/current-user-schema";
+import { toast } from "sonner";
+import { FETCH_KEYS } from "@/types/fetch-key-type";
+import { useNavigate } from "react-router";
 
 type CreateRessourceProps = {
   user: ICurrentUserResponse;
@@ -23,6 +26,9 @@ type CreateRessourceProps = {
 
 const CreateRessource = ({ user }: CreateRessourceProps) => {
   const [isEditingView, setIsEditingView] = useState<boolean>(true);
+  const navigate = useNavigate();
+
+  const queryClient = useQueryClient();
 
   const form = useForm<createOrUpdateSchemaType>({
     defaultValues: {
@@ -45,8 +51,11 @@ const CreateRessource = ({ user }: CreateRessourceProps) => {
   const createResourceMutation = useMutation({
     mutationFn: createResourceApi,
 
-    onSuccess() {
-      console.log("la ressource a été crée avec succès");
+    onSuccess(data) {
+      console.log(data);
+      toast.success(`La ressource a été crée avec succès`);
+      queryClient.invalidateQueries({ queryKey: [FETCH_KEYS.RESOURCES] });
+      navigate(`/ressources/${data.id}`);
     },
 
     onError(err) {
@@ -59,15 +68,10 @@ const CreateRessource = ({ user }: CreateRessourceProps) => {
       setError("root", {
         message,
       });
-
-      console.log(message);
     },
   });
 
-  console.log(form.formState.errors);
-
   const handleFormSubmit = (formData: createOrUpdateSchemaType) => {
-    console.log("submit");
     createResourceMutation.mutate(formData);
   };
 
@@ -79,12 +83,14 @@ const CreateRessource = ({ user }: CreateRessourceProps) => {
     >
       <div className="sticky top-2 flex w-full gap-4">
         <Button
+          type="button"
           variant={isEditingView ? "default" : "outline"}
           onClick={() => setIsEditingView(true)}
         >
           Vue éditoriale
         </Button>
         <Button
+          type="button"
           variant={isEditingView ? "outline" : "default"}
           onClick={() => setIsEditingView(false)}
         >

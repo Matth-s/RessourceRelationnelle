@@ -14,25 +14,24 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   moderateCommentSchema,
   type moderateCommentType,
-  type moderateCommentWithType,
 } from "../schemas/moderate-comment-schema";
 import { Field, FieldLabel } from "@/components/ui/field";
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import { MODERATION_SELECT_CHOICE } from "../constants/comments-constants";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteCommentApi } from "../api/delete-comment-api";
 import { updateCommentApi } from "../api/update-comment-api";
 import { FETCH_KEYS } from "@/types/fetch-key-type";
 import { useState } from "react";
-import FormErrorMessage from "@/components/FormErrorMessage";
 import { toast } from "sonner";
+
+import FormErrorMessage from "@/components/FormErrorMessage";
+import DeleteCommentButton from "./DeleteCommentButton";
 
 type ShowCommentProps = {
   comment: commentObjectType;
@@ -40,8 +39,10 @@ type ShowCommentProps = {
 
 const ShowComment = ({ comment }: ShowCommentProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [buttonLoading, setButtonLoading] = useState<boolean>(false);
 
   const queryClient = useQueryClient();
+
   const {
     user: { username },
     resource: { title },
@@ -51,6 +52,7 @@ const ShowComment = ({ comment }: ShowCommentProps) => {
   const form = useForm<moderateCommentType>({
     defaultValues: {
       moderationStatus: comment.moderationStatus,
+      commentId: comment.id,
     },
     resolver: zodResolver(moderateCommentSchema),
   });
@@ -65,20 +67,12 @@ const ShowComment = ({ comment }: ShowCommentProps) => {
 
   const commentMutation = useMutation({
     mutationKey: ["comments"],
-    mutationFn: (formData: moderateCommentWithType) => {
-      switch (formData.type) {
-        case "delete":
-          return deleteCommentApi(formData);
+    mutationFn: updateCommentApi,
 
-        case "update":
-          return updateCommentApi(formData);
-      }
-    },
-
-    onSuccess(data) {
-      toast.success(data.message);
+    onSuccess() {
+      toast.success("Le commentaire a été modifié");
       queryClient.invalidateQueries({ queryKey: [FETCH_KEYS.COMMENTS] });
-      setIsOpen(false);
+      setButtonLoading(false);
     },
 
     onError(err) {
@@ -91,10 +85,13 @@ const ShowComment = ({ comment }: ShowCommentProps) => {
       setError("root", {
         message: errorMessage,
       });
+
+      setButtonLoading(false);
     },
   });
 
-  const handleFormSubmit = (formData: moderateCommentWithType) => {
+  const handleFormSubmit = (formData: moderateCommentType) => {
+    setButtonLoading(true);
     commentMutation.mutate(formData);
   };
 
@@ -121,15 +118,20 @@ const ShowComment = ({ comment }: ShowCommentProps) => {
             </div>
 
             <div className="mx-auto flex flex-col justify-center">
-              <form>
+              <form
+                className="flex flex-col gap-y-3"
+                onSubmit={handleSubmit((data) => {
+                  handleFormSubmit(data);
+                })}
+              >
                 <Controller
                   name="moderationStatus"
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
                       <FieldLabel>Status de la modération</FieldLabel>
+
                       <Select
-                        defaultValue={comment.moderationStatus}
                         value={field.value}
                         onValueChange={field.onChange}
                       >
@@ -137,18 +139,13 @@ const ShowComment = ({ comment }: ShowCommentProps) => {
                           <SelectValue />
                         </SelectTrigger>
 
-                        <SelectGroup>
-                          <SelectContent>
-                            {MODERATION_SELECT_CHOICE.map((choice) => (
-                              <SelectItem
-                                key={choice.value}
-                                value={choice.value}
-                              >
-                                {choice.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </SelectGroup>
+                        <SelectContent>
+                          {MODERATION_SELECT_CHOICE.map((choice) => (
+                            <SelectItem key={choice.value} value={choice.value}>
+                              {choice.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
                       </Select>
                     </Field>
                   )}
@@ -158,33 +155,21 @@ const ShowComment = ({ comment }: ShowCommentProps) => {
 
                 <div className="flex justify-center gap-x-4">
                   <Button
-                    disabled={commentMutation.isPending}
+                    type="submit"
+                    disabled={buttonLoading}
                     className="w-3/6"
-                    onClick={handleSubmit((data) =>
-                      handleFormSubmit({
-                        ...data,
-                        type: "update",
-                        commentId: comment.id,
-                      }),
-                    )}
                   >
                     Mettre à jour
                   </Button>
 
-                  <Button
-                    disabled={commentMutation.isPending}
-                    variant={"destructive"}
-                    className="w-3/6"
-                    onClick={handleSubmit((data) =>
-                      handleFormSubmit({
-                        ...data,
-                        type: "delete",
-                        commentId: comment.id,
-                      }),
-                    )}
-                  >
-                    Supprimer
-                  </Button>
+                  <DeleteCommentButton
+                    setButtonLoading={(value: boolean) =>
+                      setButtonLoading(value)
+                    }
+                    commentId={comment.id}
+                    buttonLoading={buttonLoading}
+                    closeModal={() => setIsOpen(false)}
+                  />
                 </div>
               </form>
             </div>
