@@ -12,18 +12,20 @@ import { MODERATION_STATUS_RESOURCE } from "../constant/resource-constant";
 type SelectModerationStatusResourceProps = {
   moderationStatus: IPublicationResource;
   onChange: (value: IPublicationResource) => void;
+  className?: string;
 };
 
 const SelectModerationStatusResource = ({
   moderationStatus,
   onChange,
+  className,
 }: SelectModerationStatusResourceProps) => {
   return (
     <Select
       onValueChange={(value) => onChange(value as IPublicationResource)}
       value={moderationStatus}
     >
-      <SelectTrigger>
+      <SelectTrigger className={className}>
         <SelectValue></SelectValue>
       </SelectTrigger>
       <SelectContent>

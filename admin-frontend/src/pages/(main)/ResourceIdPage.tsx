@@ -11,6 +11,7 @@ import { useNavigate, useParams } from "react-router";
 import { useAppSelector } from "@/store/hook";
 import { FETCH_KEYS } from "@/types/fetch-key-type";
 import DeleteResourceDialog from "@/features/resources/components/DeleteResource";
+import CommentResourceIdList from "@/features/comments/components/CommentResourceIdList";
 
 const ResourceIdPage = () => {
   const userId = useAppSelector((state) => state.auth.user?.id);
@@ -23,6 +24,11 @@ const ResourceIdPage = () => {
     queryFn: () => getResourceById(id as string),
     retry: false,
   });
+
+  if (!id) {
+    navigate("/resources");
+    return;
+  }
 
   if (!userId) return;
 
@@ -40,8 +46,8 @@ const ResourceIdPage = () => {
   if (!data) return null;
 
   return (
-    <div>
-      <div className="mb-4 flex items-center justify-between">
+    <div className="flex max-w-4xl flex-col gap-y-4">
+      <div className="flex items-center justify-between">
         <Button
           variant="outline"
           className="flex items-center gap-x-3"
@@ -56,11 +62,14 @@ const ResourceIdPage = () => {
           {userId === data.user.id && (
             <Button variant="outline">Modifier le contenue</Button>
           )}
+
           <DeleteResourceDialog resource={data} />
         </div>
       </div>
 
       <ResourceIdContent resource={data} />
+
+      <CommentResourceIdList id={id} />
     </div>
   );
 };

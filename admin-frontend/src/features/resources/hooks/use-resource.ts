@@ -9,6 +9,7 @@ export const useResource = () => {
   const [selectedModerationStatus, setSelectedModerationStatus] = useState<
     IPublicationResource | undefined
   >(undefined);
+  const [searchText, setSearchText] = useState<string>("");
 
   const {
     isLoading,
@@ -28,12 +29,25 @@ export const useResource = () => {
   };
 
   const filtredRessources: resourceArrayType = useMemo(() => {
-    if (!selectedModerationStatus) return data;
+    if (!data?.length) return [];
 
-    return data.filter(
-      (ressource) => ressource.publicationStatus === selectedModerationStatus,
-    );
-  }, [selectedModerationStatus, data]);
+    const search = searchText.trim().toLowerCase();
+
+    return data.filter((resource) => {
+      if (
+        selectedModerationStatus &&
+        resource.publicationStatus !== selectedModerationStatus
+      ) {
+        return false;
+      }
+
+      if (search && !resource.title?.toLowerCase().includes(search)) {
+        return false;
+      }
+
+      return true;
+    });
+  }, [data, selectedModerationStatus, searchText]);
 
   const uniquePublicationStatuses: IPublicationResource[] = [
     ...new Set(data.map((item) => item.publicationStatus)),
@@ -46,6 +60,8 @@ export const useResource = () => {
     resources: filtredRessources,
     uniquePublicationStatuses,
     selectedModerationStatus,
+    searchText,
+    setSearchText,
     refetch,
     handleChangeModerationStatus,
     setSelectedModerationStatus,

@@ -29,3 +29,6 @@ export const MODERATION_STATUS_RESOURCE: IResourcePublicationStatus[] = [
     value: PUBLICATION_RESOURCE_KEY.REJECTED,
   },
 ];
+
+export const ACCEPTED_TYPES =
+  ".jpg,.jpeg,.png,.gif,.webp,.mp4,.webm,.mov,.mp3,.pdf";

@@ -21,7 +21,11 @@ const LogoutButton = () => {
       className="flex items-center gap-x-2 bg-transparent"
       onClick={() => handleClick()}
     >
-      <img src={logoutIcon} alt="se déconnecter" />
+      <img
+        src={logoutIcon}
+        alt="se déconnecter"
+        className="brightness-0 invert filter"
+      />
       Se déconnecter
     </Button>
   );

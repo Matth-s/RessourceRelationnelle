@@ -13,7 +13,7 @@ const UserPage = () => {
       <div className="flex h-full min-h-full flex-col gap-y-4">
         <HeaderUserPage />
 
-        <UserStats isLoading={isPending} error={error} data={data} />
+        <UserStats error={error} data={data} />
 
         <UsersList
           refetch={refetch}

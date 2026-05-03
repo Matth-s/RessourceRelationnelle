@@ -23,17 +23,26 @@ import {
 
 import { useRelationType } from "@/hooks/use-relation-type";
 import { useResourceType } from "@/hooks/use-resource-type";
+import { ACCEPTED_TYPES } from "../constant/resource-constant";
+
+import CreateResourcePreview from "./CreateResourcePreview";
 
 type CreateResourceFormProps = {
   username: string;
   formData: UseFormReturn<createOrUpdateSchemaType>;
+  setResourceName: (value?: string) => void;
+  setRelationName: (value?: string) => void;
 };
 
 const CreateResourceForm = ({
   formData,
   username,
+  setRelationName,
+  setResourceName,
 }: CreateResourceFormProps) => {
   const [file, setFile] = useState<File | undefined>(undefined);
+  const resourceTypeId = formData.watch("resourceTypeId");
+  const relationId = formData.watch("relationTypeId");
 
   const { data: relations = [] } = useRelationType();
   const { data: resourceType = [] } = useResourceType();
@@ -42,18 +51,27 @@ const CreateResourceForm = ({
     setFile(formData.getValues("file"));
   }, [formData.watch("file")]);
 
+  useEffect(() => {
+    const findItem = resourceType.find((item) => item.id === resourceTypeId);
+
+    setResourceName(findItem?.typeRessource);
+  }, [resourceTypeId]);
+
+  useEffect(() => {
+    const findItem = relations.find((item) => item.id === relationId);
+
+    setRelationName(findItem?.typeRelation);
+  }, [relationId]);
+
   return (
     <div className="flex flex-col gap-y-4">
       <div className="mx-auto h-96 w-full overflow-hidden rounded-lg">
         {file !== undefined ? (
-          <img
-            src={URL.createObjectURL(file)}
-            className="h-full max-h-96 w-full max-w-4xl rounded-lg object-contain"
-            alt="preview"
-          />
+          <CreateResourcePreview file={file} />
         ) : (
           <input
             type="file"
+            accept={ACCEPTED_TYPES}
             onChange={(e) => {
               const file = e.target.files?.[0];
 

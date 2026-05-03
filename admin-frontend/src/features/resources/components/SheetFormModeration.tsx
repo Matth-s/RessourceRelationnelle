@@ -24,17 +24,15 @@ const SheetFormModeration = ({ formData }: SheetFormModerationProps) => {
   return (
     <Sheet>
       <SheetTrigger className="ml-auto" asChild>
-        <Button variant="outline">Ouvrir les menus</Button>
+        <Button variant="outline">Soumettre</Button>
       </SheetTrigger>
       <SheetContent className="px-4 pb-8">
-        <SheetHeader className="p-8">
-          <SheetTitle>
-            Modifier la visibilité et le statut de publication
-          </SheetTitle>
+        <SheetHeader>
+          <SheetTitle>Finalisation de la nouvelle ressource</SheetTitle>
           <SheetDescription aria-describedby={undefined} />
         </SheetHeader>
 
-        <div className="flex flex-col gap-y-4 pl-5">
+        <div className="flex flex-col gap-y-4">
           <div className="flex w-full flex-col gap-y-2">
             <Label>Visibilité de la ressource</Label>
             <VisibilityResourceSelectForm
@@ -42,6 +40,7 @@ const SheetFormModeration = ({ formData }: SheetFormModerationProps) => {
                 formData.setValue("isVisible", value)
               }
               value={formData.watch("isVisible")}
+              className="w-full"
             />
           </div>
 
@@ -52,6 +51,7 @@ const SheetFormModeration = ({ formData }: SheetFormModerationProps) => {
                 formData.setValue("publicationStatus", value)
               }
               moderationStatus={formData.watch("publicationStatus")}
+              className="w-full"
             />
           </div>
         </div>

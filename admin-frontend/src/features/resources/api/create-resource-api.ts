@@ -26,14 +26,7 @@ export const createResourceApi = async (
     },
   });
 
-  console.log(data);
-
-  const { data: validatedData, error } = resourceObjectSchema.safeParse(data);
-
-  if (error) {
-    console.log(error);
-    throw new Error("");
-  }
+  const validatedData = resourceObjectSchema.parse(data);
 
   return validatedData;
 };

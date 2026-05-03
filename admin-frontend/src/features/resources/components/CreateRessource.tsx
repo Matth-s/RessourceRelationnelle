@@ -15,10 +15,11 @@ import { useState } from "react";
 import { transformCreateResourceToView } from "../helpers/resource-helper";
 import { Button } from "@/components/ui/button";
 
-import type { ICurrentUserResponse } from "@/features/user/schemas/current-user-schema";
 import { toast } from "sonner";
 import { FETCH_KEYS } from "@/types/fetch-key-type";
 import { useNavigate } from "react-router";
+
+import type { ICurrentUserResponse } from "@/features/user/schemas/current-user-schema";
 
 type CreateRessourceProps = {
   user: ICurrentUserResponse;
@@ -26,6 +27,13 @@ type CreateRessourceProps = {
 
 const CreateRessource = ({ user }: CreateRessourceProps) => {
   const [isEditingView, setIsEditingView] = useState<boolean>(true);
+  const [resourceName, setResourceName] = useState<string | undefined>(
+    undefined,
+  );
+  const [relationName, setRelationName] = useState<string | undefined>(
+    undefined,
+  );
+
   const navigate = useNavigate();
 
   const queryClient = useQueryClient();
@@ -52,7 +60,6 @@ const CreateRessource = ({ user }: CreateRessourceProps) => {
     mutationFn: createResourceApi,
 
     onSuccess(data) {
-      console.log(data);
       toast.success(`La ressource a été crée avec succès`);
       queryClient.invalidateQueries({ queryKey: [FETCH_KEYS.RESOURCES] });
       navigate(`/ressources/${data.id}`);
@@ -81,7 +88,7 @@ const CreateRessource = ({ user }: CreateRessourceProps) => {
       onSubmit={handleSubmit(handleFormSubmit)}
       className="mx-auto flex w-full flex-col gap-y-4"
     >
-      <div className="sticky top-2 flex w-full gap-4">
+      <div className="sticky top-2 flex w-full gap-4 bg-gray-100">
         <Button
           type="button"
           variant={isEditingView ? "default" : "outline"}
@@ -101,7 +108,12 @@ const CreateRessource = ({ user }: CreateRessourceProps) => {
       </div>
 
       {isEditingView ? (
-        <CreateResourceForm formData={form} username={user.username} />
+        <CreateResourceForm
+          formData={form}
+          username={user.username}
+          setResourceName={(value?: string) => setResourceName(value)}
+          setRelationName={(value?: string) => setRelationName(value)}
+        />
       ) : (
         <ResourceIdContent
           resource={transformCreateResourceToView({
@@ -110,6 +122,8 @@ const CreateRessource = ({ user }: CreateRessourceProps) => {
               id: user.id,
               username: user.username,
             },
+            relationName,
+            resourceName,
           })}
         />
       )}

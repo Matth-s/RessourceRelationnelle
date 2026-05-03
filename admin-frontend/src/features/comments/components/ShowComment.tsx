@@ -73,6 +73,7 @@ const ShowComment = ({ comment }: ShowCommentProps) => {
       toast.success("Le commentaire a été modifié");
       queryClient.invalidateQueries({ queryKey: [FETCH_KEYS.COMMENTS] });
       setButtonLoading(false);
+      setIsOpen(false);
     },
 
     onError(err) {
