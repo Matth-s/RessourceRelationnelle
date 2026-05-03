@@ -16,18 +16,42 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
             this.context = context;
         }
 
-        public async Task<ResourceModel> Create(ResourceModel model)
+        public async Task<ResourcesReturn> Create(ResourceModel model)
         {
             model.Id = Guid.NewGuid().ToString();
             context.Resources.Add(model);
             await context.SaveChangesAsync();
 
-            return await context.Resources
-                //.Include(r => r.User)
+            ResourceModel resourceModel = await context.Resources
+                .Include(r => r.User)
                 .Include(r => r.Category)
                 .Include(r => r.TypeRessource)
                 .Include(r => r.TypeRelation)
                 .FirstAsync(r => r.Id == model.Id);
+
+            if(resourceModel == null)
+                return null;
+
+            return new ResourcesReturn
+            {
+                Id = resourceModel.Id,
+                Title = resourceModel.Title,
+                Resume = resourceModel.Resume,
+                Content = resourceModel.Content,
+                MediaType = resourceModel.MediaTtype,
+                MediaUrl = resourceModel.MediaUrl,
+                IsVisible = resourceModel.IsVisible,
+                PublicationStatus = resourceModel.PublicationStatus,
+                UpdatedAt = resourceModel.UpdatedAt,
+                PublishedAt = resourceModel.PublishedAt,
+                CreatedAt = resourceModel.CreatedAt,
+                ViewCount = resourceModel.ViewCount,
+                LikeCount = resourceModel.Likes.Count,
+                User = new UserDto { Id = resourceModel.User.Id, Username = resourceModel.User.UserName },
+                Category = resourceModel.Category,
+                TypeResource = resourceModel.TypeRessource,
+                TypeRelation = new TypeRelationDto { Id = resourceModel.TypeRelation.Id, TypeRelation = resourceModel.TypeRelation.TypeRelation }
+            };
         }
 
         public async Task<IEnumerable<ResourceModel>> GetForUser(string? userId = null)

@@ -4,7 +4,7 @@ using RessourceRelationnelle.DATA.Models;
 namespace RessourceRelationnelle.DATA.Repositories
 {    public interface IResourceRepository
     {
-        Task<ResourceModel> Create(ResourceModel model);
+        Task<ResourcesReturn> Create(ResourceModel model);
         Task<ResourcesReturn?> GetOne(string userId, string resourceId);
         Task<ResourceModel?> GetResource(string id);
 
