@@ -1,8 +1,10 @@
 import { Button } from "@/components/ui/button";
-import ResourceFilter from "@/features/resources/components/ResourceFilter";
-import ResourceList from "@/features/resources/components/ResourceList";
 import { useResource } from "@/features/resources/hooks/use-resource";
 import { Link } from "react-router";
+
+import ResourceFilter from "@/features/resources/components/ResourceFilter";
+import ResourceList from "@/features/resources/components/ResourceList";
+import ResourceSearchBar from "@/features/resources/components/ResourceSearchBar";
 
 const ResourceListPage = () => {
   const {
@@ -12,13 +14,20 @@ const ResourceListPage = () => {
     resources,
     uniquePublicationStatuses,
     selectedModerationStatus,
+    searchText,
+    setSearchText,
     refetch,
     setSelectedModerationStatus,
   } = useResource();
 
   return (
     <div>
-      <div className="flex items-center justify-between">
+      <div className="mb-4 flex items-center gap-3">
+        <ResourceSearchBar
+          defaultValue={searchText}
+          setSearchText={(e: string) => setSearchText(e)}
+        />
+
         <ResourceFilter
           onChangeFilter={setSelectedModerationStatus}
           filters={uniquePublicationStatuses}
@@ -32,6 +41,7 @@ const ResourceListPage = () => {
       </div>
 
       <ResourceList
+        searchText={searchText}
         error={error}
         isLoading={isLoading}
         resources={resources}

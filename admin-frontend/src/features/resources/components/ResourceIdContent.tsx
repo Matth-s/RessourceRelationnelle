@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/card";
 import type { resourceObjectType } from "../schemas/ressource-schema";
 import { Calendar, Eye, Heart, User } from "lucide-react";
+import ResourceMediaContent from "./ResourceMediaContent";
 
 type ResourceIdContentProps = {
   resource: resourceObjectType;
@@ -27,20 +28,8 @@ const ResourceIdContent = ({ resource }: ResourceIdContentProps) => {
   } = resource;
 
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-col gap-4">
-      {mediaType && (
-        <div className="h-96 w-full overflow-hidden rounded-xl">
-          {mediaType === "image" && mediaUrl && (
-            <img className="h-full w-full object-contain" src={mediaUrl} />
-          )}
-
-          {mediaType === "video" && mediaUrl && (
-            <video controls>
-              <source src={mediaUrl} type="video/mp4" />
-            </video>
-          )}
-        </div>
-      )}
+    <div className="mx-auto flex w-full flex-col gap-4">
+      <ResourceMediaContent mediaType={mediaType} mediaUrl={mediaUrl} />
 
       <p className="w-fit rounded-sm bg-blue-100 px-3 py-1 text-sm">
         {typeRelation.typeRelation.toLowerCase()}

@@ -9,13 +9,10 @@ import {
 
 type UserStatsProps = {
   error: Error | null;
-  isLoading: boolean;
   data: usersSchemaType;
 };
 
-const UserStats = ({ error, isLoading, data }: UserStatsProps) => {
-  if (isLoading) return <p>fetch data</p>;
-
+const UserStats = ({ error, data }: UserStatsProps) => {
   if (error) return null;
 
   const formattedData = createUserStats(data);

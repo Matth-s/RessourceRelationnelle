@@ -33,19 +33,34 @@ export const getResourceLengthByType = ({
     .length;
 };
 
+export const getMediaType = (file?: File | null): string | null => {
+  if (!file || !file.type) return "other";
+
+  const type = file.type;
+
+  if (type.startsWith("image/")) return "image";
+  if (type.startsWith("video/")) return "video";
+  if (type.startsWith("audio/")) return "audio";
+  if (type === "application/pdf") return "pdf";
+
+  return null;
+};
+
 export const transformCreateResourceToView = ({
   user,
   formData,
+  resourceName,
+  relationName,
 }: {
   formData: createOrUpdateSchemaType;
   user: { id: string; username: string };
+  resourceName?: string;
+  relationName?: string;
 }): resourceObjectType => {
-  console.log(formData.file?.type);
-
   return {
     ...formData,
     mediaUrl: formData.file ? URL.createObjectURL(formData.file) : "",
-    mediaType: "image",
+    mediaType: getMediaType(formData.file),
     id: "",
     updatedAt: new Date().toString(),
     publishedAt: new Date().toString(),
@@ -57,12 +72,12 @@ export const transformCreateResourceToView = ({
       categoryName: "",
     },
     typeResource: {
-      id: "",
-      typeRessource: "",
+      id: formData.resourceTypeId,
+      typeRessource: resourceName ?? "",
     },
     typeRelation: {
-      id: "",
-      typeRelation: "",
+      id: formData.relationTypeId,
+      typeRelation: relationName ?? "",
     },
     likeCount: 0,
     liked: false,
