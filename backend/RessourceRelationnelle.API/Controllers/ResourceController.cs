@@ -68,12 +68,19 @@ namespace RessourceRelationnelle.API.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<ResourcesReturn>>> GetAll()
+        public async Task<ActionResult<IEnumerable<ResourcesReturn>>> GetAll([FromQuery] bool includeAll = false)
         {
             try
             {
-                IEnumerable<ResourcesReturn> resources = await repository.GetAll();
-                if(resources == null)
+                bool isAdmin = false;
+                if (includeAll)
+                {
+                    var roles = User.FindAll(System.Security.Claims.ClaimTypes.Role).Select(r => r.Value);
+                    isAdmin = roles.Contains("Admin") || roles.Contains("SuperAdmin") || roles.Contains("Moderator");
+                }
+
+                IEnumerable<ResourcesReturn> resources = await repository.GetAll(isAdmin);
+                if (resources == null)
                     return NotFound();
                 return Ok(resources);
             }
@@ -127,6 +134,14 @@ namespace RessourceRelationnelle.API.Controllers
                     fileUrl = await storageService.UploadFileAsync(model.File, folder);
                 }
 
+                if (fileUrl == null && !string.IsNullOrWhiteSpace(model.Url))
+                {
+                    if (model.Url.Contains("youtube.com") || model.Url.Contains("youtu.be"))
+                    {
+                        folder = "video";
+                    }
+                }
+
                 ResourceModel resource = new()
                 {
                     Title = model.Title,
@@ -142,7 +157,7 @@ namespace RessourceRelationnelle.API.Controllers
                     TypeRessourceId = model.ResourceTypeId,
                     TypeRelationId = model.RelationTypeId,
                     MediaTtype = folder?.EndsWith("s") == true ? folder[..^1] : folder,
-                    MediaUrl = fileUrl ?? null
+                    MediaUrl = fileUrl ?? model.Url ?? null,
                 };
 
                 var created = await repository.Create(resource);
@@ -172,16 +187,28 @@ namespace RessourceRelationnelle.API.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         public async Task<ActionResult> Update([FromBody] UpdateResourceModel model)
         {
             try
             {
+                string? userId = userManager.GetUserId(User);
+                if (userId == null) return Unauthorized();
+
                 ResourceModel? existingResource = await repository.GetResource(model.Id);
                 if (existingResource == null) return NotFound(new { message = "Ressource not found" });
+
+                // Vérifier que l'utilisateur est le créateur ou un admin
+                var roles = User.FindAll(System.Security.Claims.ClaimTypes.Role).Select(r => r.Value);
+                bool isAdmin = roles.Contains("Admin") || roles.Contains("SuperAdmin");
+
+                if (existingResource.UserId != userId && !isAdmin)
+                    return Forbid();
+
                 ResourceModel updateResource = await repository.Update(model);
                 UpdateResourceModel updatedModel = new()
                 {
+                    Id = updateResource.Id,
                     Title = updateResource.Title,
                     Resume = updateResource.Resume,
                     Content = updateResource.Content,
@@ -222,6 +249,7 @@ namespace RessourceRelationnelle.API.Controllers
             public string Title { get; set; } = string.Empty;
             public string Resume { get; set; } = string.Empty;
             public string Content { get; set; } = string.Empty;
+            public string? Url { get; set; }
             public IFormFile? File { get; set; }
             public string CategoryId { get; set; } = string.Empty;
             public string ResourceTypeId { get; set; } = string.Empty;
