@@ -161,6 +161,10 @@ namespace RessourceRelationnelle.API.Controllers
                 };
 
                 var created = await repository.Create(resource);
+
+                if(created == null)
+                    return BadRequest(new { message = "Failed to create resource" });
+
                 return Ok(created);
             }
             catch (Exception ex)
