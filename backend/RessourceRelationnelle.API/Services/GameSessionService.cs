@@ -18,6 +18,8 @@ namespace RessourceRelationnelle.API.Services
         public PlayerInfo? PlayerX { get; set; }
         public PlayerInfo? PlayerO { get; set; }
 
+        public List<ChatMessage> Messages { get; set; } = new();
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     }
@@ -27,6 +29,15 @@ namespace RessourceRelationnelle.API.Services
         public string Id { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public bool IsGuest { get; set; }
+    }
+
+    public class ChatMessage
+    {
+        public string Id { get; set; } = string.Empty;
+        public string PlayerId { get; set; } = string.Empty;
+        public string PlayerName { get; set; } = string.Empty;
+        public string Content { get; set; } = string.Empty;
+        public DateTime SentAt { get; set; } = DateTime.UtcNow;
     }
 
     public class GameSessionService
@@ -78,24 +89,24 @@ namespace RessourceRelationnelle.API.Services
 
         public (GameSession? Session, string? Error) Move(string id, string playerId, int position)
         {
-            if (!_sessions.TryGetValue(id, out var session)) 
+            if (!_sessions.TryGetValue(id, out var session))
                 return (null, "Session introuvable");
-            if (session.Winner != null || session.IsDraw) 
+            if (session.Winner != null || session.IsDraw)
                 return (session, "La partie est terminée");
-            if (position < 0 || position > 8) 
+            if (position < 0 || position > 8)
                 return (session, "Position invalide");
-            if (!string.IsNullOrEmpty(session.Board[position])) 
+            if (!string.IsNullOrEmpty(session.Board[position]))
                 return (session, "Case déjà jouée");
 
             string? mark = null;
             if (session.PlayerX != null && session.PlayerX.Id == playerId) mark = "X";
             else if (session.PlayerO != null && session.PlayerO.Id == playerId) mark = "O";
 
-            if (mark == null) 
+            if (mark == null)
                 return (session, "Joueur non inscrit dans la partie");
-            if (mark != session.CurrentTurn) 
+            if (mark != session.CurrentTurn)
                 return (session, "Ce n'est pas votre tour");
-            if (session.PlayerO == null) 
+            if (session.PlayerO == null)
                 return (session, "En attente du second joueur");
 
             session.Board[position] = mark;
@@ -122,6 +133,33 @@ namespace RessourceRelationnelle.API.Services
             session.UpdatedAt = DateTime.UtcNow;
 
             return session;
+        }
+
+        public ChatMessage? AddMessage(string sessionId, string playerId, string content)
+        {
+            if (!_sessions.TryGetValue(sessionId, out var session)) return null;
+
+            string playerName = "Inconnu";
+            if (session.PlayerX != null && session.PlayerX.Id == playerId)
+                playerName = session.PlayerX.Name;
+            else if (session.PlayerO != null && session.PlayerO.Id == playerId)
+                playerName = session.PlayerO.Name;
+            else
+                return null;
+
+            var message = new ChatMessage
+            {
+                Id = Guid.NewGuid().ToString("N").Substring(0, 8),
+                PlayerId = playerId,
+                PlayerName = playerName,
+                Content = content,
+                SentAt = DateTime.UtcNow
+            };
+
+            session.Messages.Add(message);
+            session.UpdatedAt = DateTime.UtcNow;
+
+            return message;
         }
 
         private static string? ComputeWinner(string[] b)

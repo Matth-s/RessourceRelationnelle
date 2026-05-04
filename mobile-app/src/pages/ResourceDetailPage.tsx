@@ -12,6 +12,8 @@ import Footer from "@/components/layout/Footer";
 import { type ResourceReturn, getResourceByIdApi } from "@/features/resources/api/resources-api";
 import { toggleBookmarkApi } from "@/features/resources/api/profile-api";
 import { addToViewHistory } from "@/features/resources/api/profile-api";
+import { createGameApi } from "@/features/game/api/game-api";
+import { Users } from "lucide-react";
 import { api } from "@/lib/axios-client";
 
 const ResourceDetailPage = () => {
@@ -96,6 +98,17 @@ const ResourceDetailPage = () => {
       setResource(data);
     } catch { /* silencieux */ }
     finally { setCommentLoading(false); }
+  };
+
+  const handleStartGame = async () => {
+    if (!id) return;
+    try {
+      const response = await createGameApi(id);
+      if (!user && response.playerId) {
+        localStorage.setItem("guest_player_id", response.playerId);
+      }
+      navigate(`/game/${response.session.id}`);
+    } catch { /* silencieux */ }
   };
 
   if (loading) {
@@ -258,6 +271,16 @@ const ResourceDetailPage = () => {
           </div>
 
           {!user && <p className="text-xs text-gray-400">Connectez-vous pour aimer, mettre de côté et commenter</p>}
+
+          {/* Bouton Jouer si c'est un jeu */}
+          {typeName.toLowerCase().includes("jeu") && (
+            <button
+              onClick={handleStartGame}
+              className="w-full bg-green-600 text-white py-3 rounded-xl font-medium text-sm hover:bg-green-700 flex items-center justify-center gap-2"
+            >
+              <Users className="h-4 w-4" /> Créer une partie
+            </button>
+          )}
 
           {/* Relation */}
           {relationName && (
