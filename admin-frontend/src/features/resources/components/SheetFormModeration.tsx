@@ -18,9 +18,10 @@ import type { UseFormReturn } from "react-hook-form";
 
 type SheetFormModerationProps = {
   formData: UseFormReturn<createOrUpdateSchemaType>;
+  formId?: string;
 };
 
-const SheetFormModeration = ({ formData }: SheetFormModerationProps) => {
+const SheetFormModeration = ({ formData, formId = "create-resource-form" }: SheetFormModerationProps) => {
   return (
     <Sheet>
       <SheetTrigger className="ml-auto" asChild>
@@ -56,8 +57,8 @@ const SheetFormModeration = ({ formData }: SheetFormModerationProps) => {
           </div>
         </div>
 
-        <Button type="submit" form="create-resource-form">
-          Créer la ressource
+        <Button type="submit" form={formId}>
+          Enregistrer
         </Button>
       </SheetContent>
     </Sheet>

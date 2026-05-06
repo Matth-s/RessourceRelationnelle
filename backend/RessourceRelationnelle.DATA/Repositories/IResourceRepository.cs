@@ -1,8 +1,9 @@
 ﻿using RessourceRelationnelle.Data.Repositories.Sql;
-using RessourceRelationnelle.DATA.Models; 
+using RessourceRelationnelle.DATA.Models;
 
 namespace RessourceRelationnelle.DATA.Repositories
-{    public interface IResourceRepository
+{
+    public interface IResourceRepository
     {
         Task<ResourcesReturn> Create(ResourceModel model);
         Task<ResourcesReturn?> GetOne(string userId, string resourceId);
@@ -12,6 +13,7 @@ namespace RessourceRelationnelle.DATA.Repositories
         Task<IEnumerable<ResourcesReturn>> GetAll(bool includeAll = false);
         Task Delete(string id);
         Task<ResourceModel> Update(UpdateResourceModel model);
+        Task<ResourceModel> UpdateFull(ResourceModel resource);
         Task<ResourceModel> UpdateStatus(string resourceId, UpdateStatusResourceDto model);
     }
     public class UpdateResourceModel

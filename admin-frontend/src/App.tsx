@@ -19,6 +19,7 @@ import CommentsPage from "./pages/(main)/CommentsPage";
 import ResourceListPage from "./pages/(main)/ResourceListPage";
 import ResourceIdPage from "./pages/(main)/ResourceIdPage";
 import ResourceCreatePage from "./pages/(main)/ResourceCreatePage";
+import ResourceEditPage from "./pages/(main)/ResourceEditPage";
 
 const App = () => {
   const { user } = useAppSelector((state) => state.auth);
@@ -65,6 +66,7 @@ const App = () => {
         <Route path="/ressources" element={<ResourcePage />}>
           <Route index element={<ResourceListPage />} />
           <Route path=":id" element={<ResourceIdPage />} />
+          <Route path=":id/modifier" element={<ResourceEditPage />} />
           <Route path="nouvelle-ressource" element={<ResourceCreatePage />} />
         </Route>
 
