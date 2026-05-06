@@ -16,6 +16,9 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import CardFetchError from "@/components/CardFetchError";
 import { FETCH_KEYS } from "@/types/fetch-key-type";
+import { Button } from "@/components/ui/button";
+import { FileDown } from "lucide-react";
+import { exportStatsToPdf } from "../helpers/export-stats-pdf";
 
 const COLORS = [
   "#2563eb",
@@ -46,8 +49,18 @@ const StatsDashboard = () => {
   if (error) return <CardFetchError onRetry={refetch} />;
   if (!stats) return null;
 
+  const handleExportPdf = () => {
+    exportStatsToPdf(stats);
+  };
+
   return (
     <div className="space-y-8">
+      <div className="flex justify-end">
+        <Button onClick={handleExportPdf} variant="outline">
+          <FileDown className="size-4" />
+          Exporter en PDF
+      </Button>
+      </div>
       {/* Cartes de totaux */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <TotalCard label="Utilisateurs" value={stats.totals.users} />
