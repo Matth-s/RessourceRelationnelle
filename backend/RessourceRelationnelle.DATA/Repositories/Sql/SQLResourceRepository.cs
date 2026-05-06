@@ -29,7 +29,7 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
                 .Include(r => r.TypeRelation)
                 .FirstAsync(r => r.Id == model.Id);
 
-            if(resourceModel == null)
+            if (resourceModel == null)
                 return null;
 
             return new ResourcesReturn
@@ -83,7 +83,7 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
 
             LikeModel? liked = null;
 
-            if(userId != null)
+            if (userId != null)
                 liked = await context.Like.FindAsync(userId, resourceId);
 
             return new ResourcesReturn
@@ -197,8 +197,13 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
                 .Include(r => r.Category)
                 .Include(r => r.TypeRessource)
                 .Include(r => r.TypeRelation)
-                .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<ResourceModel> UpdateFull(ResourceModel resource)
+        {
+            await context.SaveChangesAsync();
+            return resource;
         }
 
         public async Task<ResourceModel> UpdateStatus(string resourceId, UpdateStatusResourceDto model)
@@ -261,6 +266,6 @@ namespace RessourceRelationnelle.Data.Repositories.Sql
     public class TypeRelationDto
     {
         public string Id { get; set; } = "";
-        public string TypeRelation{ get; set; } = "";
+        public string TypeRelation { get; set; } = "";
     }
 }

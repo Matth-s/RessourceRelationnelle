@@ -162,7 +162,7 @@ namespace RessourceRelationnelle.API.Controllers
 
                 var created = await repository.Create(resource);
 
-                if(created == null)
+                if (created == null)
                     return BadRequest(new { message = "Failed to create resource" });
 
                 return Ok(created);
@@ -190,48 +190,9 @@ namespace RessourceRelationnelle.API.Controllers
             }
         }
 
-        [HttpPut]
-        [Authorize]
-        public async Task<ActionResult> Update([FromBody] UpdateResourceModel model)
-        {
-            try
-            {
-                string? userId = userManager.GetUserId(User);
-                if (userId == null) return Unauthorized();
-
-                ResourceModel? existingResource = await repository.GetResource(model.Id);
-                if (existingResource == null) return NotFound(new { message = "Ressource not found" });
-
-                // Vérifier que l'utilisateur est le créateur ou un admin
-                var roles = User.FindAll(System.Security.Claims.ClaimTypes.Role).Select(r => r.Value);
-                bool isAdmin = roles.Contains("Admin") || roles.Contains("SuperAdmin");
-
-                if (existingResource.UserId != userId && !isAdmin)
-                    return Forbid();
-
-                ResourceModel updateResource = await repository.Update(model);
-                UpdateResourceModel updatedModel = new()
-                {
-                    Id = updateResource.Id,
-                    Title = updateResource.Title,
-                    Resume = updateResource.Resume,
-                    Content = updateResource.Content,
-                    UpdatedAt = updateResource.UpdatedAt,
-                    CategoryId = updateResource.CategoryId,
-                    ResourceTypeId = updateResource.TypeRessourceId,
-                    RelationTypeId = updateResource.TypeRelationId
-                };
-                return Ok(updatedModel);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPut("{resourceId}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> Update(string resourceId, [FromBody] UpdateStatusResourceDto model)
+        [HttpPut("{resourceId}/status")]
+        [Authorize(Roles = "Admin,Moderator")]
+        public async Task<ActionResult> UpdateStatus(string resourceId, [FromBody] UpdateStatusResourceDto model)
         {
             try
             {
@@ -241,6 +202,72 @@ namespace RessourceRelationnelle.API.Controllers
                     return NotFound(new { message = "Resource not found" });
 
                 return Ok(new { message = "Resource edited" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("{resourceId}")]
+        [Authorize(Roles = "Admin,Moderator")]
+        public async Task<ActionResult> UpdateContent(string resourceId, [FromForm] CreateResourceWithFileModel model)
+        {
+            try
+            {
+                string? userId = userManager.GetUserId(User);
+                if (userId == null) return Unauthorized();
+
+                ResourceModel? existingResource = await repository.GetResource(resourceId);
+                if (existingResource == null) return NotFound(new { message = "Ressource not found" });
+
+                string? fileUrl = existingResource.MediaUrl;
+                string? folder = existingResource.MediaTtype;
+
+                if (model.File != null && model.File.Length > 0)
+                {
+                    var extension = Path.GetExtension(model.File.FileName)?.ToLowerInvariant();
+                    var contentType = model.File.ContentType?.ToLowerInvariant();
+
+                    if (contentType.StartsWith("image/") ||
+                        extension is ".jpg" or ".jpeg" or ".png" or ".gif" or ".webp" or ".bmp" or ".svg")
+                    {
+                        folder = "images";
+                    }
+                    else if (contentType.StartsWith("video/") ||
+                             extension is ".mp4" or ".webm" or ".avi" or ".mov" or ".mkv")
+                    {
+                        folder = "videos";
+                    }
+                    else if (contentType == "application/pdf" || extension == ".pdf")
+                    {
+                        folder = "pdfs";
+                    }
+                    else
+                    {
+                        folder = "others";
+                    }
+
+                    fileUrl = await storageService.UploadFileAsync(model.File, folder);
+                }
+
+                existingResource.Title = model.Title;
+                existingResource.Resume = model.Resume;
+                existingResource.Content = model.Content;
+                existingResource.IsVisible = model.IsVisible ?? existingResource.IsVisible;
+                existingResource.PublicationStatus = model.PublicationStatus ?? existingResource.PublicationStatus;
+                existingResource.CategoryId = model.CategoryId;
+                existingResource.TypeRessourceId = model.ResourceTypeId;
+                existingResource.TypeRelationId = model.RelationTypeId;
+                existingResource.MediaTtype = folder?.EndsWith("s") == true ? folder[..^1] : folder;
+                existingResource.MediaUrl = fileUrl;
+                existingResource.UpdatedAt = DateTime.UtcNow;
+
+                ResourceModel updatedResource = await repository.UpdateFull(existingResource);
+
+                var result = await repository.GetOne(userId, updatedResource.Id);
+
+                return Ok(result);
             }
             catch (Exception ex)
             {

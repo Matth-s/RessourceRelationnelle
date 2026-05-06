@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { getResourceById } from "@/features/resources/api/get-resource-by-id-api";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft } from "lucide-react";
-import { useNavigate, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import { useAppSelector } from "@/store/hook";
 import { FETCH_KEYS } from "@/types/fetch-key-type";
 import DeleteResourceDialog from "@/features/resources/components/DeleteResource";
@@ -59,9 +59,9 @@ const ResourceIdPage = () => {
 
         <div className="flex items-center gap-x-4">
           <ModerateResourceModal resource={data} />
-          {userId === data.user.id && (
-            <Button variant="outline">Modifier le contenue</Button>
-          )}
+          <Link to={`/ressources/${data.id}/modifier`}>
+            <Button variant="outline">Modifier le contenu</Button>
+          </Link>
 
           <DeleteResourceDialog resource={data} />
         </div>
