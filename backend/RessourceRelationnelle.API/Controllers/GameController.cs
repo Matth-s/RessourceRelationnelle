@@ -21,26 +21,35 @@ namespace RessourceRelationnelle.API.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [AllowAnonymous]
         public async Task<ActionResult> Create([FromBody] CreateGameSessionModel model)
         {
             string? userId = userManager.GetUserId(User);
-            if (userId == null) 
-                return Unauthorized();
 
-            UserModel? user = await userManager.FindByIdAsync(userId);
-            if (user == null) 
-                return Unauthorized();
-
-            var creator = new PlayerInfo
+            PlayerInfo creator;
+            if (userId != null)
             {
-                Id = userId,
-                Name = user.UserName ?? "Joueur",
-                IsGuest = false,
-            };
+                UserModel? user = await userManager.FindByIdAsync(userId);
+                creator = new PlayerInfo
+                {
+                    Id = userId,
+                    Name = user?.UserName ?? "Joueur",
+                    IsGuest = false,
+                };
+            }
+            else
+            {
+                var guestId = Guid.NewGuid().ToString("N").Substring(0, 16);
+                creator = new PlayerInfo
+                {
+                    Id = guestId,
+                    Name = "Invité",
+                    IsGuest = true,
+                };
+            }
 
             var session = sessionService.Create(model.ResourceId, creator);
-            return Ok(session);
+            return Ok(new { session, playerId = creator.Id });
         }
 
         [HttpGet("{id}")]
@@ -119,6 +128,29 @@ namespace RessourceRelationnelle.API.Controllers
             if (session == null) 
                 return NotFound(new { message = "Partie introuvable" });
             return Ok(session);
+        }
+
+        [HttpPost("{id}/chat")]
+        [AllowAnonymous]
+        public ActionResult SendMessage(string id, [FromBody] ChatMessageModel model)
+        {
+            string? userId = userManager.GetUserId(User);
+            string? playerId = userId ?? model.GuestId;
+
+            if (string.IsNullOrEmpty(playerId))
+                return BadRequest(new { message = "Joueur non identifié" });
+
+            var message = sessionService.AddMessage(id, playerId, model.Content);
+            if (message == null)
+                return BadRequest(new { message = "Impossible d'envoyer le message" });
+
+            return Ok(message);
+        }
+
+        public class ChatMessageModel
+        {
+            public string Content { get; set; } = string.Empty;
+            public string? GuestId { get; set; }
         }
 
         public class CreateGameSessionModel
