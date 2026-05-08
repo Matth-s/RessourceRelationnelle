@@ -28,7 +28,7 @@ namespace RessourceRelationnelle.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo { Title = "Security", Version = "v1" });
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "RessourceRelationnelle", Version = "v1" });
 
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
