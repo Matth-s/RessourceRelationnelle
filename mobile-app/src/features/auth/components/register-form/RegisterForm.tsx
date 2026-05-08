@@ -113,7 +113,7 @@ const RegisterForm = () => {
           <div className="flex items-start gap-3">
             <input type="checkbox" id="terms" className="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" {...register("acceptTerms", { required: "Vous devez accepter les conditions" })} />
             <label htmlFor="terms" className="text-sm text-gray-600 leading-tight">
-              J'accepte les <a href="#" className="text-blue-600 hover:underline">conditions d'utilisation</a> et la <a href="#" className="text-blue-600 hover:underline">politique de confidentialité</a>
+              J'accepte les <Link to="/cgu" className="text-blue-600 hover:underline">conditions générales d'utilisation</Link> et la <Link to="/politique-confidentialite" className="text-blue-600 hover:underline">politique de confidentialité</Link>
             </label>
           </div>
           {errors.acceptTerms && <p className="text-red-500 text-xs -mt-3">{errors.acceptTerms.message}</p>}

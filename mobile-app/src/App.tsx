@@ -7,6 +7,10 @@ import ResourceDetailPage from "./pages/ResourceDetailPage";
 import CreateResourcePage from "./pages/CreateResourcePage";
 import EditResourcePage from "./pages/EditResourcePage";
 import ProfilePage from "./pages/ProfilePage";
+import MentionsLegalesPage from "./pages/legal/MentionsLegalesPage";
+import PolitiqueConfidentialitePage from "./pages/legal/PolitiqueConfidentialitePage";
+import CguPage from "./pages/legal/CguPage";
+import HelpPage from "./pages/HelpPage";
 import GamePage from "./pages/GamePage";
 import { Route, Routes } from "react-router";
 
@@ -20,6 +24,10 @@ const App = () => {
       <Route path="/resources/:id" element={<ResourceDetailPage />} />
       <Route path="/resources/:id/edit" element={<EditResourcePage />} />
       <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/mentions-legales" element={<MentionsLegalesPage />} />
+      <Route path="/politique-confidentialite" element={<PolitiqueConfidentialitePage />} />
+      <Route path="/cgu" element={<CguPage />} />
+      <Route path="/help" element={<HelpPage />} />
       <Route path="/game/:sessionId" element={<GamePage />} />
       <Route path="/auth/" element={<AuthLayout />}>
         <Route path="register" element={<RegisterPage />} />

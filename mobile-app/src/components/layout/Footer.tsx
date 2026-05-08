@@ -35,8 +35,9 @@ const Footer = () => {
                 <Mail className="h-4 w-4" />
                 contact@resources-relationnelles.fr
               </a>
-              <a href="#" className="block text-sm text-gray-400 hover:text-white">Mentions légales</a>
-              <a href="#" className="block text-sm text-gray-400 hover:text-white">Politique de confidentialité</a>
+              <Link to="/mentions-legales" className="block text-sm text-gray-400 hover:text-white">Mentions légales</Link>
+              <Link to="/cgu" className="block text-sm text-gray-400 hover:text-white">Conditions générales d'utilisation (CGU)</Link>
+              <Link to="/politique-confidentialite" className="block text-sm text-gray-400 hover:text-white">Politique de confidentialité</Link>
             </div>
           </div>
         </div>
