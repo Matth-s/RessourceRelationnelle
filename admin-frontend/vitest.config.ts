@@ -8,11 +8,19 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],
+
+      include: ["src/**/*.{ts,tsx}"],
+
       exclude: [
         "node_modules/**",
         "src/assets/**",
         "**/*.config.ts",
         "**/*.d.ts",
+
+        "**/components/**",
+        "src/pages",
+        "src/app/**",
+        "src/layouts/**",
       ],
     },
   },
