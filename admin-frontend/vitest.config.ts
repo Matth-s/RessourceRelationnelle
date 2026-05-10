@@ -17,6 +17,13 @@ export default defineConfig({
         "**/*.config.ts",
         "**/*.d.ts",
 
+        "src/App.tsx",
+        "src/main.tsx",
+        "**/store/**",
+        "**/hooks/redux.ts",
+        "**/hooks/**",
+        "**/slice/**",
+        "**/constants/**",
         "**/components/**",
         "src/pages",
         "src/app/**",
