@@ -194,13 +194,13 @@ Puis lancer les frontends comme indiqué ci-dessus.
 - Pour l'admin-frontend :
   ```
   cd admin-panel
-<!-- TODO A complété car je sais pas -->
+  npm test
   ```
 
 - Pour la mobile-app :
   ```
   cd mobile-app
-<!-- TODO A complété car je sais pas -->
+  npm test
   ```
 
 ## Structure du projet
