@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { api } from "@/lib/axios-client";
 
 describe("axios client", () => {
@@ -22,7 +22,6 @@ describe("axios client", () => {
       headers: {} as Record<string, string>,
     };
 
-    // Get the interceptor handler
     const handlers = (api.interceptors.request as any).handlers;
     if (handlers && handlers.length > 0) {
       const interceptor = handlers[0];
