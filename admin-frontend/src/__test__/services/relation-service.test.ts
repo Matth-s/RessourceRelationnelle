@@ -9,14 +9,14 @@ vi.mock("@/lib/cookie", () => ({
   getAuthToken: vi.fn(),
 }));
 
-describe("getRelationType", () => {
+describe("relation type api", () => {
   let mock: MockAdapter;
 
   beforeEach(() => {
     mock = new MockAdapter(api);
   });
 
-  it("should return validated relation types", async () => {
+  it("doit returner des relations valide", async () => {
     const mockResponse = [
       {
         id: "1",
@@ -35,7 +35,7 @@ describe("getRelationType", () => {
     expect(result).toEqual(mockResponse);
   });
 
-  it("should throw if schema validation fails", async () => {
+  it("doit retourner une erreur si le schema est invalide", async () => {
     const invalidResponse = [
       {
         id: "1",
@@ -47,7 +47,7 @@ describe("getRelationType", () => {
     await expect(getRelationType()).rejects.toThrow();
   });
 
-  it("should throw on api error", async () => {
+  it("l'api doit retourner une erreur", async () => {
     mock.onGet("/typerelation").reply(500);
 
     await expect(getRelationType()).rejects.toThrow();

@@ -5,20 +5,20 @@ import {
   getUniquesDateComment,
 } from "@/features/comments/helpers/comments-helper";
 
-describe("formatCommentModerationStatus", () => {
-  it("should return 'Validé' for Approved", () => {
+describe("format comment moderation status", () => {
+  it("doit retourne valide si status est approuvé", () => {
     const result = formatCommentModerationStatus("Approved");
 
     expect(result).toBe("Validé");
   });
 
-  it("should return 'En attente' for Pending", () => {
+  it("ca doit retourne en attente pour Pending", () => {
     const result = formatCommentModerationStatus("Pending");
 
     expect(result).toBe("En attente");
   });
 
-  it("should return 'Inconnu' for unknown status", () => {
+  it("ca doit retourne Inconnu pour un type non reconnu dans le switch", () => {
     const result = formatCommentModerationStatus("Unknown" as never);
 
     expect(result).toBe("Inconnu");
@@ -26,7 +26,7 @@ describe("formatCommentModerationStatus", () => {
 });
 
 describe("getUniquesDateComment", () => {
-  it("should return unique formatted dates", () => {
+  it("ca doit retourner des dates uniques", () => {
     const comments = [
       {
         createdAt: new Date("2025-01-01"),
@@ -44,7 +44,7 @@ describe("getUniquesDateComment", () => {
     expect(result).toHaveLength(2);
   });
 
-  it("should return empty array if no comments", () => {
+  it(" ca doit retourner un tableau s il n y pas de commnetaire", () => {
     const result = getUniquesDateComment([]);
 
     expect(result).toEqual([]);

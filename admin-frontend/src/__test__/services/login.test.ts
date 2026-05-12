@@ -10,7 +10,7 @@ vi.mock("@/lib/cookie", () => ({
   getAuthToken: vi.fn(),
 }));
 
-describe("loginApi", () => {
+describe("login api", () => {
   let mock: MockAdapter;
 
   beforeEach(() => {
@@ -18,7 +18,7 @@ describe("loginApi", () => {
     vi.clearAllMocks();
   });
 
-  it("should return validated data on successful login", async () => {
+  it("doit retourner les données de l'utilisateur", async () => {
     const mockResponse = {
       username: "testuser",
       role: [USER_ROLE.ADMIN],
@@ -36,7 +36,7 @@ describe("loginApi", () => {
     expect(result).toEqual(mockResponse);
   });
 
-  it("should throw an error on failed login", async () => {
+  it("doit retourner une erreur", async () => {
     mock
       .onPost("/authentication/login")
       .reply(401, { message: "Unauthorized" });
@@ -49,7 +49,7 @@ describe("loginApi", () => {
     ).rejects.toThrow();
   });
 
-  it("should throw if response schema is invalid", async () => {
+  it("doit retourner une erreur si le schema est invalide", async () => {
     const invalidResponse = {
       username: "testuser",
     };

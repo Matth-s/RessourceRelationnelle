@@ -9,14 +9,14 @@ vi.mock("@/lib/cookie", () => ({
   getAuthToken: vi.fn(),
 }));
 
-describe("getResourceTypeApi", () => {
+describe("get resource type api", () => {
   let mock: MockAdapter;
 
   beforeEach(() => {
     mock = new MockAdapter(api);
   });
 
-  it("should return validated resource types", async () => {
+  it("doit retourner des resource type valide", async () => {
     const mockResponse = [
       {
         id: "1",
@@ -35,7 +35,7 @@ describe("getResourceTypeApi", () => {
     expect(result).toEqual(mockResponse);
   });
 
-  it("should throw if schema validation fails", async () => {
+  it("doit retourner une erreur si les schema n est pas valide", async () => {
     const invalidResponse = [
       {
         id: "1",
@@ -47,7 +47,7 @@ describe("getResourceTypeApi", () => {
     await expect(getResourceTypeApi()).rejects.toThrow();
   });
 
-  it("should throw on api error", async () => {
+  it("l api doit retourner une erreur", async () => {
     mock.onGet("/TypeResource").reply(500);
 
     await expect(getResourceTypeApi()).rejects.toThrow();

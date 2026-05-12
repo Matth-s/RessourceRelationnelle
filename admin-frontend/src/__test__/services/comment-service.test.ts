@@ -15,7 +15,7 @@ vi.mock("@/lib/cookie", () => ({
   getAuthToken: vi.fn(),
 }));
 
-describe("Comments APIs", () => {
+describe("Comments api", () => {
   let mock: MockAdapter;
 
   beforeEach(() => {
@@ -23,7 +23,7 @@ describe("Comments APIs", () => {
   });
 
   describe("createCommentApi", () => {
-    it("should create a comment successfully", async () => {
+    it("doit créer un commentaire", async () => {
       mock.onPost("/commentary").reply(201);
 
       await expect(
@@ -34,7 +34,7 @@ describe("Comments APIs", () => {
       ).resolves.toBeUndefined();
     });
 
-    it("should throw on create error", async () => {
+    it("sdoit jeter une erreur lors de la creation d un commentaire", async () => {
       mock.onPost("/commentary").reply(500);
 
       await expect(
@@ -47,13 +47,13 @@ describe("Comments APIs", () => {
   });
 
   describe("deleteCommentApi", () => {
-    it("should delete a comment successfully", async () => {
+    it("doit supprimer un commentaire", async () => {
       mock.onDelete("/SuperAdmin/comments/1").reply(204);
 
       await expect(deleteCommentApi("1")).resolves.toBeUndefined();
     });
 
-    it("should throw on delete error", async () => {
+    it("doit echouer lors de la suppression d un commentaire", async () => {
       mock.onDelete("/SuperAdmin/comments/1").reply(404);
 
       await expect(deleteCommentApi("1")).rejects.toThrow();
@@ -61,7 +61,7 @@ describe("Comments APIs", () => {
   });
 
   describe("getCommentsApi", () => {
-    it("should return validated comments", async () => {
+    it("doit retourner des commentaires valide", async () => {
       const mockResponse = [
         {
           id: "1",
@@ -86,7 +86,7 @@ describe("Comments APIs", () => {
       expect(result).toEqual(mockResponse);
     });
 
-    it("should throw if schema validation fails", async () => {
+    it("doit jeter une erreur si le schema n est pas valide", async () => {
       const invalidResponse = [
         {
           id: "1",
@@ -98,7 +98,7 @@ describe("Comments APIs", () => {
       await expect(getCommentsApi()).rejects.toThrow();
     });
 
-    it("should throw on api error", async () => {
+    it("l api doit jeter une erreur", async () => {
       mock.onGet("/superadmin/comments").reply(500);
 
       await expect(getCommentsApi()).rejects.toThrow();
@@ -106,7 +106,7 @@ describe("Comments APIs", () => {
   });
 
   describe("updateCommentApi", () => {
-    it("should update and return validated comment", async () => {
+    it("doit update un commentaire et retourne le commantaire update", async () => {
       mock.onPut("/superadmin/comments/1").reply(200, {
         message: "Comment updated",
       });
@@ -121,7 +121,7 @@ describe("Comments APIs", () => {
       });
     });
 
-    it("should throw if response schema is invalid", async () => {
+    it("doit jeter une erreur si le schema est invalide", async () => {
       const invalidResponse = {
         commentId: "1",
       };
@@ -136,7 +136,7 @@ describe("Comments APIs", () => {
       ).rejects.toThrow();
     });
 
-    it("should throw on update error", async () => {
+    it("doit retourner une erreur lors de l update", async () => {
       mock.onPut("/superadmin/comments/1").reply(400);
 
       await expect(
@@ -149,7 +149,7 @@ describe("Comments APIs", () => {
   });
 
   describe("getCommentsByResourceId", () => {
-    it("should return only valid comments", async () => {
+    it("doit retourner seulement les commentaire valide", async () => {
       const mockResponse = [
         {
           id: "1",
@@ -167,7 +167,7 @@ describe("Comments APIs", () => {
       expect(result).toEqual([]);
     });
 
-    it("should return empty array if all comments are invalid", async () => {
+    it("doit retourner un tableau il tout les commentaires sont éronnés", async () => {
       const invalidResponse = [
         {
           invalid: true,
@@ -181,7 +181,7 @@ describe("Comments APIs", () => {
       expect(result).toEqual([]);
     });
 
-    it("should throw on api error", async () => {
+    it("l api retourne une erreur", async () => {
       mock.onGet("/commentary/resource/1").reply(500);
 
       await expect(getCommentsByResourceId("1")).rejects.toThrow();

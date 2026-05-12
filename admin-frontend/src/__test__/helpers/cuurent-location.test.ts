@@ -3,39 +3,39 @@ import { describe, it, expect } from "vitest";
 import { formatCurrentLocation } from "@/helpers/format-current-location";
 
 describe("formatCurrentLocation", () => {
-  it("should return Dashboard for /", () => {
+  it("ca doit retourner Dashboard pour /", () => {
     expect(formatCurrentLocation("/")).toBe("Dashboard");
   });
 
-  it("should return Ressources for /ressources", () => {
+  it("ca doit retourner Ressources pour /ressources", () => {
     expect(formatCurrentLocation("/ressources")).toBe("Ressources");
   });
 
-  it("should return Catégories for /categories", () => {
+  it("ca doit retourner Catégories pour /categories", () => {
     expect(formatCurrentLocation("/categories")).toBe("Catégories");
   });
 
-  it("should return Utilisateurs for /utilisateurs", () => {
+  it("ca doit retourner Utilisateurs pour /utilisateurs", () => {
     expect(formatCurrentLocation("/utilisateurs")).toBe("Utilisateurs");
   });
 
-  it("should return Statistiques for /statistiques", () => {
+  it("ca doit retourner Statistiques pour /statistiques", () => {
     expect(formatCurrentLocation("/statistiques")).toBe("Statistiques");
   });
 
-  it("should return Commentaires for /commentaires", () => {
+  it("ca doit retourner Commentaires pour /commentaires", () => {
     expect(formatCurrentLocation("/commentaires")).toBe("Commentaires");
   });
 
-  it("should be case insensitive", () => {
+  it("ca doit etre insensible a la casse", () => {
     expect(formatCurrentLocation("/RESSOURCES")).toBe("Ressources");
   });
 
-  it("should return empty string for unknown path", () => {
+  it("ca doit retourner une chaine de caractere vide pour un path inconnu", () => {
     expect(formatCurrentLocation("/unknown")).toBe("");
   });
 
-  it("should return empty string for empty path", () => {
+  it("ca doit retourner une chaine de caractere vide pour un path vide", () => {
     expect(formatCurrentLocation("")).toBe("");
   });
 });

@@ -13,7 +13,7 @@ vi.mock("@/lib/cookie", () => ({
   getAuthToken: vi.fn(),
 }));
 
-describe("Category APIs", () => {
+describe("Category api", () => {
   let mock: MockAdapter;
 
   beforeEach(() => {
@@ -21,7 +21,7 @@ describe("Category APIs", () => {
   });
 
   describe("createCategoryApi", () => {
-    it("should create a category successfully", async () => {
+    it("doit créer une categorie", async () => {
       mock.onPost("/category").reply(201);
 
       await expect(
@@ -31,7 +31,7 @@ describe("Category APIs", () => {
       ).resolves.toBeUndefined();
     });
 
-    it("should throw on create error", async () => {
+    it("doit jeter une erreur", async () => {
       mock.onPost("/category").reply(500);
 
       await expect(
@@ -43,13 +43,13 @@ describe("Category APIs", () => {
   });
 
   describe("deleteCategoryApi", () => {
-    it("should delete a category successfully", async () => {
+    it("doit supprimer une categorie", async () => {
       mock.onDelete("/category/1").reply(204);
 
       await expect(deleteCategoryApi("1")).resolves.toBeUndefined();
     });
 
-    it("should throw on delete error", async () => {
+    it("doit jeter une erreur lors de la suppression d'une categorie", async () => {
       mock.onDelete("/category/1").reply(404);
 
       await expect(deleteCategoryApi("1")).rejects.toThrow();
@@ -57,7 +57,7 @@ describe("Category APIs", () => {
   });
 
   describe("getCategoriesApi", () => {
-    it("should return validated categories", async () => {
+    it("doit retourner des categories valide", async () => {
       const mockResponse = [
         {
           id: uuidv4(),
@@ -76,7 +76,7 @@ describe("Category APIs", () => {
       expect(result).toEqual(mockResponse);
     });
 
-    it("should throw if schema validation fails", async () => {
+    it("doit jeter une erreur si le schema n est pas valide", async () => {
       const invalidResponse = [
         {
           id: "1",
@@ -88,7 +88,7 @@ describe("Category APIs", () => {
       await expect(getCategoriesApi()).rejects.toThrow();
     });
 
-    it("should throw on api error", async () => {
+    it("l api doit retourner une erreur", async () => {
       mock.onGet("/category").reply(500);
 
       await expect(getCategoriesApi()).rejects.toThrow();
@@ -96,7 +96,7 @@ describe("Category APIs", () => {
   });
 
   describe("updateCategoryApi", () => {
-    it("should update a category successfully", async () => {
+    it("doit update une categorie ", async () => {
       mock.onPut("/category?id=1").reply(200);
 
       await expect(
@@ -107,7 +107,7 @@ describe("Category APIs", () => {
       ).resolves.toBeUndefined();
     });
 
-    it("should throw on update error", async () => {
+    it("doit echoue lors de l'update une categorie", async () => {
       mock.onPut("/category?id=1").reply(400);
 
       await expect(
