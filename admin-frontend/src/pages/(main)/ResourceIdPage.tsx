@@ -46,7 +46,7 @@ const ResourceIdPage = () => {
   if (!data) return null;
 
   return (
-    <div className="flex max-w-4xl flex-col gap-y-4">
+    <div className="flex mx-auto max-w-4xl flex-col gap-y-4">
       <div className="flex items-center justify-between">
         <Button
           variant="outline"

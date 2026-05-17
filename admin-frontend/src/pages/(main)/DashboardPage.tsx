@@ -1,12 +1,10 @@
 import { AuthenticatedLayout } from "@/components/AuthenticatedLayout";
-import DashboardStatsList from "@/features/dashboard/components/DashboardStatsList";
+import StatsDashboard from "@/features/statistics/components/StatsDashboard";
 
 const DashboardPage = () => {
   return (
     <AuthenticatedLayout>
-      <div>
-        <DashboardStatsList />
-      </div>
+      <StatsDashboard />
     </AuthenticatedLayout>
   );
 };
