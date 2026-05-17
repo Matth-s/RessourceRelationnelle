@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { currentUserSchema } from "@/features/user/schemas/current-user-schema";
 import { Link, useNavigate } from "react-router";
 import { Mail, Lock, Eye, EyeOff, ShieldCheck } from "lucide-react";
 import { useDispatch } from "react-redux";
@@ -30,14 +31,19 @@ const LoginForm = () => {
     try {
       const response = await loginApi(data);
       localStorage.setItem("auth_token", response.token);
-      dispatch(login({
+      
+      const validatedUser = currentUserSchema.parse({
         username: response.username,
         role: response.role,
         token: response.token,
-      }));
+      });
+
+      dispatch(login(validatedUser));
+      
       navigate("/home");
-    } catch {
-      setError("Email ou mot de passe incorrect");
+    } catch (err) {
+      console.error(err);
+      setError("Email ou mot de passe incorrect, ou données invalides");
     } finally {
       setLoading(false);
     }

@@ -14,7 +14,6 @@ export const getCommentsByResourceId = async (
       const result = commentResourceIdObjectSchema.safeParse(item);
 
       if (!result.success) {
-        console.log(result.error);
         return null;
       }
 
