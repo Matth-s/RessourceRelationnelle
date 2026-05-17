@@ -28,11 +28,17 @@ namespace RessourceRelationnelle.API.Controllers
             var resource = await context.Resources.FindAsync(model.ResourceId);
             if (resource == null) return NotFound(new { message = "Ressource introuvable" });
 
+            bool isAutoApprovedUser = User.IsInRole("Admin") ||
+                                      User.IsInRole("SuperAdmin") ||
+                                      User.IsInRole("Moderator");
+
             var comment = new CommentaryModel
             {
                 Id = Guid.NewGuid().ToString(),
                 Content = model.Content,
-                ModerationStatus = "Pending",
+
+                ModerationStatus = isAutoApprovedUser ? "Approved" : "Pending",
+
                 CreatedAt = DateTime.UtcNow,
                 UserId = userId,
                 ResourceId = model.ResourceId
@@ -41,7 +47,11 @@ namespace RessourceRelationnelle.API.Controllers
             context.Comments.Add(comment);
             await context.SaveChangesAsync();
 
-            return Ok(new { message = "Commentaire ajouté", id = comment.Id });
+            return Ok(new
+            {
+                message = "Commentaire ajouté",
+                id = comment.Id
+            });
         }
 
         [HttpGet("resource/{resourceId}")]
