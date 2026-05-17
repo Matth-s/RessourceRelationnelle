@@ -35,7 +35,7 @@ const CreateComment = ({ resourceId }: CreateCommentProps) => {
     onSuccess() {
       toast.success("Votre commentaire a été posté");
       queryClient.invalidateQueries({
-        queryKey: [FETCH_KEYS.COMMENTS + resourceId],
+        queryKey: [FETCH_KEYS.COMMENTS , resourceId],
       });
       reset();
     },
