@@ -27,6 +27,8 @@ const CreateComment = ({ resourceId }: CreateCommentProps) => {
     resolver: zodResolver(createCommentSchema),
   });
 
+  const { handleSubmit, reset } = form;
+
   const postMutation = useMutation({
     mutationFn: createCommentApi,
 
@@ -35,6 +37,7 @@ const CreateComment = ({ resourceId }: CreateCommentProps) => {
       queryClient.invalidateQueries({
         queryKey: [FETCH_KEYS.COMMENTS + resourceId],
       });
+      reset();
     },
 
     onError(err) {
@@ -48,7 +51,7 @@ const CreateComment = ({ resourceId }: CreateCommentProps) => {
     },
   });
 
-  const { handleSubmit } = form;
+
 
   const handleFormSubmit = (data: createCommentType) => {
     postMutation.mutate(data);
