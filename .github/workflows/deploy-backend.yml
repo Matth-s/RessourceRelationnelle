@@ -32,8 +32,6 @@ jobs:
             git reset --hard origin/main
             git clean -fd
 
-            cd backend
-
             docker compose up -d --build mon-api
 
             cd /var/www/cesizen-api/backend/
