@@ -21,7 +21,10 @@ type SheetFormModerationProps = {
   formId?: string;
 };
 
-const SheetFormModeration = ({ formData, formId = "create-resource-form" }: SheetFormModerationProps) => {
+const SheetFormModeration = ({
+  formData,
+  formId = "create-resource-form",
+}: SheetFormModerationProps) => {
   return (
     <Sheet>
       <SheetTrigger className="ml-auto" asChild>
@@ -53,6 +56,7 @@ const SheetFormModeration = ({ formData, formId = "create-resource-form" }: Shee
               }
               moderationStatus={formData.watch("publicationStatus")}
               className="w-full"
+              label="publicationStatus"
             />
           </div>
         </div>

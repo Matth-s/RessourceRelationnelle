@@ -71,7 +71,7 @@ const CreateUserForm = () => {
       reset();
       setIsOpen(false);
       queryClient.invalidateQueries({ queryKey: [FETCH_KEYS.USERS] });
-      toast.success("L'utilisateur a été crée avec succès");
+      toast.success("L'utilisateur a été créé avec succès");
       setShowPassword(false);
     },
   });
@@ -105,7 +105,7 @@ const CreateUserForm = () => {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel>Email</FieldLabel>
-                <Input {...field} />
+                <Input {...field} aria-label="Email" />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -119,7 +119,7 @@ const CreateUserForm = () => {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel>Nom d'utilisateur</FieldLabel>
-                <Input {...field} />
+                <Input {...field} aria-label="Username" />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -147,7 +147,12 @@ const CreateUserForm = () => {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel>Mot de passe</FieldLabel>
-                <Input {...field} type={showPassword ? "text" : "password"} />
+                <Input
+                  {...field}
+                  type={showPassword ? "text" : "password"}
+                  aria-label="Password"
+                  data-testid="password-input"
+                />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -161,7 +166,12 @@ const CreateUserForm = () => {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel>Confirmez le mot de passe</FieldLabel>
-                <Input {...field} type={showPassword ? "text" : "password"} />
+                <Input
+                  {...field}
+                  type={showPassword ? "text" : "password"}
+                  aria-label="ConfirmPassword"
+                  data-testid="confirm-password-input"
+                />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}

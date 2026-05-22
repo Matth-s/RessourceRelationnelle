@@ -35,7 +35,7 @@ const CreateComment = ({ resourceId }: CreateCommentProps) => {
     onSuccess() {
       toast.success("Votre commentaire a été posté");
       queryClient.invalidateQueries({
-        queryKey: [FETCH_KEYS.COMMENTS , resourceId],
+        queryKey: [FETCH_KEYS.COMMENTS, resourceId],
       });
       reset();
     },
@@ -51,8 +51,6 @@ const CreateComment = ({ resourceId }: CreateCommentProps) => {
     },
   });
 
-
-
   const handleFormSubmit = (data: createCommentType) => {
     postMutation.mutate(data);
   };
@@ -65,7 +63,7 @@ const CreateComment = ({ resourceId }: CreateCommentProps) => {
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid}>
             <FieldLabel>Poster un commentaire</FieldLabel>
-            <Textarea {...field} />
+            <Textarea {...field} aria-label="comment" />
             {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
           </Field>
         )}

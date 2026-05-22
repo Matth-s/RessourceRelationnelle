@@ -60,6 +60,7 @@ const CategoryCard = ({ category }: CategoryCardProps) => {
             variant="outline"
             size="icon"
             onClick={() => setModalType("edit")}
+            aria-label="edit"
           >
             <Pen size={16} />
           </Button>
@@ -68,6 +69,7 @@ const CategoryCard = ({ category }: CategoryCardProps) => {
             variant="destructive"
             size="icon"
             onClick={() => setModalType("delete")}
+            aria-label="delete"
           >
             <Trash size={16} />
           </Button>

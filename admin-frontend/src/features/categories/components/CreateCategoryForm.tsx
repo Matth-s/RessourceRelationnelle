@@ -75,7 +75,7 @@ export const CreateCategoryForm = ({ closeModal }: CreateCategoryFormProps) => {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel>Nom de la catégorie</FieldLabel>
-              <Input {...field} />
+              <Input {...field} aria-label="categoryName" />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}

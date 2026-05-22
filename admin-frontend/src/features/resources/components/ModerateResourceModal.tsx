@@ -97,6 +97,7 @@ const ModerateResourceModal = ({ resource }: ModerateResourceModalProps) => {
                 <SelectModerationStatusResource
                   moderationStatus={field.value}
                   onChange={field.onChange}
+                  label="publicationStatus"
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />

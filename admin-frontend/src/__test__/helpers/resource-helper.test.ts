@@ -9,7 +9,7 @@ import { describe, it, expect } from "vitest";
 describe("resources helpers", () => {
   describe("formatPublicationStatus", () => {
     it("doit traduire correctement les statuts anglais en français", () => {
-      expect(formatPublicationStatus("Approved")).toBe("Appouvé");
+      expect(formatPublicationStatus("Approved")).toBe("Approuvé");
       expect(formatPublicationStatus("Pending")).toBe("En attente");
       expect(formatPublicationStatus("Rejected")).toBe("Rejeté");
     });

@@ -13,19 +13,21 @@ type SelectModerationStatusResourceProps = {
   moderationStatus: IPublicationResource;
   onChange: (value: IPublicationResource) => void;
   className?: string;
+  label?: string;
 };
 
 const SelectModerationStatusResource = ({
   moderationStatus,
   onChange,
   className,
+  label,
 }: SelectModerationStatusResourceProps) => {
   return (
     <Select
       onValueChange={(value) => onChange(value as IPublicationResource)}
       value={moderationStatus}
     >
-      <SelectTrigger className={className}>
+      <SelectTrigger className={className} aria-label={label}>
         <SelectValue></SelectValue>
       </SelectTrigger>
       <SelectContent>

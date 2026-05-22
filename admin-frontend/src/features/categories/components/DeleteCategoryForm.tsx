@@ -24,7 +24,7 @@ const DeleteCategoryForm = ({
     mutationFn: deleteCategoryApi,
 
     onSuccess() {
-      toast.success(`La catégorie ${category.categoryName} a été supprimé`);
+      toast.success(`La catégorie ${category.categoryName} a été supprimée`);
       queryClient.invalidateQueries({ queryKey: [FETCH_KEYS.CATEGORY] });
       closeModal();
     },
