@@ -360,6 +360,7 @@ En cas de problème avec la configuration, consultez la documentation :
 - [Documentation Vite](https://vitejs.dev/)
 - [Documentation Capacitor](https://capacitorjs.com/)
 
+.
 ---
 
 **Dernière mise à jour** : Mai 2026
