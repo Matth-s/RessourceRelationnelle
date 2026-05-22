@@ -40,6 +40,7 @@ const Header = () => {
             Accueil
           </Link>
           <Link
+            aria-label="resource-link"
             to="/resources"
             className="text-sm text-gray-600 hover:text-gray-900"
           >
@@ -61,6 +62,7 @@ const Header = () => {
                 + Créer
               </Link>
               <Link
+                aria-label="profile"
                 to="/profile"
                 className="flex items-center gap-1.5 text-sm text-gray-600 hover:text-gray-900"
               >

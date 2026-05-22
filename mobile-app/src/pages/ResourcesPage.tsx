@@ -315,6 +315,7 @@ const ResourceCard = ({ resource }: { resource: ResourceReturn }) => {
 
   return (
     <Link
+      aria-label="resource-card-link"
       to={`/resources/${resource.id}`}
       className="bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-md transition-shadow"
     >
