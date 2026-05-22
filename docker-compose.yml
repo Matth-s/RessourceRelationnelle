@@ -1,15 +1,23 @@
 services:
   mon-api:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "5000:8080"
+      - '5000:8080'
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__Default=Data Source=/app/data/data.db3
     volumes:
       - sqlite_data:/app/data
 
+  admin-frontend:
+    build:
+      context: ./admin-frontend
+      dockerfile: Dockerfile
+    ports:
+      - '5173:5173'
+    depends_on:
+      - mon-api
 volumes:
   sqlite_data:
