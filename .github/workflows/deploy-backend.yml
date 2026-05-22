@@ -22,17 +22,11 @@ jobs:
           script: |
             set -e
 
-            docker system prune -af
-
-            systemctl restart docker
-
             cd /var/www/ressource-api
 
             git fetch origin main
             git reset --hard origin/main
             git clean -fd
-
-            cd backend
 
             docker compose up -d --build mon-api
 
