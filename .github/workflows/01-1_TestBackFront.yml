@@ -1,0 +1,207 @@
+name: 01-1 - Integration - TEST
+
+on: workflow_call
+
+jobs:
+  Backend:
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: backend
+
+    env:
+      BDD_HOST: 127.0.0.1
+      BDD_NAME: test
+      BDD_USER: test
+      BDD_PASS: test
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 24.x
+
+      - name: Install dependencies
+        run: npm i
+
+      - name: Init Bdd
+        run: npm run initbdd
+
+      - name: Populate BDD
+        run: |
+          mysql -u root -ptoor --host 127.0.0.1 --port 3306 --database test < ./test/insert_test_user.sql
+
+      - name: Run all test and coverage
+        run: npm run test:cov
+
+      - name: Upload Coverage Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: back-coverage-report
+          path: backend/coverage
+          retention-days: 1
+
+  # frontend
+
+  Frontend:
+    needs: [Backend]
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: admin-frontend
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Start Build backend
+        run: |
+          cd ..
+          docker compose -f docker-compose-back-build.yml up -d
+          docker ps -a
+
+      - name: Sleep for 10 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '10s'
+
+      - name: test Backend Container
+        if: success()
+        run: curl http://127.0.0.1:8080
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 24.0.0
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Vitest & Playwright E2E Install
+        uses: cypress-io/github-action@v6
+        with:
+          runTests: false
+          working-directory: mobile-app
+
+      - name: Install dependencies
+        run: npm i
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Vitest
+        run: npm run test
+
+      - name: Run Playwright E2E
+        run: npm run test:e2e
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: admin-frontend/cypress/screenshots
+          retention-days: 1
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cypress-videos
+          path: admin-frontend/cypress/videos
+          retention-days: 1
+
+      - name: Upload Coverage Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: front-coverage-report
+          path: admin-frontend/coverage
+          retention-days: 1
+
+      - name: Clean Builder Backend Docker
+        if: always()
+        run: |
+          cd ..
+          docker compose -f docker-compose-back-build.yml down
+
+  # backend
+
+  Mobile:
+    needs: [Backend]
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: mobile-app
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Start Build backend
+        run: |
+          cd ..
+          docker compose -f docker-compose-back-build.yml up -d
+          docker ps -a
+
+      - name: Sleep for 10 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '10s'
+
+      - name: test Backend Container
+        if: success()
+        run: curl http://127.0.0.1:8080
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 24.0.0
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Vitest & Playwright E2E Install
+        uses: cypress-io/github-action@v6
+        with:
+          runTests: false
+          working-directory: mobile-app
+
+      - name: Install dependencies
+        run: npm i
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Vitest
+        run: npm run test
+
+      - name: Run Playwright E2E
+        run: npm run test:e2e
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: mobile-app/cypress/screenshots
+          retention-days: 1
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cypress-videos
+          path: mobile-app/cypress/videos
+          retention-days: 1
+
+      - name: Upload Coverage Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: front-coverage-report
+          path: mobile-app/coverage
+          retention-days: 1
+
+      - name: Clean Builder Backend Docker
+        if: always()
+        run: |
+          cd ..
+          docker compose -f docker-compose-back-build.yml down
