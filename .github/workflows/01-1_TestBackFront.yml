@@ -51,11 +51,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Start Build backend
-        run: |
-          cd ..
-          docker compose -f docker-compose-back-build.yml up -d
-          docker ps -a
+      # - name: Start Build backend
+      #   run: |
+      #     cd ..
+      #     docker compose -f docker-compose-back-build.yml up -d
+      #     docker ps -a
 
       - name: Sleep for 10 seconds
         uses: jakejarvis/wait-action@master
@@ -132,11 +132,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Start Build backend
-        run: |
-          cd ..
-          docker compose -f docker-compose-back-build.yml up -d
-          docker ps -a
+      # - name: Start Build backend
+      #   run: |
+      #     cd ..
+      #     docker compose -f docker-compose-back-build.yml up -d
+      #     docker ps -a
 
       - name: Sleep for 10 seconds
         uses: jakejarvis/wait-action@master
