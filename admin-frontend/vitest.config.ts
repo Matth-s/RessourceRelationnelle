@@ -16,6 +16,7 @@ export default defineConfig({
         "src/assets/**",
         "**/*.config.ts",
         "**/*.d.ts",
+        "src/__test__/scenarios",
 
         "src/types/fetch-key-type.ts",
         "src/types/dashboard-stat-enum.ts",

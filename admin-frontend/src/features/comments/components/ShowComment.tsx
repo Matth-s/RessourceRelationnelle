@@ -99,7 +99,7 @@ const ShowComment = ({ comment }: ShowCommentProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={() => setIsOpen((prev) => !prev)}>
       <DialogTrigger>
-        <BookOpenText />
+        <BookOpenText aria-label="edit" />
       </DialogTrigger>
 
       <DialogContent className="min-w-xl">
@@ -136,7 +136,7 @@ const ShowComment = ({ comment }: ShowCommentProps) => {
                         value={field.value}
                         onValueChange={field.onChange}
                       >
-                        <SelectTrigger>
+                        <SelectTrigger aria-label="moderationStatus">
                           <SelectValue />
                         </SelectTrigger>
 

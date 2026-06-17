@@ -22,6 +22,7 @@ const ResourceSearchBar = ({
         defaultValue={defaultValue}
         placeholder="Rechercher une ressource"
         onChange={(e) => debounced(e.target.value)}
+        aria-label="searchResource"
       />
 
       <Search />

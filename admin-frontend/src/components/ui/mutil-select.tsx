@@ -1105,6 +1105,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                     <CommandItem
                       onSelect={() => setIsPopoverOpen(false)}
                       className="max-w-full flex-1 cursor-pointer justify-center text-center"
+                      aria-label="closeDropdown"
                     >
                       Fermer
                     </CommandItem>

@@ -10,7 +10,7 @@ export const formatPublicationStatus = (
 ): string => {
   switch (publicationStatus) {
     case "Approved":
-      return "Appouvé";
+      return "Approuvé";
     case "Pending":
       return "En attente";
     case "Rejected":

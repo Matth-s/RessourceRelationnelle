@@ -112,7 +112,11 @@ const CreateResourceForm = ({
         control={formData.control}
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid}>
-            <Input className="text-2xl font-bold" {...field} />
+            <Input
+              className="text-2xl font-bold"
+              {...field}
+              aria-label="title"
+            />
 
             {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
           </Field>

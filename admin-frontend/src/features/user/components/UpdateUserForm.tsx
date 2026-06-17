@@ -86,7 +86,7 @@ const UpdateUserForm = ({ user }: UpdateUserFormProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={() => setIsOpen((prev) => !prev)}>
       <DialogTrigger asChild>
-        <Button>
+        <Button aria-label="edit">
           <Pencil />
         </Button>
       </DialogTrigger>
@@ -109,7 +109,7 @@ const UpdateUserForm = ({ user }: UpdateUserFormProps) => {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel>Email</FieldLabel>
-                <Input {...field} />
+                <Input {...field} aria-label="Email" />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
