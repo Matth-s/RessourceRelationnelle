@@ -72,15 +72,6 @@ jobs:
           node-version: 24.0.0
 
       - name: Install dependencies
-        run: npm ci
-
-      - name: Vitest & Playwright E2E Install
-        uses: cypress-io/github-action@v6
-        with:
-          runTests: false
-          working-directory: mobile-app
-
-      - name: Install dependencies
         run: npm i
 
       - name: Install Playwright browsers
@@ -95,15 +86,15 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: cypress-screenshots
-          path: admin-frontend/cypress/screenshots
+          name: playwright-screenshots
+          path: admin-frontend/playwright/screenshots
           retention-days: 1
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: cypress-videos
-          path: admin-frontend/cypress/videos
+          name: playwright-videos
+          path: admin-frontend/playwright/videos
           retention-days: 1
 
       - name: Upload Coverage Artifact
@@ -153,15 +144,6 @@ jobs:
           node-version: 24.0.0
 
       - name: Install dependencies
-        run: npm ci
-
-      - name: Vitest & Playwright E2E Install
-        uses: cypress-io/github-action@v6
-        with:
-          runTests: false
-          working-directory: mobile-app
-
-      - name: Install dependencies
         run: npm i
 
       - name: Install Playwright browsers
@@ -176,15 +158,15 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: cypress-screenshots
-          path: mobile-app/cypress/screenshots
+          name: playwright-screenshots
+          path: mobile-app/playwright/screenshots
           retention-days: 1
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: cypress-videos
-          path: mobile-app/cypress/videos
+          name: playwright-videos
+          path: mobile-app/playwright/videos
           retention-days: 1
 
       - name: Upload Coverage Artifact
