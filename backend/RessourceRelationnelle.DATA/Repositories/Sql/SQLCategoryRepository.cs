@@ -1,5 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using RessourceRelationnelle.DATA.Models;
 
 namespace RessourceRelationnelle.DATA.Repositories.Sql
