@@ -1,9 +1,10 @@
 import { AuthenticatedLayout } from "@/components/AuthenticatedLayout";
+import { Outlet } from "react-router";
 
 const ResourcePage = () => {
   return (
     <AuthenticatedLayout>
-      <p>ressources page</p>
+      <Outlet />
     </AuthenticatedLayout>
   );
 };

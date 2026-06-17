@@ -24,6 +24,7 @@ namespace RessourceRelationnelle.DATA.Repositories.Sql
         public async Task<IEnumerable<CategoryModel>> GetAll()
         {
             return await context.Categories
+                .Include(c => c.Resources)
                 .AsNoTracking()
                 .ToListAsync();
         }

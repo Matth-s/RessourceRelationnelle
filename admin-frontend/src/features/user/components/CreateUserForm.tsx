@@ -17,11 +17,13 @@ import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createUserApi } from "../api/create-user-api";
-import SubmitButton from "@/components/SubmitButton";
-import FormErrorMessage from "@/components/FormErrorMessage";
 import { FETCH_KEYS } from "@/types/fetch-key-type";
 import { toast } from "sonner";
+
 import ShowFormPassword from "@/features/auth/components/ShowFormPassword";
+import SubmitButton from "@/components/SubmitButton";
+import FormErrorMessage from "@/components/FormErrorMessage";
+import SelectFormRole from "./SelectFormRole";
 
 const CreateUserForm = () => {
   const queryClient = useQueryClient();
@@ -69,7 +71,7 @@ const CreateUserForm = () => {
       reset();
       setIsOpen(false);
       queryClient.invalidateQueries({ queryKey: [FETCH_KEYS.USERS] });
-      toast.success("L'utilisateur a été crée avec succès");
+      toast.success("L'utilisateur a été créé avec succès");
       setShowPassword(false);
     },
   });
@@ -103,7 +105,7 @@ const CreateUserForm = () => {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel>Email</FieldLabel>
-                <Input {...field} />
+                <Input {...field} aria-label="Email" />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -117,7 +119,7 @@ const CreateUserForm = () => {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel>Nom d'utilisateur</FieldLabel>
-                <Input {...field} />
+                <Input {...field} aria-label="Username" />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -130,8 +132,8 @@ const CreateUserForm = () => {
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel>Roles</FieldLabel>
-                <Input {...field} />
+                <FieldLabel htmlFor={field.name}>Roles</FieldLabel>
+                <SelectFormRole value={field.value} onChange={field.onChange} />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -145,7 +147,12 @@ const CreateUserForm = () => {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel>Mot de passe</FieldLabel>
-                <Input {...field} type={showPassword ? "text" : "password"} />
+                <Input
+                  {...field}
+                  type={showPassword ? "text" : "password"}
+                  aria-label="Password"
+                  data-testid="password-input"
+                />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -159,7 +166,12 @@ const CreateUserForm = () => {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel>Confirmez le mot de passe</FieldLabel>
-                <Input {...field} type={showPassword ? "text" : "password"} />
+                <Input
+                  {...field}
+                  type={showPassword ? "text" : "password"}
+                  aria-label="ConfirmPassword"
+                  data-testid="confirm-password-input"
+                />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}

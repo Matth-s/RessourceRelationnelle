@@ -16,6 +16,10 @@ import UserPage from "./pages/(main)/UserPage";
 import StatsPage from "./pages/(main)/StatsPage";
 import NotFoundGlobalPage from "./pages/NotFoundGlobalPage";
 import CommentsPage from "./pages/(main)/CommentsPage";
+import ResourceListPage from "./pages/(main)/ResourceListPage";
+import ResourceIdPage from "./pages/(main)/ResourceIdPage";
+import ResourceCreatePage from "./pages/(main)/ResourceCreatePage";
+import ResourceEditPage from "./pages/(main)/ResourceEditPage";
 
 const App = () => {
   const { user } = useAppSelector((state) => state.auth);
@@ -58,7 +62,14 @@ const App = () => {
         element={<AuthOutlet roles={[USER_ROLE.ADMIN, USER_ROLE.MODERATOR]} />}
       >
         <Route path="/" element={<DashboardPage />} />
-        <Route path="/ressources" element={<ResourcePage />} />
+
+        <Route path="/ressources" element={<ResourcePage />}>
+          <Route index element={<ResourceListPage />} />
+          <Route path=":id" element={<ResourceIdPage />} />
+          <Route path=":id/modifier" element={<ResourceEditPage />} />
+          <Route path="nouvelle-ressource" element={<ResourceCreatePage />} />
+        </Route>
+
         <Route path="/categories" element={<CategoryPage />} />
         <Route path="/utilisateurs" element={<UserPage />} />
         <Route path="/statistiques" element={<StatsPage />} />

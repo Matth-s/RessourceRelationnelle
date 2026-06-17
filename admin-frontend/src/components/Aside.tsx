@@ -28,9 +28,7 @@ const Aside = () => {
                     <img
                       src={link.icon}
                       alt={link.name}
-                      className={`h-5 w-5 ${
-                        isActive ? "brightness-0 invert filter" : ""
-                      }`}
+                      className={`h-5 w-5 ${isActive ? "invert filter" : "opacity-30 invert"}`}
                     />
                     {link.name}
                   </>

@@ -20,7 +20,12 @@ const SubmitButton = ({
   variant,
 }: SubmitButtonProps) => {
   return (
-    <Button className={className} disabled={isDisabled} variant={variant}>
+    <Button
+      className={className}
+      disabled={isDisabled}
+      variant={variant}
+      type="submit"
+    >
       {text}
     </Button>
   );

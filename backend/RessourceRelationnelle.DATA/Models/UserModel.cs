@@ -14,5 +14,6 @@ namespace RessourceRelationnelle.DATA.Models
 
         public string? DemographicZoneId { get; set; }
         public DemographicZoneModel? DemographicZone { get; set; }
+        public List<LikeModel> Likes { get; set; } = new List<LikeModel>();
     }
 }

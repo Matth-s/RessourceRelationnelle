@@ -1,8 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization; 
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using RessourceRelationnelle.API.Services;
+using RessourceRelationnelle.Data.Repositories.Sql;
 using RessourceRelationnelle.DATA.Models;
 using RessourceRelationnelle.DATA.Repositories;
+using System.Globalization;
+using System.Security.Claims;
 
 namespace RessourceRelationnelle.API.Controllers
 {
@@ -12,22 +16,33 @@ namespace RessourceRelationnelle.API.Controllers
     {
         private readonly IResourceRepository repository;
         private readonly UserManager<UserModel> userManager;
+        private readonly IStorageService storageService;
 
-        public ResourceController(IResourceRepository configuration, UserManager<UserModel> userManager)
+        public ResourceController(
+            IResourceRepository configuration,
+            UserManager<UserModel> userManager,
+            IStorageService storageService)
         {
             this.repository = configuration;
             this.userManager = userManager;
+            this.storageService = storageService;
         }
 
         [HttpGet("{id}")]
         [AllowAnonymous]
-        public async Task<ActionResult<ResourceModel>> GetOne(string id)
+        public async Task<ActionResult<ResourcesReturn>> GetOne(string id, [FromServices] ResourceViewService viewService)
         {
             try
             {
-                ResourceModel? resource = await repository.GetOne(id);
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                ResourcesReturn? resource = await repository.GetOne(userId, id);
+
                 if (resource == null)
                     return NotFound();
+
+                await viewService.RecordViewAsync(id);
+
                 return Ok(resource);
             }
             catch (Exception ex)
@@ -36,37 +51,119 @@ namespace RessourceRelationnelle.API.Controllers
             }
         }
 
-        [HttpPost]
-        [Authorize(Roles = "User")]
-        public async Task<ActionResult> Create([FromBody] CreateResourceModel model)
+        [HttpGet("UserResources/{userId}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<IEnumerable<ResourceModel>>> GetForUser(string? userId = null)
         {
-            string? userId = userManager.GetUserId(User);
-
-            if (userId == null)
-                return Unauthorized();
-
-            UserModel? user = await userManager.FindByIdAsync(userId);
-
-            if (user == null)
-                return Unauthorized();
             try
             {
+                IEnumerable<ResourceModel> resources = await repository.GetForUser(userId);
+                return Ok(resources);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<ActionResult<IEnumerable<ResourcesReturn>>> GetAll([FromQuery] bool includeAll = false)
+        {
+            try
+            {
+                bool isAdmin = false;
+                if (includeAll)
+                {
+                    var roles = User.FindAll(System.Security.Claims.ClaimTypes.Role).Select(r => r.Value);
+                    isAdmin = roles.Contains("Admin") || roles.Contains("SuperAdmin") || roles.Contains("Moderator");
+                }
+
+                IEnumerable<ResourcesReturn> resources = await repository.GetAll(isAdmin);
+                if (resources == null)
+                    return NotFound();
+                return Ok(resources);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<ActionResult> CreateWithFile([FromForm] CreateResourceWithFileModel model)
+        {
+            string? userId = userManager.GetUserId(User);
+            if (userId == null) return Unauthorized();
+
+            UserModel? user = await userManager.FindByIdAsync(userId);
+            if (user == null) return Unauthorized();
+
+            try
+            {
+                string fileUrl = null;
+                string folder = null;
+
+                if (model.File != null && model.File.Length > 0)
+                {
+
+                    var extension = Path.GetExtension(model.File.FileName)?.ToLowerInvariant();
+                    var contentType = model.File.ContentType?.ToLowerInvariant();
+
+
+                    if (contentType.StartsWith("image/") ||
+                        extension is ".jpg" or ".jpeg" or ".png" or ".gif" or ".webp" or ".bmp" or ".svg")
+                    {
+                        folder = "images";
+                    }
+                    else if (contentType.StartsWith("video/") ||
+                             extension is ".mp4" or ".webm" or ".avi" or ".mov" or ".mkv")
+                    {
+                        folder = "videos";
+                    }
+                    else if (contentType == "application/pdf" || extension == ".pdf")
+                    {
+                        folder = "pdfs";
+                    }
+                    else
+                    {
+                        folder = "others";
+                    }
+
+                    fileUrl = await storageService.UploadFileAsync(model.File, folder);
+                }
+
+                if (fileUrl == null && !string.IsNullOrWhiteSpace(model.Url))
+                {
+                    if (model.Url.Contains("youtube.com") || model.Url.Contains("youtu.be"))
+                    {
+                        folder = "video";
+                    }
+                }
+
                 ResourceModel resource = new()
                 {
                     Title = model.Title,
                     Resume = model.Resume,
                     Content = model.Content,
-                    Url = model.Url,
-                    PublicationStatus = "Pending",
-                    IsVisible = false,
+                    PublicationStatus = model.PublicationStatus,
+                    IsVisible = model.IsVisible ?? false,
                     CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    PublishedAt = DateTime.UtcNow,
                     UserId = userId,
                     CategoryId = model.CategoryId,
                     TypeRessourceId = model.ResourceTypeId,
-                    TypeRelationId = model.RelationTypeId
+                    TypeRelationId = model.RelationTypeId,
+                    MediaTtype = folder?.EndsWith("s") == true ? folder[..^1] : folder,
+                    MediaUrl = fileUrl ?? model.Url ?? null,
                 };
 
                 var created = await repository.Create(resource);
+
+                if (created == null)
+                    return BadRequest(new { message = "Failed to create resource" });
 
                 return Ok(created);
             }
@@ -75,16 +172,121 @@ namespace RessourceRelationnelle.API.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-        public class CreateResourceModel { 
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> Delete(string id)
+        {
+            try
+            {
+                ResourceModel? resource = await repository.GetResource(id);
+                if (resource == null) return NotFound(new { message = "Ressource not found" });
+                await repository.Delete(resource.Id);
+                return Ok(new { message = "Resource deleted" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("{resourceId}/status")]
+        [Authorize(Roles = "Admin,Moderator")]
+        public async Task<ActionResult> UpdateStatus(string resourceId, [FromBody] UpdateStatusResourceDto model)
+        {
+            try
+            {
+                ResourceModel updateResource = await repository.UpdateStatus(resourceId, model);
+
+                if (updateResource == null)
+                    return NotFound(new { message = "Resource not found" });
+
+                return Ok(new { message = "Resource edited" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("{resourceId}")]
+        [Authorize(Roles = "Admin,Moderator")]
+        public async Task<ActionResult> UpdateContent(string resourceId, [FromForm] CreateResourceWithFileModel model)
+        {
+            try
+            {
+                string? userId = userManager.GetUserId(User);
+                if (userId == null) return Unauthorized();
+
+                ResourceModel? existingResource = await repository.GetResource(resourceId);
+                if (existingResource == null) return NotFound(new { message = "Ressource not found" });
+
+                string? fileUrl = existingResource.MediaUrl;
+                string? folder = existingResource.MediaTtype;
+
+                if (model.File != null && model.File.Length > 0)
+                {
+                    var extension = Path.GetExtension(model.File.FileName)?.ToLowerInvariant();
+                    var contentType = model.File.ContentType?.ToLowerInvariant();
+
+                    if (contentType.StartsWith("image/") ||
+                        extension is ".jpg" or ".jpeg" or ".png" or ".gif" or ".webp" or ".bmp" or ".svg")
+                    {
+                        folder = "images";
+                    }
+                    else if (contentType.StartsWith("video/") ||
+                             extension is ".mp4" or ".webm" or ".avi" or ".mov" or ".mkv")
+                    {
+                        folder = "videos";
+                    }
+                    else if (contentType == "application/pdf" || extension == ".pdf")
+                    {
+                        folder = "pdfs";
+                    }
+                    else
+                    {
+                        folder = "others";
+                    }
+
+                    fileUrl = await storageService.UploadFileAsync(model.File, folder);
+                }
+
+                existingResource.Title = model.Title;
+                existingResource.Resume = model.Resume;
+                existingResource.Content = model.Content;
+                existingResource.IsVisible = model.IsVisible ?? existingResource.IsVisible;
+                existingResource.PublicationStatus = model.PublicationStatus ?? existingResource.PublicationStatus;
+                existingResource.CategoryId = model.CategoryId;
+                existingResource.TypeRessourceId = model.ResourceTypeId;
+                existingResource.TypeRelationId = model.RelationTypeId;
+                existingResource.MediaTtype = folder?.EndsWith("s") == true ? folder[..^1] : folder;
+                existingResource.MediaUrl = fileUrl;
+                existingResource.UpdatedAt = DateTime.UtcNow;
+
+                ResourceModel updatedResource = await repository.UpdateFull(existingResource);
+
+                var result = await repository.GetOne(userId, updatedResource.Id);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        public class CreateResourceWithFileModel
+        {
             public string Title { get; set; } = string.Empty;
             public string Resume { get; set; } = string.Empty;
             public string Content { get; set; } = string.Empty;
-            public string Url { get; set; } = string.Empty;  
-            public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+            public string? Url { get; set; }
+            public IFormFile? File { get; set; }
             public string CategoryId { get; set; } = string.Empty;
             public string ResourceTypeId { get; set; } = string.Empty;
             public string RelationTypeId { get; set; } = string.Empty;
+            public bool? IsVisible { get; set; } = false;
+            public string? PublicationStatus { get; set; } = "Pending";
         }
-
-    } 
+    }
 }

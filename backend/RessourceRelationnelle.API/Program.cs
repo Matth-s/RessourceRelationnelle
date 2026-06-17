@@ -28,7 +28,7 @@ namespace RessourceRelationnelle.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo { Title = "Security", Version = "v1" });
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "RessourceRelationnelle", Version = "v1" });
 
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
@@ -68,10 +68,12 @@ namespace RessourceRelationnelle.API
             });
 
             builder.Services.AddDbContext<DataContext>(options =>
-                options.UseSqlite(
-                    builder.Configuration.GetConnectionString("Default"),
+                options.UseNpgsql(
+                    builder.Configuration.GetConnectionString("DefaultConnection"),
                     b => b.MigrationsAssembly("RessourceRelationnelle.API")));
-
+            builder.Services.AddMemoryCache();
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddScoped<ResourceViewService>();
             builder.Services.AddScoped<IResourceRepository, SqlResourceRepository>();
             builder.Services.AddScoped<IEventRepository, SQLEventRepository>();
             builder.Services.AddScoped<ICategoryRepository, SQLCategoryRepository>();
@@ -79,6 +81,13 @@ namespace RessourceRelationnelle.API
             builder.Services.AddScoped<ITypeResourceRepository, SQLTypeResourceRepository>();
             builder.Services.AddScoped<IUserRepository, SqlUserRepository>();
             builder.Services.AddScoped<ICommentaryRepository, SqlCommentaryRepository>();
+            builder.Services.AddScoped<ILikeRepository, SQLLikeRepository>();
+
+            //Supabase
+            builder.Services.AddSingleton<IStorageService, StorageService>();
+
+            builder.Services.AddSingleton<GameSessionService>();
+
 
             builder.Services.AddIdentity<UserModel, IdentityRole>()
                 .AddEntityFrameworkStores<DataContext>()
@@ -113,10 +122,10 @@ namespace RessourceRelationnelle.API
             app.UseSwaggerUI();
             app.MapOpenApi();
 
-            app.UseCors("AllowFront");
-            app.UseHttpsRedirection();
-            app.UseAuthentication();
-            app.UseAuthorization();
+            app.UseCors("AllowFront");       // 1. CORS en premier
+            app.UseHttpsRedirection();       // 2. HTTPS
+            app.UseAuthentication();         // 3. Qui es-tu ?
+            app.UseAuthorization();          // 4. As-tu le droit ?
 
             app.MapControllers();
 

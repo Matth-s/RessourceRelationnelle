@@ -1,0 +1,52 @@
+import {
+  Table,
+  TableBody,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import UserCard from "./UserCard";
+import { USER_TABLE_HEADER } from "../constants/user-constant";
+import type { usersSchemaType } from "../schemas/users-schema";
+import CardFetchError from "@/components/CardFetchError";
+import { Skeleton } from "@/components/ui/skeleton";
+
+type UsersListProps = {
+  isLoading: boolean;
+  error: Error | null;
+  users: usersSchemaType;
+  refetch: () => void;
+};
+
+const UsersList = ({ isLoading, error, users, refetch }: UsersListProps) => {
+  if (isLoading) return <Skeleton className="h-full w-full bg-gray-200" />;
+
+  if (error) return <CardFetchError onRetry={refetch} />;
+
+  return (
+    <div className="bg-muted/40 w-full overflow-hidden rounded-xl border">
+      <Table>
+        <TableHeader>
+          <TableRow className="bg-muted/60">
+            {USER_TABLE_HEADER.map((header) => (
+              <TableHead
+                key={header.name}
+                className="text-muted-foreground text-center text-sm font-semibold"
+              >
+                {header.name}
+              </TableHead>
+            ))}
+          </TableRow>
+        </TableHeader>
+
+        <TableBody>
+          {users.map((user) => (
+            <UserCard key={user.id} user={user} />
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  );
+};
+
+export default UsersList;

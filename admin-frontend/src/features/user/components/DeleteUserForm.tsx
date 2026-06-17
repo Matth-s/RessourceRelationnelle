@@ -65,7 +65,7 @@ const DeleteUserForm = ({ user }: DeleteUserFormProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={() => setIsOpen((prev) => !prev)}>
       <DialogTrigger asChild>
-        <Button variant={"destructive"}>
+        <Button variant={"destructive"} aria-label="delete">
           <Trash />
         </Button>
       </DialogTrigger>
@@ -87,6 +87,7 @@ const DeleteUserForm = ({ user }: DeleteUserFormProps) => {
             id="confirm"
             defaultValue={textInput}
             onChange={(e) => setInputText(e.target.value)}
+            aria-label="confirmUsername"
           />
 
           <Button

@@ -390,11 +390,6 @@ namespace RessourceRelationnelle.API.Services
             List<TypeRelationModel> relationTypes,
             List<TypeResourceModel> resourceTypes)
         {
-            var demoAlreadyExists = await context.Resources.AnyAsync(r => r.Url.StartsWith(DemoUrlBase));
-            if (demoAlreadyExists)
-            {
-                return;
-            }
 
             var now = DateTime.UtcNow;
 
@@ -420,7 +415,6 @@ namespace RessourceRelationnelle.API.Services
                     Title = definition.Title,
                     Resume = definition.Resume,
                     Content = definition.Content,
-                    Url = $"{DemoUrlBase}/{definition.UrlSlug}",
                     IsVisible = true,
                     PublicationStatus = "Approved",
                     CreatedAt = createdAt,
