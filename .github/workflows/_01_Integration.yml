@@ -1,0 +1,17 @@
+name: 01 - Integration
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  Test_Back_Front:
+    uses: ./.github/workflows/01-1_TestBackFront.yml
+  Deploy_Backend:
+    uses: ./.github/workflows/deploy-backend.yml
+
+  # Quality_SonarQube:
+  #   needs: [Test_Back_Front]
+  #   uses: ./.github/workflows/01-2_SonarQube.yml
+  #   secrets: inherit
