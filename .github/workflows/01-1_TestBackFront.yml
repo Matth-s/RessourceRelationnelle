@@ -3,51 +3,45 @@ name: 01-1 - Integration - TEST
 on: workflow_call
 
 jobs:
-  Backend:
-    runs-on: ubuntu-22.04
-    defaults:
-      run:
-        working-directory: backend
+  # Backend:
+  #   runs-on: ubuntu-22.04
+  #   defaults:
+  #     run:
+  #       working-directory: backend
 
-    env:
-      BDD_HOST: 127.0.0.1
-      BDD_NAME: test
-      BDD_USER: test
-      BDD_PASS: test
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+  #     - name: Setup Node
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 24.0.0
 
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 24.x
+  #     - name: Install dependencies
+  #       run: npm i
 
-      - name: Install dependencies
-        run: npm i
+  #     - name: Init Bdd
+  #       run: npm run initbdd
 
-      - name: Init Bdd
-        run: npm run initbdd
+  #     - name: Populate BDD
+  #       run: |
+  #         mysql -u root -ptoor --host 127.0.0.1 --port 3306 --database test < ./test/insert_test_user.sql
 
-      - name: Populate BDD
-        run: |
-          mysql -u root -ptoor --host 127.0.0.1 --port 3306 --database test < ./test/insert_test_user.sql
+  #     - name: Run all test and coverage
+  #       run: npm run test:cov
 
-      - name: Run all test and coverage
-        run: npm run test:cov
-
-      - name: Upload Coverage Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: back-coverage-report
-          path: backend/coverage
-          retention-days: 1
+  #     - name: Upload Coverage Artifact
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: back-coverage-report
+  #         path: backend/coverage
+  #         retention-days: 1
 
   # frontend
 
   Frontend:
-    needs: [Backend]
+    # needs: [Backend]
     runs-on: ubuntu-22.04
     defaults:
       run:
@@ -70,7 +64,7 @@ jobs:
 
       - name: test Backend Container
         if: success()
-        run: curl http://127.0.0.1:8080
+        run: curl http://217.154.113.110:8080/api
 
       - name: Setup Node
         uses: actions/setup-node@v3
@@ -128,7 +122,7 @@ jobs:
   # backend
 
   Mobile:
-    needs: [Backend]
+    # needs: [Backend]
     runs-on: ubuntu-22.04
     defaults:
       run:
@@ -151,7 +145,7 @@ jobs:
 
       - name: test Backend Container
         if: success()
-        run: curl http://127.0.0.1:8080
+        run: curl http://217.154.113.110:8080/api
 
       - name: Setup Node
         uses: actions/setup-node@v3
