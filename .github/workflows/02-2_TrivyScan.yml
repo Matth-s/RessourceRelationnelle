@@ -31,7 +31,7 @@ jobs:
           output: trivy-results-back.txt
           ignore-unfixed: true
           vuln-type: 'os,library'
-          severity: 'CRITICAL'
+          severity: 'CRITICAL,HIGH'
 
       - name: Upload Trivy report back
         uses: actions/upload-artifact@v4
@@ -64,7 +64,7 @@ jobs:
           output: trivy-results-front.txt
           ignore-unfixed: true
           vuln-type: 'os,library'
-          severity: 'CRITICAL'
+          severity: 'CRITICAL,HIGH'
 
       - name: Upload Trivy report front
         uses: actions/upload-artifact@v4
@@ -97,7 +97,7 @@ jobs:
           output: trivy-results-mobile.txt
           ignore-unfixed: true
           vuln-type: 'os,library'
-          severity: 'CRITICAL'
+          severity: 'CRITICAL,HIGH'
 
       - name: Upload Trivy report mobile
         uses: actions/upload-artifact@v4
