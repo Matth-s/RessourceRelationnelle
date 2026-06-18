@@ -5,6 +5,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "node",
+    exclude: ["node_modules/**", "dist/**", "src/__test__/scenarios/**"],
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],

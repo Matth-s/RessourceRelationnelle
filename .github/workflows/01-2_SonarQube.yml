@@ -1,0 +1,73 @@
+name: 01-2 - Integration - Sonar
+
+on: workflow_call
+
+jobs:
+  # QualityBack:
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: ./backend
+
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+
+  #     - name: Download Artifacts
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: back-coverage-report
+  #         path: backend/coverage
+
+  #     - name: SonarQube Scan
+  #       uses: SonarSource/sonarcloud-github-action@v3.1.0
+  #       with:
+  #         projectBaseDir: ./backend
+  #       env:
+  #         SONAR_TOKEN: ${{ secrets.SONAR_BACKEND }}
+
+  QualityFront:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./admin-frontend
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: admin-front-coverage-report
+          path: admin-frontend/coverage
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarcloud-github-action@v3.1.0
+        with:
+          projectBaseDir: ./admin-frontend
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_BACKOFFICE }}
+
+  QualityMobile:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./mobile-app
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: mobile-coverage-report
+          path: mobile-app/coverage
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarcloud-github-action@v3.1.0
+        with:
+          projectBaseDir: ./mobile-app
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_MOBILE }}

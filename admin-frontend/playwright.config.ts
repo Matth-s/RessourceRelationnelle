@@ -7,4 +7,5 @@ export default defineConfig({
     baseURL: "http://localhost:5173",
     headless: true,
   },
+  workers: 1,
 });

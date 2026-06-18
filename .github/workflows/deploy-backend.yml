@@ -1,6 +1,10 @@
 name: Deploiement Automatique Backend
 
-on: workflow_call
+# on:
+#   push:
+#     branches: ['main']
+#     paths:
+#       - 'backend/**'
 
 jobs:
   deploy:
@@ -24,6 +28,7 @@ jobs:
 
             echo "Libération de l'espace disque sur le serveur..."
             docker system prune -f
+
 
             docker compose up -d --build mon-api
 
