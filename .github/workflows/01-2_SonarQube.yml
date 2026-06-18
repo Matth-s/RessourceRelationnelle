@@ -3,28 +3,28 @@ name: 01-2 - Integration - Sonar
 on: workflow_call
 
 jobs:
-  QualityBack:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend
+  # QualityBack:
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: ./backend
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
 
-      - name: Download Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: back-coverage-report
-          path: backend/coverage
+  #     - name: Download Artifacts
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: back-coverage-report
+  #         path: backend/coverage
 
-      - name: SonarQube Scan
-        uses: SonarSource/sonarcloud-github-action@v3.1.0
-        with:
-          projectBaseDir: ./backend
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_BACKEND }}
+  #     - name: SonarQube Scan
+  #       uses: SonarSource/sonarcloud-github-action@v3.1.0
+  #       with:
+  #         projectBaseDir: ./backend
+  #       env:
+  #         SONAR_TOKEN: ${{ secrets.SONAR_BACKEND }}
 
   QualityFront:
     runs-on: ubuntu-latest
@@ -39,7 +39,7 @@ jobs:
       - name: Download Artifacts
         uses: actions/download-artifact@v4
         with:
-          name: backoffice-coverage-report
+          name: admin-front-coverage-report
           path: admin-frontend/coverage
 
       - name: SonarQube Scan
