@@ -41,7 +41,7 @@ jobs:
       - name: Front Build Push
         uses: docker/build-push-action@v5
         with:
-          context: backoffice
+          context: admin-frontend
           push: true
           tags: ${{env.REGISTRY}}/${{env.IMAGE_NAME_LOWER}}-front:${{inputs.docker-mode}}
           build-args: MODE=:canary
