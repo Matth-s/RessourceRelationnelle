@@ -58,7 +58,7 @@ jobs:
       - name: Trivy Scan Front
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: ${{env.REGISTRY}}/${{env.IMAGE_NAME_LOWER}}-front:canary
+          image-ref: ${{env.REGISTRY}}/${{env.IMAGE_NAME_LOWER}}-front
           format: table
           exit-code: '1'
           output: trivy-results-front.txt
