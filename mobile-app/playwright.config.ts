@@ -1,16 +1,16 @@
-import { defineConfig } from '@playwright/test';
+import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
-  testDir: './src/__test__/scenarios',
+  testDir: "./src/__test__/scenarios",
 
   use: {
-    baseURL: 'http://localhost:5173',
+    baseURL: "http://localhost:5173",
     headless: true,
-    permissions: ['clipboard-read', 'clipboard-write'],
+    permissions: ["clipboard-read", "clipboard-write"],
   },
-
+  workers: 1,
   webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:5173',
+    command: "npm run dev",
+    url: "http://localhost:5173",
   },
 });
