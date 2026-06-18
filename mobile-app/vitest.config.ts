@@ -6,12 +6,12 @@ export default defineConfig({
     globals: true,
     environment: "jsdom",
 
-    include: ["src/__test__/**/*.test.{ts,tsx}"],
+    exclude: ["node_modules/**", "dist/**", "src/__test__/scenarios/**"],
 
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html", "lcov"],
-      include: ["src/**/*.test.ts"],
+      include: ["src/**/*.{ts,tsx}"],
       exclude: [
         "node_modules/**",
         "src/assets/**",
