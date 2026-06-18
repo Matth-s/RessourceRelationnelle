@@ -47,7 +47,7 @@ namespace RessourceRelationnelle.Tests.Repositories
                 Title = "Ressource test",
                 Resume = "Résumé",
                 Content = "Contenu",
-                Url = "https://test.local/res1",
+                MediaUrl = "https://test.local/res1",
                 PublicationStatus = "Approved",
                 CategoryId = "cat1",
                 TypeRelationId = "rel1",

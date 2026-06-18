@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Moq;
 using RessourceRelationnelle.API.Controllers;
 using RessourceRelationnelle.DATA.Models;
+using RessourceRelationnelle.DATA.Repositories;
 using Xunit;
 
 namespace RessourceRelationnelle.Tests.Controllers
@@ -12,6 +13,7 @@ namespace RessourceRelationnelle.Tests.Controllers
     {
         private readonly Mock<UserManager<UserModel>> mockUserManager;
         private readonly Mock<RoleManager<IdentityRole>> mockRoleManager;
+        private readonly Mock<IUserRepository> mockUserRepository;
         private readonly IConfiguration configuration;
         private readonly AuthenticationController controller;
 
@@ -21,6 +23,7 @@ namespace RessourceRelationnelle.Tests.Controllers
                 Mock.Of<IUserStore<UserModel>>(), null, null, null, null, null, null, null, null);
             mockRoleManager = new Mock<RoleManager<IdentityRole>>(
                 Mock.Of<IRoleStore<IdentityRole>>(), null, null, null, null);
+            mockUserRepository = new Mock<IUserRepository>();
 
             var configData = new Dictionary<string, string?>
             {
@@ -31,7 +34,7 @@ namespace RessourceRelationnelle.Tests.Controllers
                 .Build();
 
             controller = new AuthenticationController(
-                configuration, mockUserManager.Object, mockRoleManager.Object);
+                configuration, mockUserManager.Object, mockRoleManager.Object, mockUserRepository.Object);
         }
 
         [Fact]
@@ -62,7 +65,7 @@ namespace RessourceRelationnelle.Tests.Controllers
         [Fact]
         public async Task Login_ReturnsOk_WithToken_WhenCredentialsValid()
         {
-            var user = new UserModel { Id = "1", Email = "admin@test.com", UserName = "admin" };
+            var user = new UserModel { Id = "1", Email = "admin@test.com", UserName = "admin", IsActive = true };
             mockUserManager.Setup(m => m.FindByEmailAsync("admin@test.com")).ReturnsAsync(user);
             mockUserManager.Setup(m => m.CheckPasswordAsync(user, "Demo123!")).ReturnsAsync(true);
             mockUserManager.Setup(m => m.GetRolesAsync(user)).ReturnsAsync(new List<string> { "Admin" });
@@ -77,7 +80,7 @@ namespace RessourceRelationnelle.Tests.Controllers
         [Fact]
         public async Task Register_ReturnsBadRequest_WhenPasswordsDontMatch()
         {
-            var model = new RegisterModel
+            var model = new UserBody
             {
                 Email = "new@test.com",
                 Username = "newuser",
@@ -91,13 +94,12 @@ namespace RessourceRelationnelle.Tests.Controllers
         }
 
         [Fact]
-        public async Task Register_Returns500_WhenEmailAlreadyExists()
+        public async Task Register_ReturnsConflict_WhenEmailAlreadyExists()
         {
-            var existingUser = new UserModel { Id = "1", Email = "existing@test.com" };
-            mockUserManager.Setup(m => m.FindByEmailAsync("existing@test.com"))
-                .ReturnsAsync(existingUser);
+            mockUserRepository.Setup(r => r.Create(It.IsAny<UserBody>()))
+                .ReturnsAsync("email");
 
-            var model = new RegisterModel
+            var model = new UserBody
             {
                 Email = "existing@test.com",
                 Username = "test",
@@ -107,22 +109,35 @@ namespace RessourceRelationnelle.Tests.Controllers
 
             var result = await controller.Register(model);
 
-            var statusResult = Assert.IsType<StatusCodeResult>(result);
-            Assert.Equal(500, statusResult.StatusCode);
+            Assert.IsType<ConflictObjectResult>(result);
         }
 
+        [Fact]
+        public async Task Register_ReturnsConflict_WhenUsernameAlreadyExists()
+        {
+            mockUserRepository.Setup(r => r.Create(It.IsAny<UserBody>()))
+                .ReturnsAsync("username");
+
+            var model = new UserBody
+            {
+                Email = "new@test.com",
+                Username = "existing",
+                Password = "Test123!",
+                ConfirmPassword = "Test123!"
+            };
+
+            var result = await controller.Register(model);
+
+            Assert.IsType<ConflictObjectResult>(result);
+        }
 
         [Fact]
         public async Task Register_ReturnsOk_WhenRegistrationSucceeds()
         {
-            mockUserManager.Setup(m => m.FindByEmailAsync("new@test.com"))
-                .ReturnsAsync((UserModel?)null);
-            mockUserManager.Setup(m => m.CreateAsync(It.IsAny<UserModel>(), "Test123!"))
-                .ReturnsAsync(IdentityResult.Success);
-            mockUserManager.Setup(m => m.AddToRoleAsync(It.IsAny<UserModel>(), "User"))
-                .ReturnsAsync(IdentityResult.Success);
+            mockUserRepository.Setup(r => r.Create(It.IsAny<UserBody>()))
+                .ReturnsAsync("ok");
 
-            var model = new RegisterModel
+            var model = new UserBody
             {
                 Email = "new@test.com",
                 Username = "newuser",
@@ -132,18 +147,16 @@ namespace RessourceRelationnelle.Tests.Controllers
 
             var result = await controller.Register(model);
 
-            Assert.IsType<OkResult>(result);
+            Assert.IsType<OkObjectResult>(result);
         }
 
         [Fact]
-        public async Task Register_Returns500_WhenCreateFails()
+        public async Task Register_ReturnsBadRequest_WhenCreateFails()
         {
-            mockUserManager.Setup(m => m.FindByEmailAsync("new@test.com"))
-                .ReturnsAsync((UserModel?)null);
-            mockUserManager.Setup(m => m.CreateAsync(It.IsAny<UserModel>(), "Test123!"))
-                .ReturnsAsync(IdentityResult.Failed(new IdentityError { Description = "Erreur" }));
+            mockUserRepository.Setup(r => r.Create(It.IsAny<UserBody>()))
+                .ReturnsAsync("creation");
 
-            var model = new RegisterModel
+            var model = new UserBody
             {
                 Email = "new@test.com",
                 Username = "newuser",
@@ -153,8 +166,7 @@ namespace RessourceRelationnelle.Tests.Controllers
 
             var result = await controller.Register(model);
 
-            var statusResult = Assert.IsType<StatusCodeResult>(result);
-            Assert.Equal(500, statusResult.StatusCode);
+            Assert.IsType<BadRequestObjectResult>(result);
         }
     }
 }

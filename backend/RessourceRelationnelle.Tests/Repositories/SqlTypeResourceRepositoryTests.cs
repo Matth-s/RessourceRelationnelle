@@ -68,22 +68,39 @@ namespace RessourceRelationnelle.Tests.Repositories
         }
 
         [Fact]
-        public async Task GetAll_ThrowsNotImplementedException()
+        public async Task GetAll_ReturnsAllItems()
         {
-            await Assert.ThrowsAsync<NotImplementedException>(() => repository.GetAll());
+            var result = await repository.GetAll();
+
+            Assert.Equal(3, result.Count());
         }
 
         [Fact]
-        public async Task GetOne_ThrowsNotImplementedException()
+        public async Task GetOne_ReturnsItem_WhenExists()
         {
-            await Assert.ThrowsAsync<NotImplementedException>(() => repository.GetOne("type1"));
+            var result = await repository.GetOne("type1");
+
+            Assert.NotNull(result);
+            Assert.Equal("ARTICLE", result.TypeRessource);
         }
 
         [Fact]
-        public async Task Update_ThrowsNotImplementedException()
+        public async Task Update_ModifiesItem_WhenExists()
         {
             var model = new TypeResourceModel { Id = "type1", TypeRessource = "TEST" };
-            await Assert.ThrowsAsync<NotImplementedException>(() => repository.Update(model));
+
+            var result = await repository.Update(model);
+
+            Assert.Equal("TEST", result.TypeRessource);
+            Assert.Equal("TEST", context.TypeResources.First(x => x.Id == "type1").TypeRessource);
+        }
+
+        [Fact]
+        public async Task Update_ThrowsException_WhenNotExists()
+        {
+            var model = new TypeResourceModel { Id = "inexistant", TypeRessource = "TEST" };
+
+            await Assert.ThrowsAsync<Exception>(() => repository.Update(model));
         }
 
         public void Dispose()
