@@ -63,6 +63,7 @@ namespace RessourceRelationnelle.Tests.Controllers
         [Fact]
         public async Task GetOne_ReturnsOk_WhenResourceExists()
         {
+            SetupUser(null);
             var resource = new ResourcesReturn { Id = "1", Title = "Test" };
             mockRepo.Setup(r => r.GetOne(null, "1")).ReturnsAsync(resource);
 
@@ -75,6 +76,7 @@ namespace RessourceRelationnelle.Tests.Controllers
         [Fact]
         public async Task GetOne_ReturnsNotFound_WhenResourceMissing()
         {
+            SetupUser(null);
             mockRepo.Setup(r => r.GetOne(null, "999")).ReturnsAsync((ResourcesReturn?)null);
 
             var result = await controller.GetOne("999", CreateViewService());
@@ -86,6 +88,7 @@ namespace RessourceRelationnelle.Tests.Controllers
         [Fact]
         public async Task GetOne_Returns500_WhenException()
         {
+            SetupUser(null);
             mockRepo.Setup(r => r.GetOne(null, "1")).ThrowsAsync(new Exception("DB error"));
 
             var result = await controller.GetOne("1", CreateViewService());

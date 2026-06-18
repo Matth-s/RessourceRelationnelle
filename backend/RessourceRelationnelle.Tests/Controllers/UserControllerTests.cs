@@ -53,22 +53,21 @@ namespace RessourceRelationnelle.Tests.Controllers
 
             var result = await controller.GetUserByToken();
 
-            Assert.IsType<UnauthorizedResult>(result);
+            Assert.IsType<UnauthorizedObjectResult>(result);
         }
 
         [Fact]
         public async Task GetUserByToken_ReturnsOk_WhenUserExists()
         {
             SetupUser("user1");
-            var user = new UserReturnAdmin
+            var user = new UserModel
             {
                 Id = "user1",
-                Username = "alice",
+                UserName = "alice",
                 Email = "alice@test.com",
-                IsActive = true,
-                Role = new List<string> { "User" }
             };
-            mockUserRepo.Setup(r => r.GetById("user1")).ReturnsAsync(user);
+            mockUserRepo.Setup(r => r.GetUserById("user1")).ReturnsAsync(user);
+            mockUserRepo.Setup(r => r.GetRolesByUserId("user1")).ReturnsAsync(new List<string> { "User" });
 
             var result = await controller.GetUserByToken();
 
@@ -76,33 +75,38 @@ namespace RessourceRelationnelle.Tests.Controllers
         }
 
         [Fact]
-        public async Task GetUserByToken_ThrowsNullReference_WhenUserNotInDb()
+        public async Task GetUserByToken_ReturnsNotFound_WhenUserNotInDb()
         {
             SetupUser("inexistant");
-            mockUserRepo.Setup(r => r.GetById("inexistant")).ReturnsAsync((UserReturnAdmin?)null);
+            mockUserRepo.Setup(r => r.GetUserById("inexistant")).ReturnsAsync((UserModel?)null);
 
-            await Assert.ThrowsAsync<NullReferenceException>(
-                () => controller.GetUserByToken());
+            var result = await controller.GetUserByToken();
+
+            Assert.IsType<NotFoundObjectResult>(result);
         }
 
         [Fact]
         public async Task GetUserByToken_ReturnsCorrectData()
         {
             SetupUser("user1");
-            var user = new UserReturnAdmin
+            var user = new UserModel
             {
                 Id = "user1",
-                Username = "admin",
+                UserName = "admin",
                 Email = "admin@test.com",
-                IsActive = true,
-                Role = new List<string> { "Admin" }
             };
-            mockUserRepo.Setup(r => r.GetById("user1")).ReturnsAsync(user);
+            mockUserRepo.Setup(r => r.GetUserById("user1")).ReturnsAsync(user);
+            mockUserRepo.Setup(r => r.GetRolesByUserId("user1")).ReturnsAsync(new List<string> { "Admin" });
 
             var result = await controller.GetUserByToken();
 
             var okResult = Assert.IsType<OkObjectResult>(result);
-            Assert.NotNull(okResult.Value);
+            var value = Assert.IsType<UserInforReturn>(okResult.Value);
+            Assert.Equal("user1", value.Id);
+            Assert.Equal("admin", value.Username);
+            Assert.Equal("admin@test.com", value.Email);
+            Assert.Equal("fake-token-123", value.Token);
+            Assert.Contains("Admin", value.Role);
         }
     }
 }
