@@ -4,61 +4,77 @@ on:
   workflow_call:
 
 jobs:
-  # Backend:
-  #   runs-on: ubuntu-latest
-  #   defaults:
-  #     run:
-  #       working-directory: backend
+  Backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
 
-  #   services:
-  #     postgres:
-  #       image: postgres:16
-  #       env:
-  #         POSTGRES_DB: test
-  #         POSTGRES_USER: test
-  #         POSTGRES_PASSWORD: test
-  #       ports:
-  #         - 5432:5432
-  #       options: >-
-  #         --health-cmd="pg_isready -U test -d test"
-  #         --health-interval=10s
-  #         --health-timeout=5s
-  #         --health-retries=5
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: test
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U test -d test"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
-  #   env:
-  #     ASPNETCORE_ENVIRONMENT: Development
-  #     ConnectionStrings__DefaultConnection: Host=127.0.0.1;Port=5432;Database=test;Username=test;Password=test;Include Error Detail=true
+    env:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://127.0.0.1:5000
+      ConnectionStrings__DefaultConnection: Host=127.0.0.1;Port=5432;Database=test;Username=test;Password=test;Include Error Detail=true
 
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  #     - name: Database Cnx Check
-  #       run: |
-  #         sudo apt-get update
-  #         sudo apt-get install -y postgresql-client
-  #         PGPASSWORD=test psql --host 127.0.0.1 --port 5432 --username test --dbname test --command "\l"
+      - name: Database Cnx Check
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+          PGPASSWORD=test psql --host 127.0.0.1 --port 5432 --username test --dbname test --command "\l"
 
-  #     - name: Setup .NET
-  #       uses: actions/setup-dotnet@v4
-  #       with:
-  #         dotnet-version: 9.0.x
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
 
-  #     - name: Restore dependencies
-  #       run: dotnet restore RessourceRelationnelle.API.sln
+      - name: Restore dependencies
+        run: dotnet restore RessourceRelationnelle.API.sln
 
-  #     - name: Build
-  #       run: dotnet build RessourceRelationnelle.API.sln --configuration Release --no-restore
+      - name: Build
+        run: dotnet build RessourceRelationnelle.API.sln --configuration Release --no-restore
 
-  #     - name: Run all test and coverage
-  #       run: dotnet test RessourceRelationnelle.API.sln --configuration Release --no-build --collect:"XPlat Code Coverage" --results-directory coverage
+      - name: Start API and seed database
+        run: |
+          nohup dotnet run --configuration Release --no-build --no-launch-profile --project RessourceRelationnelle.API/RessourceRelationnelle.API.csproj -- --urls http://127.0.0.1:5000 > backend.log 2>&1 &
 
-  #     - name: Upload Coverage Artifact
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: back-coverage-report
-  #         path: backend/coverage
-  #         retention-days: 1
+      - name: Wait for API
+        run: curl --fail --retry 12 --retry-delay 5 --retry-connrefused http://127.0.0.1:5000/swagger/index.html
+
+      - name: Run all test and coverage
+        run: >
+          dotnet test RessourceRelationnelle.API.sln
+          --configuration Release
+          --no-build
+          --collect:"XPlat Code Coverage"
+          --results-directory coverage
+          --
+          DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+
+      - name: Upload Coverage Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: back-coverage-report
+          path: backend/coverage
+          retention-days: 1
+
   AdminFrontend:
     runs-on: ubuntu-latest
 
