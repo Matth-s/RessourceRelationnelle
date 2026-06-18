@@ -47,7 +47,7 @@ namespace RessourceRelationnelle.Tests.Repositories
                     Title = "Ressource 1",
                     Resume = "Resume 1",
                     Content = "Contenu 1",
-                    Url = "https://test.local/1",
+                    MediaUrl = "https://test.local/1",
                     PublicationStatus = "Approved",
                     CategoryId = "cat1",
                     TypeRelationId = "rel1",
@@ -60,7 +60,7 @@ namespace RessourceRelationnelle.Tests.Repositories
                     Title = "Ressource 2",
                     Resume = "Resume 2",
                     Content = "Contenu 2",
-                    Url = "https://test.local/2",
+                    MediaUrl = "https://test.local/2",
                     PublicationStatus = "Pending",
                     CategoryId = "cat1",
                     TypeRelationId = "rel1",
@@ -74,7 +74,7 @@ namespace RessourceRelationnelle.Tests.Repositories
         [Fact]
         public async Task GetOne_ReturnsResource_WhenExists()
         {
-            var result = await repository.GetOne("res1");
+            var result = await repository.GetOne("user1", "res1");
             Assert.NotNull(result);
             Assert.Equal("Ressource 1", result.Title);
         }
@@ -82,18 +82,18 @@ namespace RessourceRelationnelle.Tests.Repositories
         [Fact]
         public async Task GetOne_ReturnsNull_WhenNotExists()
         {
-            var result = await repository.GetOne("inexistant");
+            var result = await repository.GetOne("user1", "inexistant");
             Assert.Null(result);
         }
 
         [Fact]
         public async Task GetOne_IncludesRelatedData()
         {
-            var result = await repository.GetOne("res1");
+            var result = await repository.GetOne("user1", "res1");
             Assert.NotNull(result);
             Assert.NotNull(result.User);
             Assert.NotNull(result.Category);
-            Assert.NotNull(result.TypeRessource);
+            Assert.NotNull(result.TypeResource);
             Assert.NotNull(result.TypeRelation);
         }
 
@@ -119,7 +119,7 @@ namespace RessourceRelationnelle.Tests.Repositories
                 Title = "Nouvelle",
                 Resume = "Resume",
                 Content = "Contenu",
-                Url = "https://test.local/new",
+                MediaUrl = "https://test.local/new",
                 PublicationStatus = "Pending",
                 CategoryId = "cat1",
                 TypeRelationId = "rel1",
