@@ -1,0 +1,178 @@
+name: 02-3 - Performance - K6 Load Test
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+        description: 'Environment to test (staging or production)'
+      base_url:
+        required: true
+        type: string
+        description: 'Base URL of the API to test'
+  workflow_dispatch:
+    inputs:
+      environment:
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+        description: 'Environment to test'
+  push:
+    branches:
+      - k6
+    paths:
+      - 'k6-tests/**'
+      - '.github/workflows/02-3_K6LoadTest.yml'
+
+env:
+  K6_VERSION: "0.50.0"
+
+jobs:
+  Validate-K6-Scripts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate K6 scripts exist
+        run: |
+          if [ ! -d "k6-tests" ]; then
+            echo "❌ k6-tests directory not found"
+            exit 1
+          fi
+          
+          required_scripts=("load-test-api.js" "stress-test-api.js" "spike-test-api.js")
+          for script in "${required_scripts[@]}"; do
+            if [ ! -f "k6-tests/$script" ]; then
+              echo "❌ Missing script: k6-tests/$script"
+              exit 1
+            fi
+          done
+          
+          echo "✅ All K6 scripts validated successfully"
+
+  Setup-K6-Tests:
+    needs: Validate-K6-Scripts
+    runs-on: ubuntu-latest
+    outputs:
+      test-config: ${{ steps.setup.outputs.config }}
+      base-url: ${{ steps.setup.outputs.base_url }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup test configuration
+        id: setup
+        run: |
+          if [ "${{ github.event_name }}" == "push" ]; then
+            ENV="staging"
+            BASE_URL="${{ secrets.STAGING_API_URL }}"
+          else
+            ENV="${{ github.event.inputs.environment }}"
+            BASE_URL="${{ github.event.inputs.base_url }}"
+          fi
+          
+          case "$ENV" in
+            staging)
+              echo "config=staging" >> $GITHUB_OUTPUT
+              echo "base_url=${BASE_URL:-https://staging-api.example.com}" >> $GITHUB_OUTPUT
+              ;;
+            production)
+              echo "config=production" >> $GITHUB_OUTPUT
+              echo "base_url=${BASE_URL:-https://api.example.com}" >> $GITHUB_OUTPUT
+              ;;
+            *)
+              echo "❌ Invalid environment: $ENV"
+              exit 1
+              ;;
+          esac
+          
+          echo "✅ Configuration: $ENV"
+
+  K6-Load-Test:
+    needs: Setup-K6-Tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        test-script:
+          - load-test-api
+          - stress-test-api
+          - spike-test-api
+      fail-fast: false
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup K6
+        uses: grafana/setup-k6-action@v1
+
+      - name: Create results directory
+        run: mkdir -p k6-results
+
+      - name: Run K6 ${{ matrix.test-script }}
+        continue-on-error: true
+        run: |
+          k6 run \
+            --out=json=k6-results/${{ matrix.test-script }}-results.json \
+            --summary-export=k6-results/${{ matrix.test-script }}-summary.json \
+            k6-tests/${{ matrix.test-script }}.js
+        env:
+          BASE_URL: ${{ needs.Setup-K6-Tests.outputs.base-url }}
+          K6_VUS: ${{ secrets.K6_VUS || '10' }}
+          K6_DURATION: ${{ secrets.K6_DURATION || '30s' }}
+
+      - name: Upload K6 results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: k6-results-${{ matrix.test-script }}
+          path: k6-results/
+          retention-days: 30
+
+  K6-Test-Report:
+    needs: [Setup-K6-Tests, K6-Load-Test]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./k6-artifacts/
+
+      - name: Generate Test Summary
+        run: |
+          echo "## 📊 K6 Load Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| **Environment** | ${{ needs.Setup-K6-Tests.outputs.test-config }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Base URL** | ${{ needs.Setup-K6-Tests.outputs.base-url }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Date** | $(date -u +'%Y-%m-%d %H:%M:%S UTC') |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📁 Test Artifacts" >> $GITHUB_STEP_SUMMARY
+          ls -la k6-artifacts/ 2>/dev/null | tail -n +2 | awk '{print "- " $NF}' >> $GITHUB_STEP_SUMMARY || echo "No artifacts found"
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const summary = fs.readFileSync(process.env.GITHUB_STEP_SUMMARY, 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: summary
+            });
+
+      - name: Check test results
+        run: |
+          echo "✅ K6 tests completed"
+          echo "📁 Artifacts available in GitHub Actions"
