@@ -1,0 +1,24 @@
+site_name: "(RE)Sources Relationnelles - Documentation"
+site_description: "Documentation technique du projet (RE)Sources Relationnelles"
+theme:
+  name: material
+  language: fr
+  palette:
+    primary: blue
+    accent: blue
+
+nav:
+  - Accueil: index.md
+  - Architecture:
+    - "Vue d'ensemble": architecture/overview.md
+    - Backend API: architecture/backend.md
+    - Frontend Admin: architecture/admin.md
+    - Frontend Mobile: architecture/mobile.md
+  - "Guide d'installation": installation.md
+  - Tests:
+    - "Stratégie de tests": tests/strategy.md
+    - Cahier de tests: tests/test-cases.md
+    - Couverture de code: tests/coverage.md
+  - "Déploiement":
+    - SonarQube: deployment/sonarqube.md
+    - "CI/CD": deployment/cicd.md
