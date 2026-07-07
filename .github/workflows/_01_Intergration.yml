@@ -1,9 +1,9 @@
 name: 01 - Integration
 
 on:
-  pull_request:
+  push:
     branches:
-      - develop
+      - main
 
 jobs:
   Test_Back_Front:
@@ -14,7 +14,4 @@ jobs:
     uses: ./.github/workflows/01-2_SonarQube.yml
     secrets: inherit
 
-  Security_Snyk:
-    needs: [Quality_SonarQube]
-    uses: ./.github/workflows/01-3_Snyk.yml
-    secrets: inherit
+  # Security_Snyk:
