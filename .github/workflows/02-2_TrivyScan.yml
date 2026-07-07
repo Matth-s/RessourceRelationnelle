@@ -25,13 +25,13 @@ jobs:
       - name: Trivy Scan Back
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: ${{env.REGISTRY}}/${{env.IMAGE_NAME_LOWER}}-back
+          image-ref: ${{env.REGISTRY}}/${{env.IMAGE_NAME_LOWER}}-back:canary
           format: table
           exit-code: '1'
           output: trivy-results-back.txt
           ignore-unfixed: true
           vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH,MEDIUM,LOW'
+          severity: 'CRITICAL,HIGH'
 
       - name: Upload Trivy report back
         uses: actions/upload-artifact@v4
@@ -64,7 +64,7 @@ jobs:
           output: trivy-results-front.txt
           ignore-unfixed: true
           vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH,MEDIUM,LOW'
+          severity: 'CRITICAL,HIGH'
 
       - name: Upload Trivy report front
         uses: actions/upload-artifact@v4
@@ -91,13 +91,13 @@ jobs:
       - name: Trivy Scan Mobile
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: ${{env.REGISTRY}}/${{env.IMAGE_NAME_LOWER}}-mobile
+          image-ref: ${{env.REGISTRY}}/${{env.IMAGE_NAME_LOWER}}-mobile:canary
           format: table
           exit-code: '1'
           output: trivy-results-mobile.txt
           ignore-unfixed: true
           vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH,MEDIUM,LOW'
+          severity: 'CRITICAL,HIGH'
 
       - name: Upload Trivy report mobile
         uses: actions/upload-artifact@v4

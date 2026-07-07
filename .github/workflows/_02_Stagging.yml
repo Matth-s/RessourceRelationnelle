@@ -27,12 +27,12 @@ jobs:
 
   #---------------------------------------------------
 
-  # Deploy:
-  #   if: ${{github.ref_name != 'develop'}}
-  #   uses: ./.github/workflows/02-3_Deploy.yml
-  #   secrets: inherit
-  #   permissions:
-  #     id-token: write
+  Deploy:
+    if: ${{github.ref_name != 'develop'}}
+    uses: ./.github/workflows/02-3_Deploy.yml
+    secrets: inherit
+    permissions:
+      id-token: write
 
   # Zaproxy_Scan:
   #   needs: [Deploy]

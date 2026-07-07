@@ -1,0 +1,133 @@
+name: 02-3 - Deploy
+
+on:
+  workflow_call
+
+jobs:
+  AzureServer:
+    runs-on: ubuntu-22.04
+
+    permissions:
+      id-token: write   # requis pour l'auth OIDC azure/login (identité managée)
+      contents: read
+
+    env:
+      ResourceGroupName: "RessourceRelationnelle-Staging"
+      ResourceGroupLocation: "francecentral"
+      VmName: "vm-ressource-staging"
+      VmSize: "Standard_B2s"
+      VmImage: "Ubuntu2204"
+      REGISTRY: "ghcr.io"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}       # client-id de l'identité managée
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # Provisionnement infra en Azure CLI (pas de Bicep) — idempotent
+      - name: Provision VM
+        uses: azure/CLI@v2
+        with:
+          inlineScript: |
+            set -e
+            # Enregistrement des resource providers (idempotent) — requis sur une souscription neuve
+            az provider register --namespace Microsoft.Network --wait
+            az provider register --namespace Microsoft.Compute --wait
+            az provider register --namespace Microsoft.Storage --wait
+
+            az group create \
+              --name "${{ env.ResourceGroupName }}" \
+              --location "${{ env.ResourceGroupLocation }}"
+
+            if az vm show -g "${{ env.ResourceGroupName }}" -n "${{ env.VmName }}" >/dev/null 2>&1; then
+              echo "VM déjà existante, création ignorée."
+            else
+              az vm create \
+                --resource-group "${{ env.ResourceGroupName }}" \
+                --name "${{ env.VmName }}" \
+                --image "${{ env.VmImage }}" \
+                --size "${{ env.VmSize }}" \
+                --admin-username "${{ secrets.AZURE_VM_LOGIN }}" \
+                --admin-password "${{ secrets.AZURE_VM_PASSWORD }}" \
+                --authentication-type password \
+                --public-ip-sku Standard \
+                --only-show-errors
+            fi
+
+            # Ouverture des ports (idempotent) : admin-frontend 80, mobile-app 81, API 12000
+            # (SSH 22 déjà ouvert par az vm create)
+            az vm open-port -g "${{ env.ResourceGroupName }}" -n "${{ env.VmName }}" --port 80    --priority 900 --only-show-errors
+            az vm open-port -g "${{ env.ResourceGroupName }}" -n "${{ env.VmName }}" --port 81    --priority 901 --only-show-errors
+            az vm open-port -g "${{ env.ResourceGroupName }}" -n "${{ env.VmName }}" --port 12000 --priority 902 --only-show-errors
+
+      - name: Get Public IP
+        uses: azure/CLI@v2
+        with:
+          inlineScript: |
+            IP=$(az vm show -d -g "${{ env.ResourceGroupName }}" -n "${{ env.VmName }}" --query publicIps -o tsv)
+            echo "Public IP: $IP"
+            echo "AZURE_VM_IP=$IP" >> $GITHUB_ENV
+
+      - name: Compute lowercase image names
+        run: |
+          REPO_LOWER="${GITHUB_REPOSITORY,,}"
+          echo "IMAGE_BACK=${{ env.REGISTRY }}/${REPO_LOWER}-back:canary"     >> $GITHUB_ENV
+          echo "IMAGE_FRONT=${{ env.REGISTRY }}/${REPO_LOWER}-front:canary"   >> $GITHUB_ENV
+          echo "IMAGE_MOBILE=${{ env.REGISTRY }}/${REPO_LOWER}-mobile:canary" >> $GITHUB_ENV
+
+      # Copie le compose de staging sur la VM
+      - name: Copy compose file to VM
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ env.AZURE_VM_IP }}
+          port: ${{ secrets.PORT }}
+          username: ${{ secrets.AZURE_VM_LOGIN }}
+          password: ${{ secrets.AZURE_VM_PASSWORD }}
+          source: "docker-compose.staging.yml"
+          target: "/home/${{ secrets.AZURE_VM_LOGIN }}/ressource"
+
+      # Installe Docker, se connecte à GHCR, pull et démarre la stack
+      - name: Install Docker & Deploy stack
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ env.AZURE_VM_IP }}
+          port: ${{ secrets.PORT }}
+          username: ${{ secrets.AZURE_VM_LOGIN }}
+          password: ${{ secrets.AZURE_VM_PASSWORD }}
+          # Variables transmises au script distant
+          envs: IMAGE_BACK,IMAGE_FRONT,IMAGE_MOBILE,GHCR_USER,GHCR_TOKEN,JWT_SECRET,DB_CONNECTION_STRING
+          script: |
+            set -e
+
+            # 1. Docker (idempotent : ne réinstalle pas si déjà présent)
+            if ! command -v docker >/dev/null 2>&1; then
+              curl -fsSL https://get.docker.com | sudo sh
+            fi
+            sudo usermod -aG docker "$USER" || true
+
+            cd ~/ressource
+
+            # 2. Secrets applicatifs exportés dans l'environnement ;
+            #    docker compose les interpole dans l'environnement du conteneur.
+            export JWT__Secret="$JWT_SECRET"
+            export ConnectionStrings__DefaultConnection="$DB_CONNECTION_STRING"
+            export IMAGE_BACK IMAGE_FRONT IMAGE_MOBILE GHCR_USER GHCR_TOKEN
+
+            # 3. Login GHCR + déploiement (sg docker : évite le re-login de groupe)
+            sg docker -c '
+              echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
+              docker compose -f docker-compose.staging.yml pull
+              docker compose -f docker-compose.staging.yml up -d
+              docker compose -f docker-compose.staging.yml ps
+            '
+        env:
+          GHCR_USER: ${{ github.actor }}
+          GHCR_TOKEN: ${{ secrets.PAT_TOKEN }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
