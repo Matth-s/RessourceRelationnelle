@@ -1,0 +1,69 @@
+name: Daily Database Backup
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch: # Permet de lancer manuellement
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      - name: Install Azure CLI
+        run: |
+          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+      - name: Create backup
+        env:
+          DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          TIMESTAMP=$(date +%Y-%m-%d_%H-%M-%S)
+          FILENAME="backup_${TIMESTAMP}.sql.gz"
+          echo "FILENAME=${FILENAME}" >> $GITHUB_ENV
+
+          pg_dump "${DATABASE_URL}" \
+            --no-owner \
+            --no-privileges \
+            --clean \
+            --if-exists \
+            | gzip > "${FILENAME}"
+
+          FILE_SIZE=$(du -h "${FILENAME}" | cut -f1)
+          echo "Backup créé : ${FILENAME} (${FILE_SIZE})"
+
+      - name: Upload to Azure Blob Storage
+        env:
+          AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
+        run: |
+          az storage blob upload \
+            --container-name db-backups \
+            --name "${{ env.FILENAME }}" \
+            --file "${{ env.FILENAME }}" \
+            --connection-string "${AZURE_STORAGE_CONNECTION_STRING}"
+
+          echo "Backup uploadé vers Azure Blob Storage"
+
+      - name: Cleanup old backups (keep last 30 days)
+        env:
+          AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
+        run: |
+          CUTOFF_DATE=$(date -d '7 days ago' +%Y-%m-%dT%H:%M:%SZ)
+
+          az storage blob list \
+            --container-name db-backups \
+            --connection-string "${AZURE_STORAGE_CONNECTION_STRING}" \
+            --query "[?properties.lastModified < '${CUTOFF_DATE}'].name" \
+            --output tsv | while read blob; do
+              echo "Suppression : ${blob}"
+              az storage blob delete \
+                --container-name db-backups \
+                --name "${blob}" \
+                --connection-string "${AZURE_STORAGE_CONNECTION_STRING}"
+          done
+
+          echo "Nettoyage terminé (backups > 7 jours supprimés)"

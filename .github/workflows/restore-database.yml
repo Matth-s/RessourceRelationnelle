@@ -1,0 +1,38 @@
+name: Restore Database
+
+on:
+  workflow_dispatch:
+    inputs:
+      backup_filename:
+        description: 'Nom du fichier backup (ex: backup_2026-07-07_02-00-00.sql.gz)'
+        required: true
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+      - name: Download backup from Azure
+        env:
+          AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
+        run: |
+          az storage blob download \
+            --container-name db-backups \
+            --name "${{ github.event.inputs.backup_filename }}" \
+            --file backup.sql.gz \
+            --connection-string "${AZURE_STORAGE_CONNECTION_STRING}"
+
+          echo "Backup téléchargé"
+
+      - name: Restore database
+        env:
+          DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          gunzip -c backup.sql.gz | psql "${DATABASE_URL}"
+          echo "Base de données restaurée"
