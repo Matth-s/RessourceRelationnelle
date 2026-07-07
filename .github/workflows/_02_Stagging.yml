@@ -5,6 +5,7 @@ on:
     branches:
       - develop
       - release/*
+
 jobs:
   Display_Data:
     runs-on: ubuntu-latest
