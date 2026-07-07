@@ -1,5 +1,8 @@
 FROM node:24-alpine
 
+
+ARG MODE=""
+
 WORKDIR /app
 
 COPY package.json .
@@ -10,4 +13,4 @@ COPY . .
 
 EXPOSE 8080
 
-CMD [ "npm", "run", "dev" ]
+RUN npm run build${MODE}
