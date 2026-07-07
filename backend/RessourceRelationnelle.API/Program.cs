@@ -118,9 +118,12 @@ namespace RessourceRelationnelle.API
 
             var app = builder.Build();
 
-            app.UseSwagger();
-            app.UseSwaggerUI();
-            app.MapOpenApi();
+            if (!app.Environment.IsProduction())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+                app.MapOpenApi();
+            }
 
             app.UseCors("AllowFront");       // 1. CORS en premier
             app.UseHttpsRedirection();       // 2. HTTPS
