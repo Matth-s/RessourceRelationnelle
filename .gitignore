@@ -87,3 +87,11 @@ coverage/
 .env.local
 **/appsettings.Development.json
 test-results/
+
+# SSH keys
+*.pem
+*-key
+*-key.pub
+
+# Infra secrets
+infra/sonarqube/params.json

@@ -25,7 +25,7 @@ jobs:
       - name: Trivy Scan Back
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: ${{env.REGISTRY}}/${{env.IMAGE_NAME_LOWER}}-back:canary
+          image-ref: ${{env.REGISTRY}}/${{env.IMAGE_NAME_LOWER}}-back
           format: table
           exit-code: '1'
           output: trivy-results-back.txt
@@ -58,7 +58,7 @@ jobs:
       - name: Trivy Scan Front
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: ${{env.REGISTRY}}/${{env.IMAGE_NAME_LOWER}}-front:canary
+          image-ref: ${{env.REGISTRY}}/${{env.IMAGE_NAME_LOWER}}-front
           format: table
           exit-code: '1'
           output: trivy-results-front.txt
@@ -91,7 +91,7 @@ jobs:
       - name: Trivy Scan Mobile
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: ${{env.REGISTRY}}/${{env.IMAGE_NAME_LOWER}}-mobile:canary
+          image-ref: ${{env.REGISTRY}}/${{env.IMAGE_NAME_LOWER}}-mobile
           format: table
           exit-code: '1'
           output: trivy-results-mobile.txt
