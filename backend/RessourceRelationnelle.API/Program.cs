@@ -9,7 +9,7 @@ using RessourceRelationnelle.DATA;
 using RessourceRelationnelle.DATA.Models;
 using RessourceRelationnelle.DATA.Repositories;
 using RessourceRelationnelle.DATA.Repositories.Sql;
-using System.Text;
+using System.Security.Cryptography;
 
 namespace RessourceRelationnelle.API
 {
@@ -105,14 +105,21 @@ namespace RessourceRelationnelle.API
             {
                 options.SaveToken = true;
                 options.RequireHttpsMetadata = false;
+
+                // Chargement de la clé publique RSA pour la validation des tokens
+                var publicKeyPem = builder.Configuration["JWT:PublicKey"]
+                    ?? throw new InvalidOperationException("JWT:PublicKey est manquant dans la configuration.");
+
+                var rsa = RSA.Create();
+                rsa.ImportFromPem(publicKeyPem.ToCharArray());
+
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = false,
                     ValidateLifetime = true,
                     ValidateAudience = false,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+                    IssuerSigningKey = new RsaSecurityKey(rsa)
                 };
             });
 

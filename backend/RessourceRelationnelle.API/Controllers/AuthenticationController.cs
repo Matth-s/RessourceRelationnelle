@@ -6,7 +6,7 @@ using RessourceRelationnelle.DATA.Models;
 using RessourceRelationnelle.DATA.Repositories;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
+using System.Security.Cryptography;
 
 namespace RessourceRelationnelle.API.Controllers
 {
@@ -52,12 +52,17 @@ namespace RessourceRelationnelle.API.Controllers
                 foreach (var item in roles)
                     authClaims.Add(new Claim(ClaimTypes.Role, item));
 
-                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]));
+                var privateKeyPem = configuration["JWT:PrivateKey"]
+                    ?? throw new InvalidOperationException("JWT:PrivateKey est manquant dans la configuration.");
+
+                var rsa = RSA.Create();
+                rsa.ImportFromPem(privateKeyPem.ToCharArray());
+                var authSigningKey = new RsaSecurityKey(rsa);
 
                 var token = new JwtSecurityToken(
                     expires: DateTime.UtcNow.AddHours(1),
                     claims: authClaims,
-                    signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
+                    signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.RsaSha256));
 
                 return Ok(new
                 {
