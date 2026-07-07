@@ -18,7 +18,7 @@ jobs:
           dotnet-version: '9.0.x'
 
       - name: Restore
-        run: dotnet restore CESIZen.API.sln
+        run: dotnet restore RessourceRelationnelle.API.sln
 
       - name: Run Snyk Test
         uses: snyk/actions/dotnet@master
@@ -26,7 +26,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           command: test
-          args: --severity-threshold=medium --file=./backend/CESIZen.API.sln --org=${{ secrets.SNYK_ORG_ID }}
+          args: --severity-threshold=medium --file=./backend/RessourceRelationnelle.API.sln --org=${{ secrets.SNYK_ORG_ID }}
 
       - name: Run Snyk Monitor
         if: always()
@@ -35,13 +35,13 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           command: monitor
-          args: --severity-threshold=medium --file=./backend/CESIZen.API.sln --org=${{ secrets.SNYK_ORG_ID }}
+          args: --severity-threshold=medium --file=./backend/RessourceRelationnelle.API.sln --org=${{ secrets.SNYK_ORG_ID }}
 
   SecurityFront:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: backoffice
+        working-directory: admin-frontend
 
     steps:
       - uses: actions/checkout@v4
@@ -60,7 +60,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           command: test
-          args: --severity-threshold=critical --file=./backoffice/package.json --org=${{secrets.SNYK_ORG_ID}}
+          args: --severity-threshold=critical --file=./admin-frontend/package.json --org=${{secrets.SNYK_ORG_ID}}
 
       - name: Run Snyk Monitor
         if: always()
@@ -69,4 +69,38 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           command: monitor
-          args: --severity-threshold=critical --file=./backoffice/package.json --org=${{secrets.SNYK_ORG_ID}}
+          args: --severity-threshold=critical --file=./admin-frontend/package.json --org=${{secrets.SNYK_ORG_ID}}
+
+  SecurityMobile:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile-app
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '24'
+
+      - name: install dep
+        run: npm i
+
+      - name: Run Snyk Test
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: test
+          args: --severity-threshold=critical --file=./mobile-app/package.json --org=${{secrets.SNYK_ORG_ID}}
+
+      - name: Run Snyk Monitor
+        if: always()
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: monitor
+          args: --severity-threshold=critical --file=./mobile-app/package.json --org=${{secrets.SNYK_ORG_ID}}
