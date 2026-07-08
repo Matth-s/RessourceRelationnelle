@@ -110,7 +110,7 @@ jobs:
           username: ${{ secrets.AZURE_VM_LOGIN }}
           password: ${{ secrets.AZURE_VM_PASSWORD }}
           # Variables transmises au script distant
-          envs: IMAGE_BACK,IMAGE_FRONT,IMAGE_MOBILE,GHCR_USER,GHCR_TOKEN,JWT_SECRET,DB_CONNECTION_STRING
+          envs: IMAGE_BACK,IMAGE_FRONT,IMAGE_MOBILE,GHCR_USER,GHCR_TOKEN,JWT_SECRET,DB_CONNECTION_STRING,VITE_PUBLIC_API_ROUTE
           script: |
             set -e
 
@@ -126,7 +126,7 @@ jobs:
             #    docker compose les interpole dans l'environnement du conteneur.
             export JWT__Secret="$JWT_SECRET"
             export ConnectionStrings__DefaultConnection="$DB_CONNECTION_STRING"
-            export IMAGE_BACK IMAGE_FRONT IMAGE_MOBILE GHCR_USER GHCR_TOKEN
+            export IMAGE_BACK IMAGE_FRONT IMAGE_MOBILE GHCR_USER GHCR_TOKEN VITE_PUBLIC_API_ROUTE
 
             # 3. Login GHCR + déploiement (sg docker : évite le re-login de groupe)
             sg docker -c '
@@ -140,3 +140,5 @@ jobs:
           GHCR_TOKEN: ${{ secrets.PAT_TOKEN }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
+          # URL publique de l'API pour le front (IP dynamique de la VM + port 12000 + prefixe /api)
+          VITE_PUBLIC_API_ROUTE: http://${{ env.AZURE_VM_IP }}:12000/api

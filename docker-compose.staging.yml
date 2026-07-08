@@ -12,8 +12,14 @@ services:
   admin-frontend:
     image: ${IMAGE_FRONT}
     restart: unless-stopped
-    # Force Vite a ecouter sur 0.0.0.0:8080 (les flags CLI priment sur vite.config)
-    command: ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "8080"]
+    # Injecte l'URL publique de l'API dans le .env (IP de la VM, fournie par le deploy)
+    # puis force Vite a ecouter sur 0.0.0.0:8080
+    command:
+      - sh
+      - -c
+      - |
+        echo "VITE_PUBLIC_API_ROUTE=${VITE_PUBLIC_API_ROUTE}" > .env
+        exec npm run dev -- --host 0.0.0.0 --port 8080
     ports:
       - '80:8080'
     depends_on:
