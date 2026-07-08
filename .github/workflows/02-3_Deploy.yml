@@ -1,11 +1,18 @@
 name: 02-3 - Deploy
 
 on:
-  workflow_call
+  workflow_call:
+    outputs:
+      vm_ip:
+        description: "IP publique de la VM de staging"
+        value: ${{ jobs.AzureServer.outputs.vm_ip }}
 
 jobs:
   AzureServer:
     runs-on: ubuntu-22.04
+
+    outputs:
+      vm_ip: ${{ steps.get_ip.outputs.ip }}
 
     permissions:
       id-token: write   # requis pour l'auth OIDC azure/login (identité managée)
@@ -67,12 +74,14 @@ jobs:
             az vm open-port -g "${{ env.ResourceGroupName }}" -n "${{ env.VmName }}" --port 12000 --priority 902 --only-show-errors
 
       - name: Get Public IP
+        id: get_ip
         uses: azure/CLI@v2
         with:
           inlineScript: |
             IP=$(az vm show -d -g "${{ env.ResourceGroupName }}" -n "${{ env.VmName }}" --query publicIps -o tsv)
             echo "Public IP: $IP"
             echo "AZURE_VM_IP=$IP" >> $GITHUB_ENV
+            echo "ip=$IP" >> $GITHUB_OUTPUT
 
       - name: Compute lowercase image names
         run: |

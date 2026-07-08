@@ -35,8 +35,11 @@ jobs:
       id-token: write
       contents: read
 
-  # Zaproxy_Scan:
-  #   needs: [Deploy]
-  #   uses: ./.github/workflows/02-4_ZapScan.yml
-  #   permissions:
-  #     issues: write
+  Zaproxy_Scan:
+    needs: [Deploy]
+    uses: ./.github/workflows/02-4_ZapScan.yml
+    with:
+      target-host: ${{ needs.Deploy.outputs.vm_ip }}
+    permissions:
+      issues: write
+      contents: read
