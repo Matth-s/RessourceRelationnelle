@@ -25,9 +25,15 @@ namespace RessourceRelationnelle.Tests.Controllers
                 Mock.Of<IRoleStore<IdentityRole>>(), null, null, null, null);
             mockUserRepository = new Mock<IUserRepository>();
 
+            // Génération d'une paire de clés RSA pour les tests
+            using var rsaForTest = System.Security.Cryptography.RSA.Create(2048);
+            var privateKeyPem = rsaForTest.ExportRSAPrivateKeyPem();
+            var publicKeyPem = rsaForTest.ExportRSAPublicKeyPem();
+
             var configData = new Dictionary<string, string?>
             {
-                { "JWT:Secret", "CleSecreteDuTestUnitaireTresLongue123456!" }
+                { "JWT:PrivateKey", privateKeyPem },
+                { "JWT:PublicKey", publicKeyPem }
             };
             configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(configData)

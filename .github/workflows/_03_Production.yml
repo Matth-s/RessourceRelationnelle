@@ -1,0 +1,30 @@
+name: 03 - Production
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  Display_Data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Display Data
+        run: env | sort
+
+  Build_Push_Docker_Prod:
+    uses: ./.github/workflows/z_Docker-Ghcr.yml
+    secrets: inherit
+    with:
+      docker-mode: production
+
+  Deploy_Prod:
+    needs: [Build_Push_Docker_Prod]
+    uses: ./.github/workflows/03-2_DeployProd.yml
+    secrets: inherit
+    with:
+      docker-mode: production
+      vm-name: vm-production
+      dns-record: app
+    permissions:
+      id-token: write

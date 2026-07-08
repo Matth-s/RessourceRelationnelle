@@ -1,0 +1,42 @@
+name: 02 - Stagging
+
+on:
+  push:
+    branches:
+      - develop
+      - release/*
+
+jobs:
+  Display_Data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Display Data
+        run: env | sort
+
+  Build_Push_Docker:
+    if: ${{github.ref_name == 'develop'}}
+    uses: ./.github/workflows/z_Docker-Ghcr.yml
+    secrets: inherit
+    with:
+      docker-mode: canary
+
+  Trivy_Scan_Package:
+    needs: [Build_Push_Docker]
+    uses: ./.github/workflows/02-2_TrivyScan.yml
+    secrets: inherit
+
+  #---------------------------------------------------
+
+  Deploy:
+    if: ${{github.ref_name != 'develop'}}
+    uses: ./.github/workflows/02-3_Deploy.yml
+    secrets: inherit
+    permissions:
+      id-token: write
+      contents: read
+
+  # Zaproxy_Scan:
+  #   needs: [Deploy]
+  #   uses: ./.github/workflows/02-4_ZapScan.yml
+  #   permissions:
+  #     issues: write

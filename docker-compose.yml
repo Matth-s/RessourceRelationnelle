@@ -4,10 +4,14 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - '5000:8080'
+      - "5000:8080"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
       - ConnectionStrings__Default=Data Source=/app/data/data.db3
+      - JWT__PrivateKey=${JWT__PrivateKey}
+      - JWT__PublicKey=${JWT__PublicKey}
+    env_file:
+      - .env
     volumes:
       - sqlite_data:/app/data
 
@@ -16,8 +20,15 @@ services:
       context: ./admin-frontend
       dockerfile: Dockerfile
     ports:
-      - '5173:5173'
+      - "5173:5173"
     depends_on:
       - mon-api
-volumes:
-  sqlite_data:
+
+  mobile-app:
+    build:
+      context: ./mobile-app
+      dockerfile: Dockerfile
+    ports:
+      - "5174:5174"
+    depends_on:
+      - mon-api
