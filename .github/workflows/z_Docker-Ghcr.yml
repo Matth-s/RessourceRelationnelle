@@ -36,14 +36,14 @@ jobs:
         with:
           context: backend
           push: true
-          tags: ${{env.REGISTRY}}/${{env.IMAGE_NAME_LOWER}}-back
+          tags: ${{env.REGISTRY}}/${{env.IMAGE_NAME_LOWER}}-back:${{inputs.docker-mode}}
 
       - name: Front Build Push
         uses: docker/build-push-action@v5
         with:
           context: admin-frontend
           push: true
-          tags: ${{env.REGISTRY}}/${{env.IMAGE_NAME_LOWER}}-front
+          tags: ${{env.REGISTRY}}/${{env.IMAGE_NAME_LOWER}}-front:${{inputs.docker-mode}}
           build-args: MODE=:canary
 
       - name: Mobile Build Push
@@ -51,5 +51,5 @@ jobs:
         with:
           context: mobile-app
           push: true
-          tags: ${{env.REGISTRY}}/${{env.IMAGE_NAME_LOWER}}-mobile
+          tags: ${{env.REGISTRY}}/${{env.IMAGE_NAME_LOWER}}-mobile:${{inputs.docker-mode}}
           build-args: MODE=:canary
