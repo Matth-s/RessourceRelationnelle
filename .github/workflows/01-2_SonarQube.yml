@@ -1,95 +1,100 @@
 name: 01-2 - Integration - Sonar
-
 on: workflow_call
-
 jobs:
   QualityBack:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     defaults:
       run:
         working-directory: ./backend
-
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-
+        uses: actions/checkout@v4
       - name: Download Artifacts
         uses: actions/download-artifact@v4
         with:
           name: back-coverage-report
           path: backend/coverage
-
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 9.0.x
-
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
-
       - name: Install SonarScanner
-        run: dotnet tool install --global dotnet-sonarscanner
-
+        run: dotnet tool install --global dotnet-sonarscanner || true
       - name: SonarQube Begin
         run: >
           dotnet sonarscanner begin
-          /o:"matth-s"
-          /k:"matth-s_RessourceRelationnelle_BACKEND"
+          /k:"RessourceRelationnelle_Backend"
           /d:sonar.token="${{ secrets.SONAR_BACKEND }}"
-          /d:sonar.host.url="https://sonarcloud.io"
+          /d:sonar.host.url="http://localhost:9000"
           /d:sonar.cs.opencover.reportsPaths="coverage/**/coverage.opencover.xml"
-
       - name: Build
         run: dotnet build RessourceRelationnelle.API.sln --configuration Release
-
       - name: SonarQube End
         run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_BACKEND }}"
 
   QualityFront:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     defaults:
       run:
         working-directory: ./admin-frontend
-
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-
+        uses: actions/checkout@v4
       - name: Download Artifacts
         uses: actions/download-artifact@v4
         with:
           name: admin-front-coverage-report
           path: admin-frontend/coverage
-
-      - name: SonarQube Scan
-        uses: SonarSource/sonarcloud-github-action@v3.1.0
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          projectBaseDir: ./admin-frontend
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_BACKOFFICE }}
+          node-version: 20.x
+      - name: Install sonar-scanner
+        run: npm install -g sonarqube-scanner || true
+      - name: SonarQube Scan
+        run: >
+          npx sonarqube-scanner
+          -Dsonar.projectKey=RessourceRelationnelle_BackOffice
+          -Dsonar.sources=src
+          -Dsonar.tests=src/__test__
+          -Dsonar.host.url=http://localhost:9000
+          -Dsonar.token=${{ secrets.SONAR_BACKOFFICE }}
+          -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+          -Dsonar.exclusions=node_modules/**,src/__test__/**
+          -Dsonar.qualitygate.wait=false
 
   QualityMobile:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     defaults:
       run:
         working-directory: ./mobile-app
-
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-
+        uses: actions/checkout@v4
       - name: Download Artifacts
         uses: actions/download-artifact@v4
         with:
           name: mobile-coverage-report
           path: mobile-app/coverage
-
-      - name: SonarQube Scan
-        uses: SonarSource/sonarcloud-github-action@v3.1.0
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          projectBaseDir: ./mobile-app
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_MOBILE }}
+          node-version: 20.x
+      - name: Install sonar-scanner
+        run: npm install -g sonarqube-scanner || true
+      - name: SonarQube Scan
+        run: >
+          npx sonarqube-scanner
+          -Dsonar.projectKey=RessourceRelationnelle_Mobile
+          -Dsonar.sources=src
+          -Dsonar.tests=src/__test__
+          -Dsonar.host.url=http://localhost:9000
+          -Dsonar.token=${{ secrets.SONAR_MOBILE }}
+          -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+          -Dsonar.exclusions=node_modules/**,src/__test__/**
+          -Dsonar.qualitygate.wait=false
