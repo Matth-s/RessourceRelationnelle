@@ -1,0 +1,70 @@
+name: 03-2 - Deploy Prod
+
+on:
+  workflow_call:
+    inputs:
+      docker-mode:
+        required: true
+        type: string
+      vm-name:
+        required: false
+        type: string
+        default: vm-production
+      dns-record:
+        required: false
+        type: string
+        default: app
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          REPOSITORY: ${{ github.repository }}
+          DOCKER_MODE: ${{ inputs.docker-mode }}
+          JWT_KEY: ${{ secrets.JWT_KEY }}
+          GHCR_USERNAME: ${{ github.actor }}
+          GHCR_TOKEN: ${{ secrets.PAT_TOKEN }}
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: ${{ secrets.SERVER_PORT || 22 }}
+          envs: REPOSITORY,DOCKER_MODE,JWT_KEY,GHCR_USERNAME,GHCR_TOKEN
+          script: |
+            set -e
+
+            # Arrêter tous les conteneurs Docker en cours pour libérer les ports
+            sudo docker stop $(sudo docker ps -q) 2>/dev/null || true
+            sudo docker rm $(sudo docker ps -aq) 2>/dev/null || true
+
+            # NOUVEAU : Nettoyer les images, volumes et réseaux inutilisés pour libérer de l'espace disque
+            sudo docker system prune -af --volumes
+
+            sudo rm -rf /opt/ressourcere
+            sudo mkdir -p /opt/ressourcere
+            sudo chown -R $USER:$USER /opt/ressourcere
+
+            REPO_LOWER=$(echo "$REPOSITORY" | tr '[:upper:]' '[:lower:]')
+
+            git clone --depth 1 --branch main "https://x-access-token:${GHCR_TOKEN}@github.com/${REPOSITORY}.git" /opt/ressourcere
+
+            cd /opt/ressourcere
+
+            cat > /opt/ressourcere/.env <<EOF
+            ASPNETCORE_ENVIRONMENT=Production
+            JWT_KEY=${JWT_KEY}
+            MONO_PROJECT_BACK=ghcr.io/${REPO_LOWER}-back:${DOCKER_MODE}
+            MONO_PROJECT_ADMIN=ghcr.io/${REPO_LOWER}-admin:${DOCKER_MODE}
+            EOF
+
+            echo "$GHCR_TOKEN" | sudo docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
+            sudo docker compose -f /opt/ressourcere/docker-compose.yml pull
+            sudo docker compose -f /opt/ressourcere/docker-compose.yml up -d
+            sudo docker ps --format 'table {{.Names}}\t{{.Status}}'
