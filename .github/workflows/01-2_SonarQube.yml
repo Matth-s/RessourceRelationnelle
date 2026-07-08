@@ -29,13 +29,13 @@ jobs:
         run: >
           dotnet sonarscanner begin
           /k:"RessourceRelationnelle_Backend"
-          /d:sonar.token="${{ secrets.SONAR_BACKEND }}"
+          /d:sonar.token="${{ secrets.SONAR_TOKEN_BACK }}"
           /d:sonar.host.url="http://localhost:9000"
           /d:sonar.cs.opencover.reportsPaths="coverage/**/coverage.opencover.xml"
       - name: Build
         run: dotnet build RessourceRelationnelle.API.sln --configuration Release
       - name: SonarQube End
-        run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_BACKEND }}"
+        run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN_BACK }}"
 
   QualityFront:
     runs-on: self-hosted
@@ -63,7 +63,7 @@ jobs:
           -Dsonar.sources=src
           -Dsonar.tests=src/__test__
           -Dsonar.host.url=http://localhost:9000
-          -Dsonar.token=${{ secrets.SONAR_BACKOFFICE }}
+          -Dsonar.token=${{ secrets.SONAR_TOKEN_FRONT }}
           -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
           -Dsonar.exclusions=node_modules/**,src/__test__/**
           -Dsonar.qualitygate.wait=false
