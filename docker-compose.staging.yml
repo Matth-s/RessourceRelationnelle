@@ -12,6 +12,8 @@ services:
   admin-frontend:
     image: ${IMAGE_FRONT}
     restart: unless-stopped
+    # Force Vite a ecouter sur 0.0.0.0:8080 (les flags CLI priment sur vite.config)
+    command: ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "8080"]
     ports:
       - '80:8080'
     depends_on:
@@ -20,6 +22,8 @@ services:
   mobile-app:
     image: ${IMAGE_MOBILE}
     restart: unless-stopped
+    # Force Vite a ecouter sur 0.0.0.0:8080 (le mobile ne bind pas 0.0.0.0 par defaut)
+    command: ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "8080"]
     ports:
       - '81:8080'
     depends_on:
